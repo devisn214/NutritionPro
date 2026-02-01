@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container card">
+    <h2>Update Profile</h2>
+
+    <form method="POST" action="/save-updated-profile/{{ user.user_id }}">
+
+        <label>Height (cm)</label>
+        <input type="number" name="height" value="{{ user.height_cm }}" required>
+
+        <label>Weight (kg)</label>
+        <input type="number" name="weight" value="{{ user.weight_kg }}" required>
+
+        <hr>
+
+        <h3>Blood Markers (Optional)</h3>
+        <div id="biomarkers">
+            {% for b in user.biomarkers %}
+            <div class="row">
+                <select name="biomarker_name[]">
+                    {% for bm in biomarkers %}
+                        <option value="{{ bm }}" {% if bm == b.name %}selected{% endif %}>{{ bm }}</option>
+                    {% endfor %}
+                </select>
+                <input type="number" step="0.01" name="biomarker_value[]" value="{{ b.value }}">
+                <input type="text" name="biomarker_unit[]" value="{{ b.unit }}">
+            </div>
+            {% endfor %}
+        </div>
+
+        <button type="button" onclick="addBiomarker()">+ Add Blood Marker</button>
+
+        <hr>
+
+        <h3>Genes (Optional)</h3>
+        <div id="genes">
+            {% for g in user.genes %}
+            <div class="row">
+                <select name="gene_name[]">
+                    {% for gene in genes %}
+                        <option value="{{ gene }}" {% if gene == g.name %}selected{% endif %}>{{ gene }}</option>
+                    {% endfor %}
+                </select>
+                <input type="number" name="gene_efficiency[]" value="{{ g.efficiency }}">
+            </div>
+            {% endfor %}
+        </div>
+
+        <button type="button" onclick="addGene()">+ Add Gene</button>
+
+        <div class="nav">
+            <button type="submit">Save Updates</button>
+            <a href="/"><button type="button" class="back-btn">Back to Home</button></a>
+        </div>
+    </form>
+</div>
+
+<script>
+function addBiomarker() {
+    const container = document.getElementById("biomarkers");
+    container.insertAdjacentHTML("beforeend",
+        `<div class="row">
+            <select name="biomarker_name[]">
+                {% for bm in biomarkers %}
+                    <option value="{{ bm }}">{{ bm }}</option>
+                {% endfor %}
+            </select>
+            <input type="number" step="0.01" name="biomarker_value[]" placeholder="Value">
+            <input type="text" name="biomarker_unit[]" placeholder="Unit">
+        </div>`
+    );
+}
+
+function addGene() {
+    const container = document.getElementById("genes");
+    container.insertAdjacentHTML("beforeend",
+        `<div class="row">
+            <select name="gene_name[]">
+                {% for gene in genes %}
+                    <option value="{{ gene }}">{{ gene }}</option>
+                {% endfor %}
+            </select>
+            <input type="number" name="gene_efficiency[]" placeholder="Efficiency %">
+        </div>`
+    );
+}
+</script>
+
+</body>
+</html>

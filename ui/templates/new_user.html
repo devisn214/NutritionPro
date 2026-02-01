@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Nutrition Pro – New User</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container card">
+    <h2>New User Registration</h2>
+
+    <form method="POST" action="/save-user">
+        <label>Name</label>
+        <input type="text" name="name" required>
+
+        <label>Age</label>
+        <input type="number" name="age" required>
+
+        <label>Gender</label>
+        <select name="gender">
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+        </select>
+
+        <label>Height (cm)</label>
+        <input type="number" name="height" required>
+
+        <label>Weight (kg)</label>
+        <input type="number" name="weight" required>
+
+        <label>Activity Level</label>
+        <select name="activity_level" required>
+            <option value="sedentary">Sedentary</option>
+            <option value="light">Lightly Active</option>
+            <option value="moderate">Moderately Active</option>
+            <option value="active">Highly Active</option>
+        </select>
+
+        <label>Diet Preference</label>
+        <select name="diet">
+            <option value="vegetarian">Vegetarian</option>
+            <option value="non-vegetarian">Non-Vegetarian</option>
+        </select>
+
+        <hr>
+
+        <h3>Blood Marker Tests (Optional)</h3>
+        <div id="biomarkers"></div>
+        <button type="button" onclick="addBiomarker()">+ Add Blood Marker</button>
+
+        <hr>
+
+
+        <h3>Gene Information (Optional)</h3>
+        <div id="genes"></div>
+        <button type="button" onclick="addGene()">+ Add Gene</button>
+
+        <div class="nav">
+            <button type="submit">Save Profile</button>
+            <a href="/"><button type="button" class="back-btn">Back to Home</button></a>
+        </div>
+
+    </form>
+</div>
+
+<script>
+
+function addBiomarker() {
+    const container = document.getElementById("biomarkers");
+
+    const div = document.createElement("div");
+    div.className = "row";
+
+    div.innerHTML = `
+        <select name="biomarker_name[]">
+            {% for bm in biomarkers %}
+                <option value="{{ bm }}">{{ bm }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="number" step="0.01" name="biomarker_value[]" placeholder="Value">
+        <input type="text" name="biomarker_unit[]" placeholder="Unit (optional)">
+    `;
+
+    container.appendChild(div);
+}
+
+
+function addGene() {
+    const container = document.getElementById("genes");
+
+    const div = document.createElement("div");
+    div.className = "row";
+
+    div.innerHTML = `
+        <select name="gene_name[]">
+            {% for gene in genes %}
+                <option value="{{ gene }}">{{ gene }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="number" name="gene_efficiency[]" placeholder="Efficiency %">
+    `;
+
+    container.appendChild(div);
+}
+</script>
+
+</body>
+</html>

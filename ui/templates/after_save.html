@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Next Step</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <h2>Profile Updated Successfully</h2>
+
+    <p>What would you like to do next?</p>
+
+    <div class="nav">
+        <form action="/generate-meal/{{ user_id }}" method="get">
+            <button type="submit">Generate 3 Meals for Today</button>
+        </form>
+
+
+        <a href="/">
+            <button class="back-btn">Return to Home</button>
+        </a>
+    </div>
+</div>
+
+</body>
+</html>

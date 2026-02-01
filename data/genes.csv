@@ -1,0 +1,77 @@
+gene_id,gene_symbol,full_name,affected_nutrients,threshold,description
+G001,HFE,Homeostatic Iron Regulator,Iron,60,Iron absorption and overload regulation
+G002,SLC40A1,Ferroportin,Iron,50,Iron export from cells
+G003,TF,Transferrin,Iron,50,Iron transport protein
+G004,TFR2,Transferrin Receptor 2,Iron,50,Iron uptake regulation
+G005,TMPRSS6,Matriptase-2,Iron,50,Hepcidin regulation
+G006,VDR,Vitamin D Receptor,Vitamin D Calcium,60,Vitamin D signaling and calcium absorption
+G007,CYP27B1,Vitamin D 1-alpha-hydroxylase,Vitamin D,50,Activation of vitamin D
+G008,GC,Vitamin D Binding Protein,Vitamin D,50,Vitamin D transport
+G009,SLC5A1,Sodium-Glucose Transporter 1,Carbohydrates,50,Intestinal glucose absorption
+G010,SLC2A2,GLUT2,Carbohydrates,50,Glucose transport
+G011,INS,Insulin,Carbohydrates,50,Fat Glucose regulation
+G012,APOA1,Apolipoprotein A1,Fats Cholesterol,50,HDL formation
+G013,APOB,Apolipoprotein B,Fats Cholesterol,50,LDL structure
+G014,LDLR,LDL Receptor,Cholesterol,60,LDL clearance
+G015,PCSK9,PCSK9,Fats Cholesterol,50,LDL receptor degradation
+G016,FADS1,Fatty Acid Desaturase 1,Omega-3 Omega-6,50,Fatty acid metabolism
+G017,FADS2,Fatty Acid Desaturase 2,Omega-3 Omega-6,50,Fatty acid metabolism
+G018,ELOVL2,Elongation of Fatty Acids 2,Omega-3,50,DHA synthesis
+G019,MTHFR,Methylenetetrahydrofolate Reductase,Folate Vitamin B12,70,Homocysteine metabolism
+G020,MTR,Methionine Synthase,Vitamin B12 Folate,60,Methylation cycle
+G021,MTRR,Methionine Synthase Reductase,Vitamin B12,60,Folate recycling
+G022,TCN2,Transcobalamin II,Vitamin B12,50,B12 transport
+G023,FUT2,Fucosyltransferase 2,Vitamin B12,50,B12 absorption modulation
+G024,SLC23A1,Vitamin C Transporter 1,Vitamin C,50,Ascorbic acid uptake
+G025,SLC23A2,Vitamin C Transporter 2,Vitamin C,50,Cellular vitamin C transport
+G026,BCMO1,Beta-Carotene Oxygenase 1,Vitamin A,65,Conversion of beta-carotene to retinol
+G027,RBP4,Retinol Binding Protein 4,Vitamin A,50,Vitamin A transport
+G028,SLC30A8,Zinc Transporter 8,Zinc,50,Pancreatic zinc transport
+G029,SLC39A4,ZIP4,Zinc,50,Intestinal zinc absorption
+G030,ATP7A,ATPase Copper Transporting Alpha,Copper,50,Copper absorption
+G031,ATP7B,ATPase Copper Transporting Beta,Copper,50,Copper excretion
+G032,SLC12A3,Sodium-Chloride Transporter,Sodium Potassium,50,Electrolyte balance
+G033,KCNJ1,Potassium Channel Inward Rectifier,Potassium,50,Renal potassium handling
+G034,SECISBP2,Selenocysteine Insertion Sequence Binding Protein 2,Selenium,50,Selenoprotein synthesis
+G035,GPX1,Glutathione Peroxidase 1,Selenium,50,Antioxidant enzyme
+G036,ALB,Albumin,Protein,50,Plasma protein carrier
+G037,MTOR,Mechanistic Target of Rapamycin,Protein,50,Protein synthesis signaling
+G038,PEMT,Phosphatidylethanolamine N-Methyltransferase,Choline,60,Choline metabolism
+G039,CHDH,Choline Dehydrogenase,Choline,50,Choline oxidation
+G040,GCK,Glucokinase,Carbohydrates,50,Glucose metabolism
+G041,THRB,Thyroid Hormone Receptor Beta,Iodine Thyroid,50,Thyroid hormone signaling
+G042,TPO,Thyroid Peroxidase,Iodine,50,Thyroid hormone synthesis
+G043,SLC26A9,Anion Transporter,Iodine,50,Iodide transport
+G044,NIS,Sodium Iodide Symporter,Iodine,50,Iodine uptake
+G045,CRP,C-Reactive Protein,Inflammation,50,Inflammatory status marker
+G046,IL6,Interleukin 6,Inflammation,50,Inflammatory cytokine
+G047,PPARG,Peroxisome Proliferator Activated Receptor Gamma,Fat Metabolism,50,Insulin sensitivity
+G048,LEP,Leptin,Energy Balance,50,Appetite regulation
+G049,LEPR,Leptin Receptor,Energy Balance,50,Leptin signaling
+G050,ACE,Angiotensin Converting Enzyme,Sodium Potassium,50,Blood pressure regulation
+G051,NR1H3,Liver X Receptor Alpha,Cholesterol,50,Cholesterol homeostasis
+G052,ABCA1,ATP Binding Cassette A1,Cholesterol,50,HDL formation
+G053,UGT1A1,UDP Glucuronosyltransferase,Detoxification,50,Detoxification enzyme
+G054,NAT2,N-Acetyltransferase 2,Detoxification,60,Detoxification rate
+G055,CBS,Cystathionine Beta-Synthase,Vitamin B6,60,Transsulfuration pathway
+G056,SOD2,Superoxide Dismutase 2,Antioxidants,60,Oxidative stress control
+G057,CAT,Catalase,Antioxidants,50,Hydrogen peroxide breakdown
+G058,PPARA,Peroxisome Proliferator Activated Receptor Alpha,Fat Oxidation,50,Lipid metabolism
+G059,ADIPOQ,Adiponectin,Metabolism,50,Insulin sensitivity
+G060,NRF2,Nuclear Factor Erythroid 2-Related Factor 2,Antioxidants,60,Oxidative stress response
+G061,SLC19A2,Thiamine Transporter 1,Vitamin B1,50,Primary intestinal thiamine transporter
+G062,TPK1,Thiamine Pyrophosphokinase 1,Vitamin B1,50,Activates thiamine into coenzyme form
+G063,SLC52A3,Riboflavin Transporter 3,Vitamin B2,50,Major intestinal riboflavin absorption
+G064,FLAD1,FAD Synthetase 1,Vitamin B2,50,Converts riboflavin into FAD
+G065,NAPRT,Nicotinate Phosphoribosyltransferase,Vitamin B3,50,Niacin synthesis
+G066,SLC5A6,Multivitamin Transporter (SMVT),Vitamin B5 B7,50,Transports Pantothenic Acid and Biotin
+G067,PANK1,Pantothenate Kinase 1,Vitamin B5,50,CoA synthesis
+G068,ALPL,Alkaline Phosphatase,Vitamin B6,50,Regulates extracellular B6 metabolism
+G069,BTD,Biotinidase,Vitamin B7,60,Recycles biotin
+G070,HLCS,Holocarboxylase Synthetase,Vitamin B7,50,Biotin binding
+G071,TTPA,Alpha Tocopherol Transfer Protein,Vitamin E,50,Vitamin E distribution
+G072,CYP4F2,Cytochrome P450 Family 4,Vitamin E,50,Vitamin E and K catabolism
+G073,VKORC1,Vitamin K Epoxide Reductase,Vitamin K,60,Vitamin K recycling
+G074,GGCX,Gamma-Glutamyl Carboxylase,Vitamin K,50,Blood clotting and bone proteins
+G075,TRPM6,Transient Receptor Melastatin 6,Magnesium,55,Intestinal magnesium uptake
+G076,SLC34A1,Sodium-Phosphate Cotransporter,Phosphorus,50,Primary renal phosphate transporter

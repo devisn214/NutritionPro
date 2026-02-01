@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Nutrition Pro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <h1>Nutrition Pro</h1>
+    <h3>An AI-Driven Personalized Nutrition System</h3>
+
+    <p>
+        Nutrition Pro is a personalized nutrition recommendation system designed
+        to generate daily meal plans by integrating scientific
+        nutritional knowledge with intelligent reasoning to provide you with informed
+        dietary decisions.
+    </p>
+
+    <div class="nav">
+        <form action="/new-user">
+            <button type="submit">New User</button>
+        </form>
+
+        <form action="/existing-user">
+            <button type="submit">Existing User</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

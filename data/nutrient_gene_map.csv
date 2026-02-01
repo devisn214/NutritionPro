@@ -1,0 +1,109 @@
+map_id,nutrient_name,gene_symbol,interaction_type,impact_description
+NG001,Iron,HFE,Regulation,Controls intestinal iron absorption
+NG002,Iron,SLC40A1,Transport,Exports iron from cells to bloodstream
+NG003,Iron,TF,Transport,Binds and transports iron
+NG004,Iron,TFR2,Uptake,Facilitates iron uptake by cells
+NG005,Iron,TMPRSS6,Regulation,Regulates hepcidin levels
+
+NG006,Calcium,VDR,Absorption,Enhances intestinal calcium absorption
+NG007,Calcium,CYP27B1,Activation,Activates vitamin D for calcium metabolism
+NG008,Calcium,GC,Transport,Vitamin D transport influencing calcium
+
+NG009,Vitamin D,VDR,Signaling,Controls vitamin D responsive genes
+NG010,Vitamin D,CYP27B1,Activation,Converts vitamin D to active form
+NG011,Vitamin D,GC,Transport,Vitamin D carrier protein
+
+NG012,Protein,MTOR,Synthesis,Controls protein synthesis signaling
+NG013,Protein,ALB,Transport,Plasma protein transport
+NG014,Protein,LEP,Metabolism,Regulates appetite and protein intake
+
+NG015,Carbohydrates,SLC5A1,Absorption,Glucose uptake in intestine
+NG016,Carbohydrates,SLC2A2,Transport,Glucose transport in liver
+NG017,Carbohydrates,INS,Regulation,Controls glucose utilization
+NG018,Carbohydrates,GCK,Metabolism,Glucose phosphorylation
+
+NG019,Fats,APOA1,Transport,HDL cholesterol formation
+NG020,Fats,APOB,Transport,LDL particle formation
+NG021,Fats,LDLR,Uptake,LDL cholesterol clearance
+NG022,Fats,PCSK9,Regulation,Degrades LDL receptors
+
+NG023,Omega-3,FADS1,Metabolism,PUFA conversion
+NG024,Omega-3,FADS2,Metabolism,PUFA conversion
+NG025,Omega-3,ELOVL2,Elongation,DHA synthesis
+
+NG026,Folate,MTHFR,Metabolism,Homocysteine regulation
+NG027,Folate,MTR,Recycling,Methylation cycle
+NG028,Folate,MTRR,Recycling,Folate regeneration
+
+NG029,Vitamin B12,TCN2,Transport,Vitamin B12 transport
+NG030,Vitamin B12,FUT2,Absorption,Influences B12 absorption
+NG031,Vitamin B12,MTR,Utilization,Methylation reactions
+
+NG032,Vitamin C,SLC23A1,Absorption,Vitamin C uptake
+NG033,Vitamin C,SLC23A2,Transport,Cellular vitamin C transport
+
+NG034,Vitamin A,BCMO1,Conversion,Converts beta-carotene to retinol
+NG035,Vitamin A,RBP4,Transport,Retinol transport
+
+NG036,Zinc,SLC39A4,Absorption,Intestinal zinc uptake
+NG037,Zinc,SLC30A8,Transport,Cellular zinc transport
+
+NG038,Copper,ATP7A,Absorption,Copper absorption
+NG039,Copper,ATP7B,Excretion,Copper excretion
+
+NG040,Selenium,SECISBP2,Synthesis,Selenoprotein synthesis
+NG041,Selenium,GPX1,Function,Antioxidant activity
+
+NG042,Magnesium,TRPM6,Absorption,Magnesium uptake
+NG043,Magnesium,TRPM7,Transport,Cellular magnesium balance
+
+NG044,Potassium,KCNJ1,Regulation,Renal potassium handling
+NG045,Sodium,SLC12A3,Transport,Sodium-chloride transport
+
+NG046,Iodine,NIS,Absorption,Iodine uptake
+NG047,Iodine,TPO,Synthesis,Thyroid hormone synthesis
+NG048,Iodine,THRB,Signaling,Thyroid hormone response
+
+NG049,Choline,PEMT,Metabolism,Choline biosynthesis
+NG050,Choline,CHDH,Oxidation,Choline metabolism
+
+NG051,Antioxidants,SOD2,Protection,Oxidative stress reduction
+NG052,Antioxidants,CAT,Protection,Hydrogen peroxide breakdown
+NG053,Antioxidants,NRF2,Regulation,Antioxidant gene activation
+
+NG054,Energy,PPARG,Metabolism,Fat and glucose metabolism
+NG055,Energy,PPARA,Oxidation,Fatty acid oxidation
+NG056,Energy,ADIPOQ,Sensitivity,Insulin sensitivity
+
+NG057,Inflammation,CRP,Marker,Systemic inflammation marker
+NG058,Inflammation,IL6,Signaling,Inflammatory cytokine
+
+NG059,Cholesterol,ABCA1,Transport,HDL cholesterol efflux
+NG060,Cholesterol,NR1H3,Regulation,Cholesterol homeostasis
+NG061,Vitamin B1 (Thiamine),SLC19A2,Transport,Main thiamine transporter in the intestine
+NG062,Vitamin B1 (Thiamine),TPK1,Activation,Converts thiamine to its active form (Thiamine diphosphate)
+NG063,Vitamin B2 (Riboflavin),SLC52A3,Transport,Intestinal riboflavin absorption
+NG064,Vitamin B2 (Riboflavin),FLAD1,Metabolism,Converts riboflavin to FAD cofactor
+NG065,Vitamin B3 (Niacin),NAPRT,Metabolism,Regulates the Preiss-Handler pathway for NAD synthesis
+NG066,Vitamin B3 (Niacin),NIACR1,Signaling,G-protein coupled receptor for nicotinic acid
+NG067,Vitamin B5 (Pantothenic Acid),SLC5A6,Transport,Multivitamin transporter for B5 and Biotin
+NG068,Vitamin B5 (Pantothenic Acid),PANK1,Activation,Rate-limiting enzyme in Coenzyme A synthesis
+NG069,Vitamin B6,ALPL,Metabolism,Hydrolyzes active B6 (PLP) for cellular uptake
+NG070,Vitamin B6,NBPF3,Metabolism,Associated with clearance and plasma levels of Vitamin B6
+NG071,Vitamin B7 (Biotin),BTD,Recycling,Recycles biotin from biocytin for reuse
+NG072,Vitamin B7 (Biotin),HLCS,Utilization,Covalently binds biotin to carboxylase enzymes
+NG073,Vitamin E,TTPA,Transport,Transfers alpha-tocopherol into VLDL particles
+NG074,Vitamin E,CYP4F2,Metabolism,Primary enzyme for vitamin E catabolism
+NG075,Vitamin K,VKORC1,Recycling,Crucial enzyme for the vitamin K epoxide cycle
+NG076,Vitamin K,GGCX,Function,Carboxylates vitamin K-dependent proteins for blood clotting
+NG077,Saturated Fat,APOE,Metabolism,Influences LDL response to dietary saturated fats
+NG078,Saturated Fat,CD36,Uptake,Facilitates long-chain fatty acid uptake into cells
+NG079,Trans Fat,PPARG,Metabolism,Trans fats modulate PPARG-regulated metabolic pathways
+NG080,Phosphorus,SLC34A1,Transport,Major renal phosphate transporter for homeostasis
+NG081,Manganese,SLC30A10,Transport,Primary transporter for manganese excretion and balance
+NG082,Fluoride,CLIC1,Transport,Involved in chloride/fluoride ion channel function
+NG083,Chromium,LMTK2,Signaling,Influences insulin receptor phosphorylation and sensitivity
+NG084,Molybdenum,MOCOS,Activation,Sulfur-containing cofactor for molybdenum enzymes
+NG085,Selenium,SEPP1,Transport,Primary selenium transport protein in plasma
+NG086,Omega-6 Fatty Acids,FADS1,Metabolism,Desaturation of linoleic acid to arachidonic acid
+NG087,Dietary Fiber,FFAR2,Signaling,Receptor for short-chain fatty acids from fiber fermentation

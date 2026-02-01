@@ -1,0 +1,19 @@
+{
+    "user_id": "farah_139cdd0d",
+    "name": "Farah",
+    "age": 25,
+    "gender": "female",
+    "height_cm": 164.0,
+    "weight_kg": 68.0,
+    "activity_level": "light",
+    "diet_preference": "non-vegetarian",
+    "created_at": "2026-01-23",
+    "last_updated": {
+        "weight": "2026-01-23",
+        "height": "2026-01-23",
+        "biomarkers": "2026-01-23",
+        "genes": "2026-01-23"
+    },
+    "biomarkers": [],
+    "genes": []
+}
