@@ -1,2 +1,9 @@
 __pycache__/
 venv/
+user_data/
+#git rm -r --cached user_data 
+
+
+#git add .
+#git commit -m "updated"
+#git push
