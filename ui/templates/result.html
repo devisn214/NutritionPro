@@ -54,7 +54,7 @@
                 <strong>{{ rec.biomarker }}</strong> 
                 <span class="status-badge">{{ rec.status }}</span><br>
                 <small style="color: #666;">Current Level: {{ rec.current_value }}</small><br>
-                <span style="color: #27ae60; font-size: 0.9rem;">Recommended Foods to include: {{ rec.recommended_foods| join(", ") }}</span>
+                <!--<span style="color: #27ae60; font-size: 0.9rem;">Recommended Foods to include: {{ rec.recommended_foods| join(", ") }}</span>-->
             
             </li>
             {% endfor %}
@@ -69,7 +69,7 @@
             {% for rec in result.plan.gene_recommendations %}
             <li style="margin-bottom: 15px;">
                 <strong style="color: #2c3e50;">{{ rec.nutrient }} Focus:</strong> <span class="status-badge">{{ rec.reason }}</span><br>
-                <span style="color: #27ae60; font-size: 0.9rem;">Recommended Foods to include: {{ rec.foods | join(", ") }}</span>
+               <!-- <span style="color: #27ae60; font-size: 0.9rem;">Recommended Foods to include: {{ rec.foods | join(", ") }}</span>-->
             </li>
             {% endfor %}
         </ul>

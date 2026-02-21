@@ -7,8 +7,11 @@ class NutritionRAG:
     def close(self):
         self.driver.close()
 
-    def retrieve_context(self, biomarkers, genes):
+    def retrieve_context(self, biomarkers, genes, biomarker_recs, gene_recs):
         contexts = []
+
+        bio_status = {b["biomarker"]: b["status"] for b in biomarker_recs}
+        gene_status = {g["gene"]: g["reason"] for g in gene_recs}
 
         with self.driver.session() as session:
 
@@ -35,9 +38,14 @@ class NutritionRAG:
                 )
 
                 for row in result:
+                    status = bio_status.get(row["biomarker"], "Normal")
+                    action = "increase" if status == "Low/Deficient" else "reduce" if status == "High/Excess" else "maintain"
+
                     contexts.append({
                         "biomarker": row["biomarker"],
                         "nutrient": row["nutrient"],
+                        "status": status,
+                        "action": action,
                         "foods": row["foods"],
                         "genes": [g for g in row["genes"] if g["gene"]]
                     })
@@ -59,11 +67,14 @@ class NutritionRAG:
                 )
 
                 for row in result:
+                    status = gene_status.get(row["gene"], "Normal")
+
                     contexts.append({
-                        "biomarker": None,
+                        "gene": row["gene"],
                         "nutrient": row["nutrient"],
-                        "foods": row["foods"],
-                        "genes": [{"gene": row["gene"], "interaction": "", "impact": ""}]
+                        "gene_status": status,
+                        "action": "increase" if "Reduced" in status else "maintain",
+                        "foods": row["foods"]
                     })
 
         return contexts

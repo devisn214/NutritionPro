@@ -7,7 +7,6 @@ from rag import NutritionRAG
 from llm import NutritionLLM
 
 
-
 def generate_nutrition_plan(user):
     
     bmr = calculate_bmr(user)
@@ -28,7 +27,9 @@ def generate_nutrition_plan(user):
     )
     rag_context = rag.retrieve_context(
         biomarkers=user.get("biomarkers", []),
-        genes=user.get("genes", [])
+        genes=user.get("genes", []),
+        biomarker_recs=biomarker_recs,
+        gene_recs=gene_recs
     )
     rag.close()
 
@@ -39,7 +40,6 @@ def generate_nutrition_plan(user):
         calories=calories,
         macros=macros
     )
-
 
     return {
         "calories": calories,

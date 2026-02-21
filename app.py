@@ -39,6 +39,21 @@ def update_biomarker(biomarkers, name, value, unit=""):
         "unit": unit
     })
 
+def update_gene(genes, name, efficiency):
+    for g in genes:
+        if g["name"] == name:
+            g["efficiency"] = efficiency
+            return
+    genes.append({
+        "name": name,
+        "efficiency": efficiency
+    })
+
+def get_valid_sets():
+    valid_genes = set(g.upper() for g in load_genes())
+    valid_biomarkers = set(b.lower() for b in load_biomarkers())
+    return valid_genes, valid_biomarkers
+
 @app.route("/")
 def home():
     return render_template("home.html")
@@ -59,29 +74,47 @@ def save_user():
     user_id = f"{username}_{uuid.uuid4().hex[:8]}"
     today = datetime.today().strftime("%Y-%m-%d")
 
+    valid_genes, valid_biomarkers = get_valid_sets()
+
     biomarkers = []
     names = form.getlist("biomarker_name[]")
     values = form.getlist("biomarker_value[]")
     units = form.getlist("biomarker_unit[]")
 
     for n, v, u in zip(names, values, units):
-        if v.strip():
-            biomarkers.append({
-                "name": n.lower(),
-                "value": float(v),
-                "unit": u or ""
-            })
+        n = (n or "").strip().lower()
+        v = (v or "").strip()
+
+        if not v:
+            continue
+
+        if n not in valid_biomarkers:
+            return f"Invalid biomarker entered: {n}", 400
+
+        biomarkers.append({
+            "name": n,
+            "value": float(v),
+            "unit": (u or "").strip()
+        })
 
     genes = []
     gene_names = form.getlist("gene_name[]")
     gene_eff = form.getlist("gene_efficiency[]")
 
     for g, e in zip(gene_names, gene_eff):
-        if e.strip():
-            genes.append({
-                "name": g.upper(),
-                "efficiency": int(e)
-            })
+        g = (g or "").strip().upper()
+        e = (e or "").strip()
+
+        if not e:
+            continue
+
+        if g not in valid_genes:
+            return f"Invalid gene entered: {g}", 400
+
+        genes.append({
+            "name": g,
+            "efficiency": int(e)
+        })
 
     user_profile = {
         "user_id": user_id,
@@ -172,6 +205,8 @@ def save_updated_profile(user_id):
 
     today = datetime.today().strftime("%Y-%m-%d")
 
+    valid_genes, valid_biomarkers = get_valid_sets()
+
     if request.form.get("height"):
         user["height_cm"] = float(request.form["height"])
         user["last_updated"]["height"] = today
@@ -186,12 +221,34 @@ def save_updated_profile(user_id):
 
     biomarker_updated = False
     for n, v, u in zip(names, values, units):
-        if v.strip():
-            update_biomarker(user["biomarkers"], n.lower(), float(v), u)
+        n = (n or "").strip().lower()
+        v = (v or "").strip()
+
+        if v:
+            if n not in valid_biomarkers:
+                return f"Invalid biomarker entered: {n}", 400
+            update_biomarker(user["biomarkers"], n, float(v), u)
             biomarker_updated = True
 
     if biomarker_updated:
         user["last_updated"]["biomarkers"] = today
+
+    gene_names = request.form.getlist("gene_name[]")
+    gene_eff = request.form.getlist("gene_efficiency[]")
+
+    gene_updated = False
+    for g, e in zip(gene_names, gene_eff):
+        g = (g or "").strip().upper()
+        e = (e or "").strip()
+
+        if e:
+            if g not in valid_genes:
+                return f"Invalid gene entered: {g}", 400
+            update_gene(user["genes"], g, int(e))
+            gene_updated = True
+
+    if gene_updated:
+        user["last_updated"]["genes"] = today
 
     with open(path, "w") as f:
         json.dump(user, f, indent=4)

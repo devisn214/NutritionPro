@@ -10,7 +10,7 @@ def load_genes():
     with open(path, newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
-            genes.append(row["gene_symbol"])
+            genes.append(row["full_name"])
     return sorted(set(genes))
 
 def load_biomarkers():

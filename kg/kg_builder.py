@@ -128,7 +128,7 @@ class NutritionKGBuilder:
             self.run_query(
                 """
                 MATCH (n:Nutrient {name:$nutrient_name})
-                MATCH (g:Gene {symbol:$gene_symbol})
+                MATCH (g:Gene {gene_name:$full_name})
                 MERGE (n)-[:INTERACTS_WITH {
                     interaction_type:$interaction_type,
                     impact_description:$impact_description
@@ -136,7 +136,7 @@ class NutritionKGBuilder:
                 """,
                 {
                     "nutrient_name": row.nutrient_name,
-                    "gene_symbol": row.gene_symbol,
+                    "gene_name": row.full_name,
                     "interaction_type": row.interaction_type,
                     "impact_description": row.impact_description
                 }

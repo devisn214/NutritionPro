@@ -18,46 +18,57 @@ def process_biomarkers(user_test_results):
     for test in user_test_results:
 
         b_info = df_biomarkers[df_biomarkers['name'].str.lower() == test['name'].lower()]
-        if b_info.empty: continue
+        if b_info.empty: 
+            continue
         
         b_id = b_info.iloc[0]['biomarker_id']
         n_id = b_info.iloc[0]['nutrient_id']
     
         thresh = df_thresholds[df_thresholds['biomarker_id'] == b_id]
-        if thresh.empty: continue
+        if thresh.empty: 
+            continue
         
         low_v = thresh.iloc[0]['low_value']
         high_v = thresh.iloc[0]['high_value']
         val = test['value']
 
-
-        is_abnormal = False
+        direction = None
         reason = ""
 
         if val < low_v:
-            is_abnormal = True
+            direction = "increase"
             reason = "Low/Deficient"
-        
-        '''elif val > high_v:
-            is_abnormal = True
-            reason = "High/Excess"'''
+        elif val > high_v:
+            direction = "decrease"
+            reason = "High/Excess"
+        else:
+            continue
 
-        if is_abnormal:
-          
-            matching_food_ids = df_food_nutrient[df_food_nutrient['nutrient_id'] == n_id]['food_id']
+        if direction == "increase":
+            matching_food_ids = df_food_nutrient[
+                df_food_nutrient['nutrient_id'] == n_id
+            ].sort_values(by='amount', ascending=False)['food_id']
+        else:
+            matching_food_ids = df_food_nutrient[
+                df_food_nutrient['nutrient_id'] == n_id
+            ].sort_values(by='amount', ascending=True)['food_id']
 
-            rec_foods = df_foods[df_foods['food_id'].isin(matching_food_ids)]['food_name'].tolist()
-            
-     
-            n_name = df_nutrients[df_nutrients['nutrient_id'] == n_id]['name'].iloc[0]
+        rec_foods = df_foods[
+            df_foods['food_id'].isin(matching_food_ids)
+        ]['food_name'].tolist()
 
-            final_recommendations.append({
-                "biomarker": test['name'],
-                "current_value": val,
-                "range": f"{low_v} - {high_v}",
-                "status": reason,
-                "target_nutrient": n_name,
-                "recommended_foods": rec_foods
-            })
+        n_name = df_nutrients[
+            df_nutrients['nutrient_id'] == n_id
+        ]['name'].iloc[0]
+
+        final_recommendations.append({
+            "biomarker": test['name'],
+            "current_value": val,
+            "range": f"{low_v} - {high_v}",
+            "status": reason,
+            "direction": direction,
+            "target_nutrient": n_name,
+            "recommended_foods": rec_foods
+        })
 
     return final_recommendations
