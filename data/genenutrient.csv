@@ -1,0 +1,66 @@
+id,gene_symbol,gene_fullname,variant,affected_nutrient,threshold,description,interaction_type,variant_effect,impact,action,direction
+VID001,HFE,Homeostatic Iron Regulator,C282Y,N001,45,Iron absorption and overload regulation,Regulation,Strong risk of iron overload,Strong,Decrease iron intake,decrease
+VID002,HFE,Homeostatic Iron Regulator,H63D,N001,45,Iron absorption and overload regulation,Regulation,Moderate risk of iron overload,Medium,Decrease iron intake,decrease
+VID003,HFE,Homeostatic Iron Regulator,S65C,N001,45,Iron absorption and overload regulation,Regulation,Mild risk of iron overload,Low,Monitor iron levels,monitor
+VID004,SLC40A1,Ferroportin,Normal,N001,45,Iron export from cells,Transport,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID005,TF,Transferrin,P570S,N001,45,Iron transport protein,Transport,Reduced iron transport efficiency,Medium,Maintain iron intake,maintain
+VID006,TF,Transferrin,Normal,N001,45,Iron transport protein,Transport,Normal iron transport,Low,Maintain iron intake,maintain
+VID007,TFR2,Transferrin Receptor 2,Normal,N001,45,Iron uptake regulation,Uptake,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID008,TMPRSS6,Matriptase-2,Normal,N001,45,Hepcidin regulation,Regulation,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID009,VDR,Vitamin D Receptor,FokI,N011 N002,45,Vitamin D signaling and calcium absorption,Signaling,Reduced vitamin D receptor signaling,Medium,Increase Vitamin D,increase
+VID010,VDR,Vitamin D Receptor,BsmI,N011 N002,45,Vitamin D signaling and calcium absorption,Signaling,Associated with lower bone density,Medium,Increase Calcium/Vit D,increase
+VID011,CYP27B1,Vitamin D 1-alpha-hydroxylase,Normal,N011,45,Activation of vitamin D,Activation,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID012,GC,Vitamin D Binding Protein,Normal,N011,45,Vitamin D transport,Transport,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID013,TRPM6,Transient Receptor Melastatin 6,rs3750425,N003,45,Intestinal magnesium uptake,Absorption,Reduced intestinal magnesium uptake,Medium,Increase Magnesium,increase
+VID014,SLC30A8,Zinc Transporter 8,rs13266634,N004,45,Pancreatic zinc transport,Transport,Altered zinc transport in pancreas,Medium,Increase Zinc,increase
+VID015,SLC39A4,ZIP4,Normal,N004,45,Intestinal zinc absorption,Absorption,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID016,KCNJ1,Potassium Channel Inward Rectifier,Normal,N005,45,Renal potassium handling,Regulation,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID017,SLC12A3,Sodium-Chloride Transporter,Normal,N006,45,Electrolyte balance,Transport,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID018,ACE,Angiotensin Converting Enzyme,I/D,N006 N005,45,Blood pressure regulation,Regulation,Increased blood pressure/salt sensitivity,Medium,Decrease Sodium intake,decrease
+VID019,SLC34A1,Sodium-Phosphate Cotransporter,Normal,N007,45,Primary renal phosphate transporter,Transport,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID020,SECISBP2,Selenocysteine Insertion Sequence Binding Protein 2,Normal,N008,45,Selenoprotein synthesis,Synthesis,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID021,GPX1,Glutathione Peroxidase 1,rs1050450,N008,45,Antioxidant enzyme,Function,Reduced antioxidant enzyme activity,Medium,Increase Selenium intake,increase
+VID022,ATP7A,ATPase Copper Transporting Alpha,Normal,N009,45,Copper absorption,Absorption,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID023,ATP7B,ATPase Copper Transporting Beta,Normal,N009,45,Copper excretion,Excretion,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID024,THRB,Thyroid Hormone Receptor Beta,Normal,N010,45,Thyroid hormone signaling,Signaling,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID025,TPO,Thyroid Peroxidase,Normal,N010,45,Thyroid hormone synthesis,Synthesis,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID026,SLC26A9,Anion Transporter,Normal,N010,45,Iodide transport,Transport,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID027,NIS,Sodium Iodide Symporter,Normal,N010,45,Iodine uptake,Absorption,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID028,MTHFR,Methylenetetrahydrofolate Reductase,C677T,N013 N012,45,Homocysteine metabolism,Metabolism,Reduced folate metabolism/High homocysteine,Strong,Increase Methylfolate,increase
+VID029,MTHFR,Methylenetetrahydrofolate Reductase,A1298C,N013 N012,45,Homocysteine metabolism,Metabolism,Moderately impaired BH4/folate cycle,Medium,Increase Folate,increase
+VID030,MTR,Methionine Synthase,rs1805087,N012 N013,45,Methylation cycle,Recycling,Altered B12 utilization,Medium,Increase B12/Folate,increase
+VID031,MTRR,Methionine Synthase Reductase,rs1801394,N012,45,Folate recycling,Recycling,Reduced B12 recycling efficiency,Medium,Increase B12,increase
+VID032,TCN2,Transcobalamin II,rs1801198,N012,45,Vitamin B12 transport,Transport,Reduced B12 transport to cells,Medium,Increase B12,increase
+VID033,FUT2,Fucosyltransferase 2,rs601338,N012,45,Vitamin B12 absorption modulation,Absorption,Non-secretor: Lower B12 absorption,Medium,Increase Vitamin B12,increase
+VID034,FUT2,Fucosyltransferase 2,Normal,N012,45,Vitamin B12 absorption modulation,Absorption,Typical B12 absorption,Low,Maintain Vitamin B12,maintain
+VID035,BCMO1,Beta-Carotene Oxygenase 1,rs7501331,N014,45,Conversion of beta-carotene to retinol,Conversion,Reduced Beta-Carotene conversion to Vitamin A,Medium,Use preformed Vitamin A,maintain
+VID036,BCMO1,Beta-Carotene Oxygenase 1,rs12934922,N014,45,Conversion of beta-carotene to retinol,Conversion,Impaired provitamin A conversion,Medium,Use preformed Vitamin A,maintain
+VID037,RBP4,Retinol Binding Protein 4,Normal,N014,45,Vitamin A transport,Transport,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID038,SLC23A1,Vitamin C Transporter 1,rs33972313,N015,45,Ascorbic acid uptake,Absorption,Reduced Vitamin C transport,Medium,Increase Vitamin C,increase
+VID039,SLC23A2,Vitamin C Transporter 2,Normal,N015,45,Cellular vitamin C transport,Transport,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID040,TTPA,Alpha Tocopherol Transfer Protein,Normal,N016,45,Vitamin E distribution,Transport,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID041,CYP4F2,Cytochrome P450 Family 4,rs2108622,N017,45,Vitamin E catabolism,Metabolism,Altered Vitamin K catabolism,Medium,Monitor Vitamin K,monitor
+VID042,VKORC1,Vitamin K Epoxide Reductase,rs9923231,N017,45,Vitamin K recycling,Recycling,High sensitivity to Vitamin K/Warfarin,Strong,Monitor Vitamin K,monitor
+VID043,GGCX,Gamma-Glutamyl Carboxylase,Normal,N017,45,Blood clotting and bone proteins,Function,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID044,ALPL,Alkaline Phosphatase,Normal,N018,45,Regulates extracellular B6 metabolism,Metabolism,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID045,SLC19A2,Thiamine Transporter 1,Normal,N019,45,Primary intestinal thiamine transporter,Transport,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID046,TPK1,Thiamine Pyrophosphokinase 1,Normal,N019,45,Activates thiamine into coenzyme form,Activation,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID047,SLC52A3,Riboflavin Transporter 3,Normal,N020,45,Major intestinal riboflavin absorption,Transport,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID048,FLAD1,FAD Synthetase 1,Normal,N020,45,Converts riboflavin into FAD,Metabolism,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID049,BTD,Biotinidase,Normal,N021,45,Recycles biotin,Recycling,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID050,HLCS,Holocarboxylase Synthetase,Normal,N021,45,Biotin binding,Utilization,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID051,SLC5A6,Multivitamin Transporter (SMVT),Normal,N022,45,Pantothenic acid uptake,Transport,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID052,PANK1,Pantothenate Kinase 1,Normal,N022,45,CoA synthesis,Activation,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID053,NAPRT,Nicotinate Phosphoribosyltransferase,Normal,N023,45,Niacin synthesis,Metabolism,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID054,APOB,Apolipoprotein B,rs676210,N024 N025,45,LDL structure,Transport,Higher LDL cholesterol levels,Medium,Decrease Saturated Fat,decrease
+VID055,LDLR,LDL Receptor,rs688,N024 N025,45,LDL clearance,Uptake,Reduced LDL clearance from blood,Medium,Decrease Cholesterol,decrease
+VID056,NR1H3,Liver X Receptor Alpha,Normal,N024,45,Cholesterol homeostasis,Regulation,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID057,ABCA1,ATP Binding Cassette A1,Normal,N024,45,HDL formation,Transport,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID058,UGT1A1,UDP Glucuronosyltransferase,rs8175347,N030,45,Detoxification enzyme,General,Gilbert Syndrome / Reduced bilirubin clearance,Medium,Monitor detoxification,monitor
+VID059,CRP,C-Reactive Protein,rs1130864,N053,45,Inflammatory status marker,General,Higher baseline inflammation,Medium,Increase Anti-inflammatory intake,increase
+VID060,IL6,Interleukin 6,rs1800795,N053,45,Inflammatory cytokine,General,Increased inflammatory response,Medium,Increase Anti-inflammatory intake,increase
+VID061,ALB,Albumin,Normal,N027,45,Plasma protein carrier,General,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID062,MTOR,Mechanistic Target of Rapamycin,rs2295080,N027,45,Protein synthesis signaling,General,Increased MTOR activation,Medium,Moderate Protein intake,moderate
+VID063,FTO,Fat Mass and Obesity,rs9939609,N028 N029,45,Satiety and fat storage,Metabolic,Increased risk of obesity/overeating,Strong,Increase Fiber/Control Carbs,decrease
+VID064,MC4R,Melanocortin 4 Receptor,rs17782313,N028 N030,45,Appetite regulation,Metabolic,Predisposition to snacking/hunger,Medium,Manage Glycemic Load,decrease
+VID065,AMY1,Salivary Amylase,Low_Copy,N028 N030,45,Starch digestion efficiency,Metabolism,Poor tolerance for refined starch,Medium,Reduce Complex Carbs,decrease

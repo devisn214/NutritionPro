@@ -1,75 +1,62 @@
-biomarker_id,name,nutrient_id,unit,description
-
-B001,Serum Total Protein,N001,g/dL,Measures overall protein status
-B002,Albumin,N001,g/dL,Reflects long-term protein nutrition
-B003,Prealbumin,N001,mg/dL,Short-term protein status indicator
-B004,Fasting Blood Glucose,N002,mg/dL,Carbohydrate metabolism marker
-B005,HbA1c,N002,%,Long-term glucose control
-B006,C-Peptide,N002,ng/mL,Endogenous insulin production marker
-B007,Triglycerides,N003,mg/dL,Fat metabolism indicator
-B008,VLDL Cholesterol,N003,mg/dL,Very-low-density lipoprotein status
-B009,Free Fatty Acids,N003,mmol/L,Fat utilization marker
-B010,Serum Ferritin,N004,ng/mL,Iron storage indicator
-B011,Serum Iron,N004,µg/dL,Circulating iron level
-B012,Transferrin Saturation,N004,%,Iron transport efficiency
-B013,Serum Calcium,N005,mg/dL,Bone and calcium status
-B014,Ionized Calcium,N005,mmol/L,Physiologically active calcium
-B015,Bone-Specific Alkaline Phosphatase,N005,U/L,Bone formation marker
-B016,Serum Magnesium,N006,mg/dL,Magnesium level
-B017,RBC Magnesium,N006,mg/dL,Intracellular magnesium (more accurate)
-B018,Plasma Zinc,N007,µg/dL,Zinc nutritional status
-B019,Alkaline Phosphatase,N007,U/L,Zinc-dependent enzyme activity
-B020,Serum Potassium,N008,mmol/L,Electrolyte balance
-B021,Urinary Potassium,N008,mmol/day,Potassium excretion
-B022,Serum Sodium,N009,mmol/L,Sodium balance indicator
-B023,Urinary Sodium,N009,mmol/day,Sodium intake marker
-B024,Serum Phosphate,N010,mg/dL,Phosphorus status
-B025,FGF23,N010,pg/mL,Phosphate regulation hormone
-B026,Serum Selenium,N011,µg/L,Selenium level
-B027,Glutathione Peroxidase Activity,N011,U/L,Selenium-dependent enzyme
-B028,Serum Copper,N012,µg/dL,Copper status
-B029,Ceruloplasmin,N012,mg/dL,Copper transport protein
-B030,Urinary Iodine,N013,µg/L,Iodine intake marker
-B031,TSH,N013,µIU/mL,Thyroid function indicator
-B032,25-Hydroxy Vitamin D,N014,ng/mL,Vitamin D status
-B033,25-Dihydroxy Vitamin D,N014,pg/mL,Active vitamin D form
-B034,Serum Vitamin B12,N015,pg/mL,B12 level
-B035,Methylmalonic Acid,N015,µmol/L,Functional B12 deficiency marker
-B036,Serum Folate,N016,ng/mL,Folate status
-B037,RBC Folate,N016,ng/mL,Long-term folate tissue status
-B038,Serum Retinol,N017,µg/dL,Vitamin A status
-B039,Retinol Binding Protein,N017,mg/dL,Vitamin A transport
-B040,Plasma Vitamin C,N018,mg/dL,Vitamin C level
-B041,Leukocyte Vitamin C,N018,mg/dL,Tissue vitamin C
-B042,Serum Alpha-Tocopherol,N019,mg/L,Vitamin E status
-B043,Gamma-Tocopherol,N019,mg/L,Dietary vitamin E marker
-B044,Prothrombin Time,N020,seconds,Vitamin K dependent clotting
-B045,ucOsteocalcin,N020,ng/mL,Functional Vitamin K status
-B046,Pyridoxal-5-Phosphate (PLP),N021,nmol/L,Active Vitamin B6 status
-B047,Homocysteine,N021,µmol/L,B6/B9/B12 metabolism marker
-B048,Erythrocyte Transketolase,N022,U/L,Thiamine status
-B049,Thiamine Pyrophosphate,N022,nmol/L,Active B1 form
-B050,EGRAC,N023,ratio,Riboflavin activation coefficient
-B051,Plasma Riboflavin,N023,ng/mL,Vitamin B2 level
-B052,Omega-3 Index,N024,%,EPA+DHA in RBC membranes
-B053,EPA/AA Ratio,N024,ratio,Anti-inflammatory balance marker
-B054,LDL Cholesterol,N025,mg/dL,Atherogenic cholesterol
-B055,HDL Cholesterol,N025,mg/dL,Reverse cholesterol transport
-B056,Non-HDL Cholesterol,N025,mg/dL,Total atherogenic burden
-B057,Serum Biotin,N026,ng/L,Direct Biotin level
-B058,Urinary 3-Hydroxyisovalerate,N026,µmol/day,Functional Biotin marker
-B059,Serum Pantothenic Acid,N027,µg/dL,Vitamin B5 status
-B060,Urinary Pantothenate,N027,mg/day,Excretion of Vitamin B5
-B061,Serum Niacin,N028,µg/mL,Vitamin B3 status
-B062,Urinary N-Methylnicotinamide,N028,mg/day,Niacin metabolite
-B063,ApoB/ApoA1 Ratio,N029,ratio,Saturated fat impact on lipids
-B064,Serum Manganese,N033,µg/L,Manganese status
-B065,RBC Manganese,N033,µg/L,Tissue manganese levels
-B066,Propionate/Acetate Ratio,N031,ratio,Microbial fiber fermentation
-B067,Stool Consistency (Bristol Scale),N031,score,Physical fiber impact
-B068,Serum Choline,N032,µmol/L,Choline status
-B069,Betaine,N032,µmol/L,Choline metabolite
-B070,Plasma Lycopene,N043,µg/dL,Lycopene intake marker
-B071,hs-CRP,N053,mg/L,High-sensitivity C-Reactive Protein
-B072,Total Antioxidant Status (TAS),N051,mmol/L,Overall antioxidant capacity
-B073,Serum Bilirubin,N052,mg/dL,Heme catabolism/antioxidant marker
+﻿biomarker_id,name,nutrient_id,unit,description
+B001,Serum Ferritin,N001,ng/mL,Iron storage indicator
+B002,Serum Iron,N001,mcg/dL,Circulating iron level
+B003,Transferrin Saturation (TSAT),N001,%,Iron transport efficiency
+B004,Serum Calcium,N002,mg/dL,Total blood calcium level
+B005,Ionized Calcium,N002,mmol/L,Physiologically active calcium
+B006,Bone Specific Alkaline Phosphatase,N002,U/L,Bone formation marker
+B007,Serum Magnesium,N003,mg/dL,Serum magnesium status
+B008,RBC Magnesium,N003,mg/dL,Intracellular magnesium (Long-term)
+B009,Plasma Zinc,N004,mcg/dL,Zinc nutritional status
+B010,Alkaline Phosphatase (ALP),N004,U/L,Zinc-dependent enzyme activity
+B011,Serum Potassium,N005,mmol/L,Electrolyte balance
+B012,Urinary Potassium,N005,mmol/day,Potassium excretion marker
+B013,Serum Sodium,N006,mmol/L,Sodium balance indicator
+B014,Urinary Sodium,N006,mmol/day,Sodium intake and excretion
+B015,Serum Phosphate,N007,mg/dL,Phosphorus status indicator
+B016,Fibroblast Growth Factor 23 (FGF23),N007,pg/mL,Phosphate regulating hormone
+B017,Serum Selenium,N008,mcg/L,Selenium blood level
+B018,Glutathione Peroxidase Activity,N008,U/L,Selenium-dependent antioxidant
+B019,Serum Copper,N009,mcg/dL,Copper nutritional status
+B020,Ceruloplasmin,N009,mg/dL,Copper transport protein
+B021,Urinary Iodine,N010,mcg/L,Iodine intake marker
+B022,Thyroid Stimulating Hormone (TSH),N010,µIU/mL,Thyroid function (Iodine linked)
+B023,25-Hydroxy Vitamin D,N011,ng/mL,Primary Vitamin D status indicator
+B024,1-25-Dihydroxy Vitamin D,N011,pg/mL,Active Vitamin D hormone
+B025,Serum Vitamin B12,N012,pg/mL,B12 blood level
+B026,Methylmalonic Acid (MMA),N012,µmol/L,Functional B12 deficiency marker
+B027,Serum Folate,N013,ng/mL,Folate (B9) status
+B028,RBC Folate,N013,ng/mL,Tissue folate stores
+B029,Serum Retinol,N014,mcg/dL,Vitamin A status
+B030,Retinol Binding Protein (RBP),N014,mg/dL,Vitamin A transport protein
+B031,Plasma Vitamin C,N015,mg/dL,Vitamin C concentration
+B032,Leukocyte Vitamin C,N015,mg/dL,Tissue Vitamin C status
+B033,Serum Alpha-Tocopherol,N016,mg/L,Vitamin E level
+B034,Gamma-Tocopherol,N016,mg/L,Dietary Vitamin E indicator
+B035,Prothrombin Time (PT),N017,seconds,Vitamin K clotting marker
+B036,Undercarboxylated Osteocalcin,N017,ng/mL,Functional Vitamin K status
+B037,Pyridoxal 5-Phosphate (PLP),N018,nmol/L,Active Vitamin B6 level
+B038,Homocysteine (Hcy),N018,µmol/L,Marker for B6/B9/B12 metabolism
+B039,Erythrocyte Transketolase,N019,U/L,Thiamine-dependent enzyme
+B040,Thiamine Pyrophosphate (TPP),N019,nmol/L,Active Vitamin B1 level
+B041,EGRAC,N020,ratio,Riboflavin function marker
+B042,Plasma Riboflavin,N020,ng/mL,Vitamin B2 level
+B043,Serum Biotin,N021,ng/mL,Direct Biotin measurement
+B044,Urinary 3-Hydroxyisovalerate,N021,µmol/day,Functional Biotin marker
+B045,Serum Pantothenic Acid,N022,ng/mL,Vitamin B5 status
+B046,Urinary Pantothenate,N022,mg/day,B5 excretion marker
+B047,Serum Niacin,N023,ng/mL,Vitamin B3 status
+B048,Urinary N-Methylnicotinamide,N023,mg/day,Niacin metabolism marker
+B049,LDL Cholesterol,N024,mg/dL,Atherogenic cholesterol fraction
+B050,HDL Cholesterol,N024,mg/dL,Reverse cholesterol transport
+B051,ApoB/ApoA1 Ratio,N025,ratio,Saturated fat impact on lipids
+B052,Omega-3 Index,N026,%,EPA+DHA in RBC membranes
+B053,Serum Albumin,N027,g/dL,Protein status (linked to Net Protein)
+B054,HbA1c,N028,%,Long-term carbohydrate metabolism
+B055,Propionate/Acetate Ratio,N029,ratio,Microbial fiber fermentation
+B056,Fasting Glucose,N030,mg/dL,Glycemic impact marker
+B057,Serum Manganese,N031,mcg/L,Manganese status
+B058,Serum Choline,N032,µmol/L,Choline status
+B059,hs-CRP,N053,mg/L,Systemic inflammation marker
+B060,Total Antioxidant Status (TAS),N051,mmol/L,Overall antioxidant capacity
+B061,Serum Bilirubin,N052,mg/dL,Heme catabolism marker

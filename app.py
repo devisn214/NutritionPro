@@ -3,10 +3,10 @@ import os
 import json
 import uuid
 from datetime import datetime
+import pandas as pd
 
 from nutrition_engine.engine import generate_nutrition_plan
 from nutrition_engine.data_loader import load_genes, load_biomarkers
-
 
 app = Flask(__name__, template_folder="ui/templates", static_folder="ui/static")
 
@@ -27,6 +27,12 @@ def months_difference(old_date_str):
     today = datetime.today()
     return (today.year - old_date.year) * 12 + (today.month - old_date.month)
 
+
+def load_biomarker_units():
+    df = pd.read_csv("data/biomarkers.csv")
+    return dict(zip(df["name"], df["unit"]))
+
+
 def update_biomarker(biomarkers, name, value, unit=""):
     for b in biomarkers:
         if b["name"] == name:
@@ -39,15 +45,17 @@ def update_biomarker(biomarkers, name, value, unit=""):
         "unit": unit
     })
 
-def update_gene(genes, name, efficiency):
+
+def update_gene(genes, name, variant):
     for g in genes:
-        if g["name"] == name:
-            g["efficiency"] = efficiency
+        if g["name"].upper() == name.upper():
+            g["variant"] = variant
             return
     genes.append({
         "name": name,
-        "efficiency": efficiency
+        "variant": variant
     })
+
 
 def get_valid_sets():
     valid_genes = set(g.upper() for g in load_genes())
@@ -58,13 +66,15 @@ def get_valid_sets():
 def home():
     return render_template("home.html")
 
+
 @app.route("/new-user")
 def new_user():
     return render_template(
-    "new_user.html",
-    genes=load_genes(),
-    biomarkers=load_biomarkers()
-)
+        "new_user.html",
+        genes=load_genes(),
+        biomarkers=load_biomarkers(),
+        biomarker_units=load_biomarker_units()
+    )
 
 
 @app.route("/save-user", methods=["POST"])
@@ -76,6 +86,7 @@ def save_user():
 
     valid_genes, valid_biomarkers = get_valid_sets()
 
+    # -------- Biomarkers --------
     biomarkers = []
     names = form.getlist("biomarker_name[]")
     values = form.getlist("biomarker_value[]")
@@ -97,25 +108,36 @@ def save_user():
             "unit": (u or "").strip()
         })
 
+    # -------- Genes --------
     genes = []
     gene_names = form.getlist("gene_name[]")
-    gene_eff = form.getlist("gene_efficiency[]")
+    gene_status = form.getlist("gene_status[]")
+    gene_variants = form.getlist("gene_variant[]")
 
-    for g, e in zip(gene_names, gene_eff):
+    for g, s, v in zip(gene_names, gene_status, gene_variants):
         g = (g or "").strip().upper()
-        e = (e or "").strip()
+        v = (v or "").strip()
 
-        if not e:
+        if not g:
             continue
 
         if g not in valid_genes:
             return f"Invalid gene entered: {g}", 400
 
-        genes.append({
-            "name": g,
-            "efficiency": int(e)
-        })
+        if s == "normal":
+            genes.append({
+                "name": g,
+                "variant": "Normal"
+            })
+        else:
+            if not v:
+                return f"Variant required for gene {g}", 400
+            genes.append({
+                "name": g,
+                "variant": v
+            })
 
+    # -------- Profile --------
     user_profile = {
         "user_id": user_id,
         "name": form["name"],
@@ -149,15 +171,18 @@ def save_user():
 
     return render_template("after_save.html", user_id=user_id)
 
+
 @app.route("/existing-user")
 def existing_user():
     with open(USERS_INDEX, "r") as f:
         users = json.load(f)
     return render_template("existing_user.html", users=users)
 
+
 @app.route("/load-user", methods=["POST"])
 def load_user():
     return redirect(url_for("check_profile", user_id=request.form["user_id"]))
+
 
 @app.route("/check-profile/<user_id>")
 def check_profile(user_id):
@@ -184,16 +209,19 @@ def check_profile(user_id):
 
     return render_template("profile_check.html", user_id=user_id, message=message)
 
+
 @app.route("/update-profile/<user_id>")
 def update_profile(user_id):
     with open(os.path.join(PROFILE_DIR, f"{user_id}.json")) as f:
         user = json.load(f)
+
     return render_template(
-    "update_user.html",
-    user=user,
-    genes=load_genes(),
-    biomarkers=load_biomarkers()
-)
+        "update_user.html",
+        user=user,
+        genes=load_genes(),
+        biomarkers=load_biomarkers(),
+        biomarker_units=load_biomarker_units()
+    )
 
 
 @app.route("/save-updated-profile/<user_id>", methods=["POST"])
@@ -204,7 +232,6 @@ def save_updated_profile(user_id):
         user = json.load(f)
 
     today = datetime.today().strftime("%Y-%m-%d")
-
     valid_genes, valid_biomarkers = get_valid_sets()
 
     if request.form.get("height"):
@@ -234,30 +261,26 @@ def save_updated_profile(user_id):
         user["last_updated"]["biomarkers"] = today
 
     gene_names = request.form.getlist("gene_name[]")
-    gene_eff = request.form.getlist("gene_efficiency[]")
+    gene_status = request.form.getlist("gene_status[]")
+    gene_variants = request.form.getlist("gene_variant[]")
 
-    gene_updated = False
-    for g, e in zip(gene_names, gene_eff):
-        g = (g or "").strip().upper()
-        e = (e or "").strip()
-
-        if e:
-            if g not in valid_genes:
-                return f"Invalid gene entered: {g}", 400
-            update_gene(user["genes"], g, int(e))
-            gene_updated = True
-
-    if gene_updated:
-        user["last_updated"]["genes"] = today
+    for g, s, v in zip(gene_names, gene_status, gene_variants):
+        g = g.upper()
+        if s == "normal":
+            update_gene(user["genes"], g, "Normal")
+        elif v:
+            update_gene(user["genes"], g, v)
 
     with open(path, "w") as f:
         json.dump(user, f, indent=4)
 
     return redirect(url_for("after_save", user_id=user_id))
 
+
 @app.route("/after-save/<user_id>")
 def after_save(user_id):
     return render_template("after_save.html", user_id=user_id)
+
 
 @app.route("/generate-meal/<user_id>")
 def generate_meal(user_id):
@@ -266,12 +289,8 @@ def generate_meal(user_id):
 
     plan = generate_nutrition_plan(user_profile)
 
-    return render_template(
-        "result.html",
-        result={
-            "plan": plan
-        }
-    )
+    return render_template("result.html", result={"plan": plan},rag_context=plan.get("rag_context", []),evidence=plan.get("rag_context", []) )
+
 
 if __name__ == "__main__":
     app.run(debug=True)

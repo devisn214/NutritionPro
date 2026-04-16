@@ -1,6 +1,6 @@
 import pandas as pd
 from neo4j import GraphDatabase
-
+import os
 
 class NutritionKGBuilder:
     def __init__(self, uri, user, password):
@@ -13,166 +13,206 @@ class NutritionKGBuilder:
         with self.driver.session() as session:
             session.run(query, params or {})
 
-    def create_food_nodes(self, foods_csv):
-        df = pd.read_csv(foods_csv)
-        for _, row in df.iterrows():
-            self.run_query(
-                """
+    # ------------------ INDEXES ------------------
+    def create_indexes(self):
+        self.run_query("CREATE INDEX IF NOT EXISTS FOR (f:Food) ON (f.id)")
+        self.run_query("CREATE INDEX IF NOT EXISTS FOR (n:Nutrient) ON (n.id)")
+        self.run_query("CREATE INDEX IF NOT EXISTS FOR (n:Nutrient) ON (n.name)")
+        self.run_query("CREATE INDEX IF NOT EXISTS FOR (b:Biomarker) ON (b.id)")
+        self.run_query("CREATE INDEX IF NOT EXISTS FOR (g:Gene) ON (g.symbol)")
+
+    # ------------------ NODE CREATION ------------------
+
+    def create_food_nodes(self, csv):
+        df = pd.read_csv(csv)
+        for _, r in df.iterrows():
+            self.run_query("""
                 MERGE (f:Food {id:$id})
                 SET f.name=$name,
                     f.category=$category,
-                    f.serving_size=$serving_size,
-                    f.serving_unit=$serving_unit
-                """,
-                {
-                    "id": row.food_id,
-                    "name": row.food_name,
-                    "category": row.category,
-                    "serving_size": row.serving_size,
-                    "serving_unit": row.serving_unit
-                }
-            )
+                    f.serving_size=$size,
+                    f.serving_unit=$unit,
+                    f.diet_type=$diet_type
+            """, {
+                "id": r.food_id,
+                "name": r.food_name,
+                "category": r.category,
+                "size": r.serving_size,
+                "unit": r.serving_unit,
+                "diet_type": r.diet_type
+            })
 
-    def create_nutrient_nodes(self, nutrients_csv):
-        df = pd.read_csv(nutrients_csv)
-        for _, row in df.iterrows():
-            self.run_query(
-                """
+    def create_nutrient_nodes(self, csv):
+        df = pd.read_csv(csv)
+        for _, r in df.iterrows():
+            self.run_query("""
                 MERGE (n:Nutrient {id:$id})
                 SET n.name=$name,
                     n.unit=$unit,
                     n.category=$category
-                """,
-                {
-                    "id": row.nutrient_id,
-                    "name": row["name"],
-                    "unit": row.unit,
-                    "category": row.category
-                }
-            )
+            """, {
+                "id": r.nutrient_id,
+                "name": r["name"],
+                "unit": r.unit,
+                "category": r.category
+            })
 
-    def create_biomarker_nodes(self, biomarkers_csv):
-        df = pd.read_csv(biomarkers_csv)
-        for _, row in df.iterrows():
-            self.run_query(
-                """
+    def create_gene_nodes_from_genenutrient(self, csv):
+        df = pd.read_csv(csv)
+        for _, r in df.iterrows():
+            self.run_query("""
+                MERGE (g:Gene {symbol:$symbol})
+                SET g.full_name=$full_name
+            """, {
+                "symbol": r["gene_symbol"],
+                "full_name": r["gene_fullname"]
+            })
+
+    def create_biomarker_nodes(self, csv):
+        df = pd.read_csv(csv)
+        for _, r in df.iterrows():
+            self.run_query("""
                 MERGE (b:Biomarker {id:$id})
                 SET b.name=$name,
                     b.unit=$unit,
-                    b.description=$description
-                """,
-                {
-                    "id": row.biomarker_id,
-                    "name":str(row["name"]).lower(),
-                    "unit": row.unit,
-                    "description": row.description
-                }
-            )
+                    b.description=$desc
+            """, {
+                "id": r.biomarker_id,
+                "name": r["name"],
+                "unit": r.unit,
+                "desc": r.description
+            })
 
-    def create_gene_nodes(self, genes_csv):
-        df = pd.read_csv(genes_csv)
-        for _, row in df.iterrows():
-            self.run_query(
-                """
-                MERGE (g:Gene {symbol:$symbol})
-                SET g.id=$id,
-                    g.full_name=$full_name,
-                    g.description=$description
-                """,
-                {
-                    "id": row.gene_id,
-                    "symbol": row.gene_symbol,
-                    "full_name": row.full_name,
-                    "description": row.description
-                }
-            )
+    def create_biomarker_ranges(self, csv):
+        df = pd.read_csv(csv)
+        for _, r in df.iterrows():
+            # Standardizing input: if a value is missing, Neo4j uses the default provided in coalesce
+            self.run_query("""
+                MATCH (b:Biomarker {id:$id})
+                MERGE (range:Range {biomarker_id:$id})
+                SET range.name = $name,
+                    range.low_male = coalesce(toFloat($low_male), 0.0),
+                    range.high_male = coalesce(toFloat($high_male), 9999.0),
+                    range.low_female = coalesce(toFloat($low_female), 0.0),
+                    range.high_female = coalesce(toFloat($high_female), 9999.0)
+                MERGE (b)-[:HAS_RANGE]->(range)
+            """, {
+                "id": r.biomarker_id,
+                "name": r["name"],
+                "low_male": r.low_male,
+                "high_male": r.high_male,
+                "low_female": r.low_female,
+                "high_female": r.high_female
+            })
 
-    def create_food_nutrient_relationships(self, food_nutrient_csv):
-        df = pd.read_csv(food_nutrient_csv)
-        for _, row in df.iterrows():
-            self.run_query(
-                """
-                MATCH (f:Food {id:$food_id})
-                MATCH (n:Nutrient {id:$nutrient_id})
+    # ------------------ RELATIONSHIPS ------------------
+
+    def create_food_nutrient(self, csv):
+        df = pd.read_csv(csv)
+        for _, r in df.iterrows():
+            # Skip rows where amount is completely empty (NaN)
+            if pd.isna(r.amount):
+                continue
+                
+            self.run_query("""
+                MATCH (f:Food {id:$f})
+                MATCH (n:Nutrient {id:$n})
                 MERGE (f)-[:CONTAINS {
-                    amount:$amount,
-                    unit:$unit
+                    amount: coalesce(toFloat($amt), 0.0), 
+                    unit: coalesce($unit, "g")
                 }]->(n)
-                """,
-                {
-                    "food_id": row.food_id,
-                    "nutrient_id": row.nutrient_id,
-                    "amount": row.amount,
-                    "unit": row.unit
-                }
-            )
+            """, {
+                "f": r.food_id,
+                "n": r.nutrient_id,
+                "amt": r.amount,
+                "unit": r.unit
+            })
 
-    def create_biomarker_nutrient_relationships(self, biomarkers_csv):
-        df = pd.read_csv(biomarkers_csv)
-        for _, row in df.iterrows():
-            self.run_query(
-                """
-                MATCH (b:Biomarker {id:$biomarker_id})
-                MATCH (n:Nutrient {id:$nutrient_id})
+    def create_biomarker_nutrient(self, csv):
+        df = pd.read_csv(csv)
+        for _, r in df.iterrows():
+            self.run_query("""
+                MATCH (b:Biomarker {id:$b})
+                MATCH (n:Nutrient {id:$n})
                 MERGE (b)-[:INDICATES]->(n)
-                """,
-                {
-                    "biomarker_id": row.biomarker_id,
-                    "nutrient_id": row.nutrient_id
-                }
-            )
+            """, {
+                "b": r.biomarker_id,
+                "n": r.nutrient_id
+            })
 
-    def create_nutrient_gene_relationships(self, nutrient_gene_csv):
-        df = pd.read_csv(nutrient_gene_csv)
-        for _, row in df.iterrows():
-            self.run_query(
-                """
-                MATCH (n:Nutrient {name:$nutrient_name})
-                MATCH (g:Gene {gene_name:$full_name})
-                MERGE (n)-[:INTERACTS_WITH {
-                    interaction_type:$interaction_type,
-                    impact_description:$impact_description
-                }]->(g)
-                """,
-                {
-                    "nutrient_name": row.nutrient_name,
-                    "gene_name": row.full_name,
-                    "interaction_type": row.interaction_type,
-                    "impact_description": row.impact_description
-                }
-            )
+    def create_gene_nutrient_from_genenutrient(self, csv_file):
+        df = pd.read_csv(csv_file)
+        for _, r in df.iterrows():
+            # Handle multiple IDs like "N011 N002"
+            nutrient_ids = str(r["affected_nutrient"]).split()
+            
+            for n_id in nutrient_ids:
+                self.run_query("""
+                    MATCH (g:Gene {symbol:$gene})
+                    MATCH (n:Nutrient {id:$n_id})
+                    MERGE (g)-[:AFFECTS {
+                        variant:$variant,
+                        interaction_type:$interaction,
+                        impact:$impact,
+                        action:$action,
+                        direction:$direction
+                    }]->(n)
+                """, {
+                    "gene": r["gene_symbol"],
+                    "n_id": n_id,
+                    "variant": r["variant"],
+                    "interaction": r["interaction_type"],
+                    "impact": r["impact"],
+                    "action": r["action"],
+                    "direction": r["direction"]
+                })
 
-    def create_gene_modulation_relationships(self, nutrient_gene_csv):
-        df = pd.read_csv(nutrient_gene_csv)
-        for _, row in df.iterrows():
-            self.run_query(
-                """
-                MATCH (g:Gene {symbol:$gene_symbol})
-                MATCH (n:Nutrient {name:$nutrient_name})
-                MERGE (g)-[:MODULATES]->(n)
-                """,
-                {
-                    "gene_symbol": row.gene_symbol,
-                    "nutrient_name": row.nutrient_name
-                }
-            )
+    # ------------------ RECOMMEND / AVOID ------------------
+    def create_recommend_avoid_relationships(self):
+        self.run_query("""
+        MATCH (b:Biomarker)-[:INDICATES]->(n:Nutrient)<-[c:CONTAINS]-(f:Food)
+        // Only link foods that have a measurable amount of the nutrient
+        WHERE c.amount > 0
+        MERGE (f)-[:POTENTIAL_REMEDY]->(b)
+        """)
+
+    # ------------------ CLEAN ------------------
+    def clear_graph(self):
+        self.run_query("MATCH (n) DETACH DELETE n")
 
 
+# ------------------ MAIN ------------------
 if __name__ == "__main__":
     kg = NutritionKGBuilder(
-        uri="bolt://localhost:7687",
-        user="neo4j",
-        password="neo4jabc"
+        "bolt://localhost:7687",
+        "neo4j",
+        "neo4jabc"
     )
 
+
+    print("Clearing old data...")
+    kg.clear_graph() 
+
+    print("Creating indexes...")
+    kg.create_indexes()
+
+    print("Ingesting Nodes...")
     kg.create_food_nodes("data/foods.csv")
     kg.create_nutrient_nodes("data/nutrients.csv")
+    kg.create_gene_nodes_from_genenutrient("data/genenutrient.csv")
     kg.create_biomarker_nodes("data/biomarkers.csv")
-    kg.create_gene_nodes("data/genes.csv")
 
-    kg.create_food_nutrient_relationships("data/food_nutrient_map.csv")
-    kg.create_biomarker_nutrient_relationships("data/biomarkers.csv")
-    kg.create_nutrient_gene_relationships("data/nutrient_gene_map.csv")
-    kg.create_gene_modulation_relationships("data/nutrient_gene_map.csv")
+    # Range Ingestion - File name fixed to biomarkers_maxvalue.csv
+    print("Ingesting Biomarker Ranges...")
+    kg.create_biomarker_ranges("data/biomarkers_maxvalue.csv")
 
+    print("Creating Relationships...")
+    kg.create_food_nutrient("data/food_nutrient_map.csv")
+    kg.create_biomarker_nutrient("data/biomarkers.csv")
+    kg.create_gene_nutrient_from_genenutrient("data/genenutrient.csv")
+
+    print("Generating Recommendation Shortcut Edges...")
+    kg.create_recommend_avoid_relationships()
+
+    print("Success: Knowledge Graph Built with Numeric Integrity.")
     kg.close()

@@ -5,12 +5,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, "data")
 
 def load_genes():
-    path = os.path.join(DATA_DIR, "genes.csv")
+    path = os.path.join(DATA_DIR, "genenutrient.csv")
     genes = []
     with open(path, newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
-            genes.append(row["full_name"])
+            genes.append(row["gene_symbol"])
     return sorted(set(genes))
 
 def load_biomarkers():

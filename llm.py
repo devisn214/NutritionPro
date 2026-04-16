@@ -7,130 +7,88 @@ class NutritionLLM:
         self.url = "http://127.0.0.1:11434/api/generate"
 
     def generate_plan(self, user_profile, rag_context, calories, macros):
-        print("\n LLM INPUT DEBUG ")
-        print("User Profile:")
-        print(json.dumps(user_profile, indent=2))
+        print("\n--- LLM INPUT DEBUG ---")
+        print(f"Diet Preference: {user_profile.get('diet_preference')}")
+        print(f"RAG Foods: {[c.get('food') for c in rag_context]}")
 
-        print("\RAG Context (first 3):")
-        print(json.dumps(rag_context[:6], indent=2))
-        print("\n")
+        if not rag_context:
+            return "Error: No suitable ingredients found in the Knowledge Graph matching your dietary profile."
 
         prompt = self._build_prompt(user_profile, rag_context, calories, macros)
-
-        print("\n FINAL PROMPT ")
+        print("\n--- LLM PROMPT DEBUG ---")
         print(prompt)
-        print("\n")
-
         payload = {
             "model": self.model,
             "prompt": prompt,
             "stream": False,
             "options": {
-                "num_predict": 600,
-                "temperature": 0.35
+                "num_predict": 500,
+                "temperature": 0.1,
+                "top_p": 0.9
             }
         }
 
-        response = requests.post(
-            self.url,
-            json=payload,
-            timeout=1000
-        )
-
-        if response.status_code != 200:
-            print("Ollama raw response:", response.text)
-            raise RuntimeError(f"Ollama error: {response.text}")
-
-        result = response.json().get("response", "").strip()
-
-        print("\n LLM OUTPUT ")
-        print(result)
-        print("\n")
-
-        return result
+        try:
+            response = requests.post(self.url, json=payload, timeout=120)
+            response.raise_for_status()
+            result = response.json().get("response", "").strip()
+            return result
+        except Exception as e:
+            return f"Service Error: Unable to generate plan ({str(e)})"
 
     def _build_prompt(self, user, context, calories, macros):
+        # Build the structured context from RAG
         context_text = ""
-
-        for c in context[:4]:
-            foods = ", ".join(c.get("foods", [])[:4]) or "None"
-            genes = ", ".join(g.get("gene", "N/A") for g in c.get("genes", [])[:3]) or "None"
-
+        food_list = []
+        
+        for c in context:
+            food_name = c.get("food", "N/A")
+            food_list.append(food_name)
+            nutrients = ", ".join([n.get("name", "Unknown") for n in c.get("nutrients", [])[:3]])
+            
             context_text += f"""
-                    Biomarker: {c.get('biomarker', 'N/A')}
-                    Nutrient: {c.get('nutrient', 'N/A')}
-                    Food Sources: {foods}
-                    Genes: {genes}"""
+Food: {food_name}
+Nutrients: {nutrients}
+Clinical Reason: {c.get('reason', '')}
+"""
+
+        allowed_foods = ", ".join(food_list)
+        diet = user.get('diet_preference', 'vegetarian').lower()
 
         return f"""
-You are a clinical-grade personalized nutrition planning system.
+You are a Clinical Dietitian specialized in Indian Cuisine.
+STRICT DIET REQUIREMENT: The user is {diet.upper()}. 
+If an ingredient in the allowed list is non-vegetarian and the user is vegetarian, DO NOT USE IT.
+
+HARD CONSTRAINT:
+Base Ingredients ONLY: [{allowed_foods}]
+
+CORE RULES:
+1. Every dish MUST be primarily based on the allowed ingredients.
+2. If an ingredient is a supplement (like Cod Liver Oil), suggest it as a 'Side Supplement' with the meal.
+3. Use Indian spices and minor cooking ingredients (oil, salt) as needed.
+4. DO NOT repeat the same main food in every meal.
+5. JUSTIFICATION: Every dish must have a 1-sentence reason mentioning a nutrient or health goal.
 
 User Profile:
-Age: {user.get('age')}
-Gender: {user.get('gender')}
-Diet: {user.get('diet_preference')}
-Activity Level: {user.get('activity_level')}
-
-Health Logic:
-- Some biomarkers may show deficiency or excess.
-- Some gene variants alter absorption, metabolism, or sensitivity.
-- Food selection MUST balance multiple objectives simultaneously.
-
-Core Objectives:
-1. Correct nutrient deficiencies.
-2. Avoid nutrient excess.
-3. Respect gene–nutrient interactions.
-4. Maintain calorie & macronutrient balance.
-5. Optimize overall metabolic health.
+- Age/Sex: {user.get('age')} / {user.get('gender')}
+- Diet: {diet}
+- Goals: Address deficiencies and respect genetic markers (e.g., {', '.join([g.get('name') for g in user.get('genes', [])])})
 
 Daily Targets:
-Calories: {calories} kcal
-Protein: {macros.get('protein_g')} g
-Carbs: {macros.get('carbs_g')} g
-Fats: {macros.get('fats_g')} g
+- Calories: {calories} kcal
+- Macros: P:{macros.get('protein_g', 0)}g, C:{macros.get('carbs_g', 0)}g, F:{macros.get('fats_g', 0)}g
 
-Meal Distribution:
-Breakfast 30%, Lunch 40%, Dinner 30%
-
-Macronutrient Distribution:
-Protein: evenly across meals
-Carbs: lunch > breakfast > dinner
-Fats: balanced, avoid overload
-
-Knowledge Graph Context:
+Knowledge Graph Evidence:
 {context_text}
 
-Task:
-Generate a 1-day Indian meal plan.
-
-For EACH meal:
-- Provide a short clinical justification for EACH food item explaining:
-    • Which biomarker it helps
-    • Which nutrient it provides
-    • Which gene interaction it supports or avoids
-    • If not directly biomarker-driven, explain which metabolic or health constraint it satisfies
-- Exactly 2 food items.
-- Each explanation must be ONE short sentence only (≤15 words).
-- Do NOT exceed 30 words per meal.
-
-Output Format:
-
+FORMAT:
 Breakfast:
-1) Food: Reason
-2) Food: Reason
-
+1) Dish Name (Main Ingredients): Reason
 Lunch:
-1) Food: Reason
-2) Food: Reason
-
+1) Dish Name (Main Ingredients): Reason
 Dinner:
-1) Food: Reason
-2) Food: Reason
-Rules:
-- Justifications MUST be biologically meaningful.
-- Multiple conditions may justify a single food.
-- Do not list foods without reasons.
-- Avoid contraindicated foods.
+1) Dish Name (Main Ingredients): Reason
 
-Max 300 words.
+Max 220 words. Focus on realistic Indian preparation.
 """

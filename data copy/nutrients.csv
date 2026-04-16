@@ -1,0 +1,54 @@
+nutrient_id,name,unit,category
+N001,Protein,g,macronutrient
+N002,Carbohydrates,g,macronutrient
+N003,Fat,g,macronutrient
+
+N004,Iron,mg,mineral
+N005,Calcium,mg,mineral
+N006,Magnesium,mg,mineral
+N007,Zinc,mg,mineral
+N008,Potassium,mg,mineral
+N009,Sodium,mg,mineral
+N010,Phosphorus,mg,mineral
+N011,Selenium,mcg,mineral
+N012,Copper,mg,mineral
+N013,Iodine,mcg,mineral
+
+N014,Vitamin D,mcg,vitamin
+N015,Vitamin B12,mcg,vitamin
+N016,Folate (Vitamin B9),mcg,vitamin
+N017,Vitamin A,mcg,vitamin
+N018,Vitamin C,mg,vitamin
+N019,Vitamin E,mg,vitamin
+N020,Vitamin K,mcg,vitamin
+N021,Vitamin B6,mg,vitamin
+N022,Vitamin B1 (Thiamine),mg,vitamin
+N023,Vitamin B2 (Riboflavin),mg,vitamin
+N026,Vitamin B7 (Biotin),mcg,vitamin
+N027,Vitamin B5 (Pantothenic Acid),mg,vitamin
+N028,Vitamin B3 (Niacin),mg,vitamin
+
+N024,Omega-3 Fatty Acids,g,lipid
+N025,Cholesterol,mg,lipid
+N029,Saturated Fat,g,lipid
+N030,Trans Fat,g,lipid
+
+N031,Fiber,g,carbohydrate
+N032,Choline,mg,vitamin-like
+N033,Manganese,mg,mineral
+N034,Fluoride,mg,mineral
+N035,Chloride,mg,mineral
+N036,Omega-6 Fatty Acids,g,lipid
+N037,Monounsaturated Fat,g,lipid
+N038,Polyunsaturated Fat,g,lipid
+N039,MCT (Medium Chain Triglycerides),g,lipid
+N040,EPA,mg,lipid
+N041,DHA,mg,lipid
+N042,Lutein + Zeaxanthin,mcg,phytonutrient
+N043,Lycopene,mcg,phytonutrient
+N044,Curcumin,mg,phytonutrient
+N045,Probiotics,CFU,functional
+N046,Beta-Carotene,mcg,vitamin-precursor
+N051,Total Antioxidant Capacity,units,functional
+N052,Bilirubin,mg/dL,metabolic
+N053,C-Reactive Protein (CRP),mg/L,inflammation

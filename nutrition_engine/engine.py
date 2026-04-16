@@ -6,7 +6,6 @@ from .gene_rules import process_genes
 from rag import NutritionRAG
 from llm import NutritionLLM
 
-
 def generate_nutrition_plan(user):
     
     bmr = calculate_bmr(user)
@@ -15,9 +14,11 @@ def generate_nutrition_plan(user):
         activity_factor = activity
     else:
         activity_factor = ACTIVITY_LEVELS.get(activity, 1.2)
+
     calories = round(bmr * activity_factor)
     macros = calculate_macros(calories)
-    biomarker_recs = process_biomarkers(user.get("biomarkers", []))
+
+    biomarker_recs = process_biomarkers(user.get("biomarkers", []), user)
     gene_recs = process_genes(user.get("genes", []))
 
     rag = NutritionRAG(
@@ -25,21 +26,26 @@ def generate_nutrition_plan(user):
         user="neo4j",
         password="neo4jabc"
     )
+
+  
     rag_context = rag.retrieve_context(
         biomarkers=user.get("biomarkers", []),
         genes=user.get("genes", []),
         biomarker_recs=biomarker_recs,
-        gene_recs=gene_recs
+        gene_recs=gene_recs,
+        diet_preference=user.get("diet_preference", "vegetarian")
     )
     rag.close()
 
     llm = NutritionLLM(model="phi3:mini")
+
     llm_recommendation = llm.generate_plan(
         user_profile=user,
         rag_context=rag_context,
         calories=calories,
         macros=macros
     )
+    
 
     return {
         "calories": calories,

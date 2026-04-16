@@ -9,12 +9,13 @@
 <div class="container card">
     <h2>New User Registration</h2>
 
-    <form method="POST" action="/save-user">
+    <form method="POST" action="/save-user" onsubmit="return validateForm()">
+
         <label>Name</label>
         <input type="text" name="name" required>
 
         <label>Age</label>
-        <input type="number" name="age" required>
+        <input type="number" name="age" required min="1">
 
         <label>Gender</label>
         <select name="gender">
@@ -23,10 +24,10 @@
         </select>
 
         <label>Height (cm)</label>
-        <input type="number" name="height" required>
+        <input type="number" name="height" required min="80">
 
         <label>Weight (kg)</label>
-        <input type="number" name="weight" required>
+        <input type="number" name="weight" required min="10">
 
         <label>Activity Level</label>
         <select name="activity_level" required>
@@ -44,12 +45,23 @@
 
         <hr>
 
+        <datalist id="biomarkerList">
+            {% for bm in biomarkers %}
+                <option value="{{ bm }}"></option>
+            {% endfor %}
+        </datalist>
+
+        <datalist id="geneList">
+            {% for gene in genes %}
+                <option value="{{ gene }}"></option>
+            {% endfor %}
+        </datalist>
+
         <h3>Blood Marker Tests (Optional)</h3>
         <div id="biomarkers"></div>
         <button type="button" onclick="addBiomarker()">+ Add Blood Marker</button>
 
         <hr>
-
 
         <h3>Gene Information (Optional)</h3>
         <div id="genes"></div>
@@ -57,7 +69,7 @@
 
         <div class="nav">
             <button type="submit">Save Profile</button>
-            <a href="/"><button type="button" class="back-btn">Back to Home</button></a>
+            <a href="/"><button type="button" class="back-btn">Back to home</button></a>
         </div>
 
     </form>
@@ -65,46 +77,77 @@
 
 <script>
 
+const biomarkerUnits = JSON.parse('{{ biomarker_units | tojson | safe }}');
+
 function addBiomarker() {
     const container = document.getElementById("biomarkers");
-
     const div = document.createElement("div");
     div.className = "row";
 
     div.innerHTML = `
-        <input list="biomarkerList" name="biomarker_name[]" placeholder="Type biomarker name">
-        <datalist id="biomarkerList">
-            {% for bm in biomarkers %}
-                <option value="{{ bm }}"></option>
-            {% endfor %}
-        </datalist>
-
+        <input list="biomarkerList" name="biomarker_name[]" placeholder="Biomarker" oninput="autoUnit(this)">
         <input type="number" step="0.01" name="biomarker_value[]" placeholder="Value">
-        <input type="text" name="biomarker_unit[]" placeholder="Unit (optional)">
+        <input type="text" name="biomarker_unit[]" placeholder="Unit">
     `;
 
     container.appendChild(div);
 }
 
-
 function addGene() {
     const container = document.getElementById("genes");
-
     const div = document.createElement("div");
     div.className = "row";
 
     div.innerHTML = `
-        <input list="geneList" name="gene_name[]" placeholder="Type gene name">
-        <datalist id="geneList">
-            {% for gene in genes %}
-                <option value="{{ gene }}"></option>
-            {% endfor %}
-        </datalist>
+        <input list="geneList" name="gene_name[]" placeholder="Gene name">
 
-        <input type="number" name="gene_efficiency[]" placeholder="Efficiency %">
+        <select name="gene_status[]" onchange="toggleVariant(this)">
+            <option value="normal">Normal</option>
+            <option value="variant">Variant</option>
+        </select>
+
+        <input type="text" name="gene_variant[]" placeholder="Variant (e.g. C282Y)" style="display:none;">
     `;
 
     container.appendChild(div);
+}
+
+function toggleVariant(select) {
+    const row = select.closest(".row");
+    const variantInput = row.querySelector("input[name='gene_variant[]']");
+    
+    if (select.value === "variant") {
+        variantInput.style.display = "block";
+    } else {
+        variantInput.style.display = "none";
+        variantInput.value = "";
+    }
+}
+
+function autoUnit(input) {
+    const row = input.closest(".row");
+    const unitInput = row.querySelector("input[name='biomarker_unit[]']");
+    const key = input.value.toLowerCase();
+    if (biomarkerUnits[key]) {
+        unitInput.value = biomarkerUnits[key];
+    }
+}
+
+function validateForm() {
+    let valid = true;
+    document.querySelectorAll("input").forEach(el => el.style.borderColor = "#ccc");
+
+    document.querySelectorAll("input[name='biomarker_name[]']").forEach((el, i) => {
+        const val = document.querySelectorAll("input[name='biomarker_value[]']")[i];
+        if (el.value && !val.value) {
+            el.style.borderColor = "red";
+            val.style.borderColor = "red";
+            valid = false;
+        }
+    });
+
+    if (!valid) alert("Please fill biomarker values correctly.");
+    return valid;
 }
 
 </script>

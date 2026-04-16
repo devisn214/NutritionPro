@@ -3,110 +3,189 @@
 <head>
     <title>Personalized Nutrition Report</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-  
-        body { background-color: linear-gradient(135deg, #1eb2a6, #0f4c75); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .card { max-width: 800px; margin: 30px auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        h2 { color: #2c3e50; border-bottom: 2px solid #0f4c75; padding-bottom: 10px; margin-bottom: 30px; }
-        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .metric-box { background: #f8f9fa; padding: 20px; border-radius: 10px; text-align: center; border-left: 5px solid #0f4c75; }
-        .metric-box h4 { margin: 0; color: #7f8c8d; font-size: 0.9rem; text-transform: uppercase; }
-        .metric-box p { margin: 10px 0 0; font-size: 1.4rem; font-weight: bold; color: #2c3e50; }
-        .section-box { margin-bottom: 25px; padding: 20px; border: 1px solid #edf2f7; border-radius: 12px; transition: transform 0.2s; }
-        .section-box:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        h3 { color: #0f4c75; font-size: 1.2rem; margin-top: 0; display: flex; align-items: center; }
-        .status-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; background: #e74c3c; color: white; margin-left: 10px; }
-        .ai-box { background: #e8f5e9; border-radius: 8px; padding: 15px; border-left: 4px solid #0f4c75; white-space: pre-line; color: #1b5e20; line-height: 1.6; }
-        .back-link { text-decoration: none; color:  #1eb2a6; font-weight: bold; }
-        .back-link:hover { color: #0f4c75 }
-    </style>
 </head>
-<body>
+
+<body class="results-page">
+
+<!-- ===== LOADING ===== -->
+<div id="loading" class="container">
+    <h2>Generating your personalized plan...</h2>
+    <div class="loader"></div>
+</div>
+
+<!-- ===== CONTENT ===== -->
+<div id="content" class="hidden">
 
 <div class="container card">
-    <h2>Personalized Meal Plan</h2>
 
-    <div class="summary-grid">
-        <div class="metric-box">
-            <h4>Daily Energy</h4>
-            <p>{{ result.plan.calories }} kcal</p>
-        </div>
-        <div class="metric-box">
-            <h4>Protein</h4>
-            <p>{{ result.plan.macros.protein_g }}g</p>
-        </div>
-        <div class="metric-box">
-            <h4>Carbs</h4>
-            <p>{{ result.plan.macros.carbs_g }}g</p>
-        </div>
-        <div class="metric-box">
-            <h4>Fats</h4>
-            <p>{{ result.plan.macros.fat_g }}g</p>
-        </div>
+    <!-- ===== HEADER ===== -->
+    <div class="header">
+        <h2>🍽 Personalized Nutrition Plan</h2>
+        <p class="subtext">AI-powered insights based on biomarkers, genetics & food knowledge</p>
     </div>
 
+    <!-- ===== SUMMARY ===== -->
+    <div class="summary-pills">
+        <div class="pill pill-main"> {{ result.plan.calories }} kcal</div>
+        <div class="pill">Protein: {{ result.plan.macros.protein_g }}g</div>
+        <div class="pill">Carbs: {{ result.plan.macros.carbs_g }}g</div>
+        <div class="pill">Fat: {{ result.plan.macros.fat_g }}g</div>
+    </div>
+
+    <!-- ===== BIOMARKERS ===== -->
     {% if result.plan.biomarker_recommendations %}
     <div class="section-box">
-        <h3>Biomarker Status & Nutrition</h3>
-        <ul style="list-style: none; padding: 0;">
-            {% for rec in result.plan.biomarker_recommendations %}
-            <li style="margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #f1f1f1;">
-                <strong>{{ rec.biomarker }}</strong> 
-                <span class="status-badge">{{ rec.status }}</span><br>
-                <small style="color: #666;">Current Level: {{ rec.current_value }}</small><br>
-                <!--<span style="color: #27ae60; font-size: 0.9rem;">Recommended Foods to include: {{ rec.recommended_foods| join(", ") }}</span>-->
-            
-            </li>
-            {% endfor %}
-        </ul>
+        <h3> Biomarker Analysis</h3>
+
+        {% for rec in result.plan.biomarker_recommendations %}
+        <div class="insight-card">
+            <div class="insight-header">
+                <strong>{{ rec.biomarker }}</strong>
+                <span class="status-badge {{ 'status-low' if rec.direction=='increase' else 'status-high' }}">
+                    {{ rec.status }}
+                </span>
+            </div>
+
+            <p class="subtext">
+                Current: {{ rec.current_value }} | Normal: {{ rec.low }} – {{ rec.high }}
+            </p>
+
+            <div class="explain-box">
+                <b>Why this matters:</b><br>
+                Your <b>{{ rec.biomarker }}</b> is {{ rec.status }},
+                so your body needs <b>{{ rec.direction }} {{ rec.target_nutrient }}</b>.
+            </div>
+        </div>
+        {% endfor %}
     </div>
     {% endif %}
 
+    <!-- ===== GENES ===== -->
     {% if result.plan.gene_recommendations %}
     <div class="section-box">
-        <h3>DNA Optimization</h3>
-        <ul style="list-style: none; padding: 0;">
-            {% for rec in result.plan.gene_recommendations %}
-            <li style="margin-bottom: 15px;">
-                <strong style="color: #2c3e50;">{{ rec.nutrient }} Focus:</strong> <span class="status-badge">{{ rec.reason }}</span><br>
-               <!-- <span style="color: #27ae60; font-size: 0.9rem;">Recommended Foods to include: {{ rec.foods | join(", ") }}</span>-->
-            </li>
-            {% endfor %}
-        </ul>
+        <h3>Genetic Insights</h3>
+
+        {% for rec in result.plan.gene_recommendations %}
+        <div class="insight-card">
+            <div class="insight-header">
+                <strong>{{ rec.gene }}</strong>
+                <span class="gene-variant">{{ rec.variant }}</span>
+            </div>
+
+            <p class="subtext">
+                Influences: {{ rec.nutrient_id }}
+            </p>
+
+            <div class="explain-box">
+                <b>Biological Impact:</b><br>
+                {{ rec.reason }}<br><br>
+                <b>Recommended Action:</b>
+                {{ rec.direction }} intake of this nutrient.
+            </div>
+        </div>
+        {% endfor %}
     </div>
     {% endif %}
 
+    <!-- ===== FOOD TABLE ===== -->
+    {% if rag_context %}
+    <div class="section-box">
+        <h3>Recommended Foods</h3>
+
+        <table class="food-table">
+            <thead>
+                <tr>
+                    <th>Food</th>
+                    <th>Nutrients</th>
+                    <th>Why it helps</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in rag_context %}
+                <tr>
+                    <td><b>{{ item.food }}</b></td>
+                    <td>
+                        {% for n in item.nutrients[:2] %}
+                            {{ n.name }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>{{ item.reason }}</td>
+                    <td>{{ item.score }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    <!-- ===== AI PLAN ===== -->
     {% if result.plan.llm_recommendation %}
     <div class="section-box">
-        <h3>🍽 AI-Driven Meal Plan</h3>
-        <h5 style="margin-bottom: 10px; color: #7f8c8d;">Your customized menu for today:</h5>
+        <h3>AI Meal Plan</h3>
         <div class="ai-box">
             {{ result.plan.llm_recommendation }}
         </div>
     </div>
     {% endif %}
 
-    <div class="nav" style="margin-top: 30px;">
+    <!-- ===== EXPLAINABLE AI ===== -->
+    {% if result.plan.evidence %}
+    <div class="section-box">
+        <h3>Explainable AI</h3>
+
+        {% for e in result.plan.evidence %}
+        <div class="explain-box">
+            {{ e.logic_path }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- ===== CONFIDENCE ===== -->
+    <div class="section-box">
+        <h3>Model Confidence</h3>
+
+        {% set conf = (
+            (rag_context|length * 5) +
+            (result.plan.biomarker_recommendations|length * 7)
+        ) %}
+
+        <p class="subtext">
+            Confidence derived from biological signals + knowledge graph matches
+        </p>
+
+        <div class="confidence-wrapper">
+            <div class="confidence-bar" data-width="{{ conf }}">
+                {{ conf }}%
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== NAV ===== -->
+    <div class="nav">
         <a href="/" class="back-link">← Back to Dashboard</a>
     </div>
+
 </div>
+</div>
+
+<!-- ===== SCRIPT ===== -->
+<script>
+    // Loading
+    setTimeout(() => {
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("content").classList.remove("hidden");
+    }, 1000);
+
+    // Confidence bar animation
+    const bar = document.querySelector(".confidence-bar");
+    if (bar) {
+        let width = parseInt(bar.getAttribute("data-width")) || 0;
+        width = Math.min(width, 100);
+        bar.style.width = width + "%";
+    }
+</script>
 
 </body>
 </html>
-<!--
-<script>
-    const rawData = `{{ result | tojson | safe }}`;
-    
-    try {
-        const nutritionResult = JSON.parse(rawData);
-        console.log("--- Personal Nutrition Data ---");
-        console.log(nutritionResult);
-    } catch (e) {
-        console.error("Error parsing JSON data:", e);
-        console.log("Raw data received:", rawData);
-    }
-</script>
--->
-
-
-

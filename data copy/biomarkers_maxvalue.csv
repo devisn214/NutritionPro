@@ -1,0 +1,74 @@
+biomarker_id,name,low_value,high_value
+B001,Serum Total Protein,6.0,8.3
+B002,Albumin,3.5,5.0
+B003,Prealbumin,15.0,35.0
+B004,Fasting Blood Glucose,70.0,110.0
+B005,HbA1c,4.0,5.7
+B006,C-Peptide,1.1,4.4
+B007,Triglycerides,50.0,150.0
+B008,VLDL Cholesterol,2.0,30.0
+B009,Free Fatty Acids,0.1,0.6
+B010,Serum Ferritin,30.0,300.0
+B011,Serum Iron,60.0,170.0
+B012,Transferrin Saturation,20.0,50.0
+B013,Serum Calcium,8.6,10.3
+B014,Ionized Calcium,1.1,1.35
+B015,Bone-Specific Alkaline Phosphatase,7.0,20.0
+B016,Serum Magnesium,1.7,2.2
+B017,RBC Magnesium,4.2,6.8
+B018,Plasma Zinc,70.0,120.0
+B019,Alkaline Phosphatase,40.0,129.0
+B020,Serum Potassium,3.5,5.1
+B021,Urinary Potassium,25.0,125.0
+B022,Serum Sodium,135.0,145.0
+B023,Urinary Sodium,40.0,220.0
+B024,Serum Phosphate,2.5,4.5
+B025,FGF23,20.0,50.0
+B026,Serum Selenium,70.0,150.0
+B027,Glutathione Peroxidase Activity,4000.0,15000.0
+B028,Serum Copper,70.0,140.0
+B029,Ceruloplasmin,20.0,60.0
+B030,Urinary Iodine,100.0,199.0
+B031,TSH,0.4,4.5
+B032,25-Hydroxy Vitamin D,30.0,100.0
+B033,25-Dihydroxy Vitamin D,20.0,76.0
+B034,Serum Vitamin B12,200.0,900.0
+B035,Methylmalonic Acid,0.0,0.4
+B036,Serum Folate,3.0,17.0
+B037,RBC Folate,140.0,628.0
+B038,Serum Retinol,20.0,60.0
+B039,Retinol Binding Protein,3.0,6.0
+B040,Plasma Vitamin C,0.4,2.0
+B041,Leukocyte Vitamin C,15.0,30.0
+B042,Serum Alpha-Tocopherol,5.0,20.0
+B043,Gamma-Tocopherol,1.0,5.0
+B044,Prothrombin Time,11.0,14.0
+B045,ucOsteocalcin,0.0,4.0
+B046,Pyridoxal-5-Phosphate (PLP),20.0,125.0
+B047,Homocysteine,0.0,15.0
+B048,Erythrocyte Transketolase,40.0,90.0
+B049,Thiamine Pyrophosphate,70.0,180.0
+B050,EGRAC,1.0,1.2
+B051,Plasma Riboflavin,1.0,19.0
+B052,Omega-3 Index,4.0,8.0
+B053,EPA/AA Ratio,0.1,0.5
+B054,LDL Cholesterol,0.0,100.0
+B055,HDL Cholesterol,40.0,60.0
+B056,Non-HDL Cholesterol,0.0,130.0
+B057,Serum Biotin,200.0,500.0
+B058,Urinary 3-Hydroxyisovalerate,0.0,190.0
+B059,Serum Pantothenic Acid,1.6,4.5
+B060,Urinary Pantothenate,1.0,10.0
+B061,Serum Niacin,0.5,8.0
+B062,Urinary N-Methylnicotinamide,1.6,4.3
+B063,ApoB/ApoA1 Ratio,0.4,0.9
+B064,Serum Manganese,0.4,1.1
+B065,RBC Manganese,7.0,15.0
+B066,Propionate/Acetate Ratio,0.2,0.5
+B067,Stool Consistency (Bristol Scale),3.0,4.0
+B068,Serum Choline,7.0,20.0
+B069,Betaine,10.0,60.0
+B070,Plasma Lycopene,10.0,80.0
+B071,hs-CRP,0.0,1.0
+B072,Total Antioxidant Status (TAS),1.3,1.8
+B073,Serum Bilirubin,0.3,1.2
