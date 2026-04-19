@@ -62,7 +62,7 @@ F060,Paneer,Dairy,100,g,Vegetarian,Calcium|Vitamin D|Vitamin B12|Net Protein|Cho
 F061,Cheese,Dairy,100,g,Vegetarian,Calcium|Sodium|Vitamin B12|Net Protein|Saturated Fat|Cholesterol (Total)
 F062,Butter,Dairy,100,g,Vegetarian,Calcium|Vitamin B12|Vitamin A|Saturated Fat|Cholesterol (Total)|Sodium
 F063,Ghee,Dairy,100,g,Vegetarian,Vitamin A|Vitamin D|Vitamin E|Saturated Fat|Cholesterol (Total)|Omega-3 Fatty Acids
-F064,Egg,Egg,100,g,Vegetarian,Potassium|Vitamin D|Vitamin B12|Vitamin A|Net Protein|Cholesterol (Total)
+F064,Egg,Egg,100,g,Non-Vegetarian,Potassium|Vitamin D|Vitamin B12|Vitamin A|Net Protein|Cholesterol (Total)
 F065,Chicken Breast,Meat,100,g,Non-Vegetarian,Vitamin B12|Vitamin B6|Vitamin B3 (Niacin)|Net Protein|Selenium|Cholesterol (Total)
 F066,Mutton,Meat,100,g,Non-Vegetarian,Iron|Zinc|Phosphorus|Vitamin B12|Net Protein|Saturated Fat
 F067,Pork,Meat,100,g,Non-Vegetarian,Iron|Vitamin B12|Vitamin B6|Vitamin B1 (Thiamine)|Net Protein|Saturated Fat
@@ -137,8 +137,8 @@ F135,Moong Sprouted,Sprout,100,g,Vegetarian,Folate (Vitamin B9)|Vitamin C|Net Pr
 F136,Bengal Gram Sprouted,Sprout,100,g,Vegetarian,Iron|Folate (Vitamin B9)|Vitamin C|Net Protein|Dietary Fiber|Magnesium
 F137,Tofu,Veggie,100,g,Vegetarian,Calcium|Magnesium|Zinc|Net Protein|Manganese|Copper
 F138,Soy Chunks,Veggie,100,g,Vegetarian,Iron|Calcium|Magnesium|Net Protein|Dietary Fiber|Folate (Vitamin B9)
-F139,Duck Egg,Egg,100,g,Vegetarian,Iron|Vitamin D|Vitamin B12|Vitamin A|Net Protein|Cholesterol (Total)
-F140,Quail Egg,Egg,100,g,Vegetarian,Iron|Vitamin B12|Vitamin B6|Vitamin B2 (Riboflavin)|Net Protein|Cholesterol (Total)
+F139,Duck Egg,Egg,100,g,Non-Vegetarian,Iron|Vitamin D|Vitamin B12|Vitamin A|Net Protein|Cholesterol (Total)
+F140,Quail Egg,Egg,100,g,Non-Vegetarian,Iron|Vitamin B12|Vitamin B6|Vitamin B2 (Riboflavin)|Net Protein|Cholesterol (Total)
 F141,Beef Liver,Meat,100,g,Non-Vegetarian,Iron|Zinc|Vitamin B12|Folate (Vitamin B9)|Vitamin A|Net Protein
 F142,Mutton Liver,Meat,100,g,Non-Vegetarian,Iron|Zinc|Vitamin B12|Folate (Vitamin B9)|Vitamin A|Net Protein
 F143,Chicken Gizzard,Meat,100,g,Non-Vegetarian,Iron|Zinc|Vitamin B12|Net Protein|Selenium|Vitamin B2 (Riboflavin)

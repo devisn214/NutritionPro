@@ -5,6 +5,9 @@ import uuid
 from datetime import datetime
 import pandas as pd
 
+from pdf_working.pdf_service import process_pdf
+
+
 from nutrition_engine.engine import generate_nutrition_plan
 from nutrition_engine.data_loader import load_genes, load_biomarkers
 
@@ -21,6 +24,15 @@ os.makedirs(PROFILE_DIR, exist_ok=True)
 if not os.path.exists(USERS_INDEX):
     with open(USERS_INDEX, "w") as f:
         json.dump([], f, indent=4)
+
+# ------------------ FILE VALIDATION ------------------
+
+ALLOWED_EXTENSIONS = {"pdf"}
+
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# ------------------ HELPERS ------------------
 
 def months_difference(old_date_str):
     old_date = datetime.strptime(old_date_str, "%Y-%m-%d")
@@ -62,6 +74,8 @@ def get_valid_sets():
     valid_biomarkers = set(b.lower() for b in load_biomarkers())
     return valid_genes, valid_biomarkers
 
+# ------------------ ROUTES ------------------
+
 @app.route("/")
 def home():
     return render_template("home.html")
@@ -86,7 +100,31 @@ def save_user():
 
     valid_genes, valid_biomarkers = get_valid_sets()
 
-    # -------- Biomarkers --------
+    # -------- PDF PROCESSING --------
+    pdf_file = request.files.get("report_pdf")
+    pdf_biomarkers = []
+    unknown_biomarkers = []
+
+    print("\n--- PDF DEBUG ---")
+    print("File received:", pdf_file)
+
+    if pdf_file and pdf_file.filename != "" and allowed_file(pdf_file.filename):
+        try:
+            pdf_biomarkers = process_pdf(pdf_file)
+
+            print("\n--- EXTRACTED BIOMARKERS ---")
+            for b in pdf_biomarkers:
+             print(b)
+
+        except Exception as e:
+            print("PDF ERROR:", e)
+
+      
+
+    else:
+        print("No valid PDF uploaded")
+
+    # -------- MANUAL BIOMARKERS --------
     biomarkers = []
     names = form.getlist("biomarker_name[]")
     values = form.getlist("biomarker_value[]")
@@ -108,7 +146,25 @@ def save_user():
             "unit": (u or "").strip()
         })
 
-    # -------- Genes --------
+    # -------- PDF OVERRIDE --------
+    for b in pdf_biomarkers:
+        name = (b.get("name") or "").lower()
+        value = b.get("value")
+        unit = b.get("unit", "")
+
+        if not name or value is None:
+            continue
+
+        if name not in valid_biomarkers:
+            unknown_biomarkers.append({
+                "name": name,
+                "value": value
+            })
+            continue
+
+        update_biomarker(biomarkers, name, float(value), unit)
+
+    # -------- GENES --------
     genes = []
     gene_names = form.getlist("gene_name[]")
     gene_status = form.getlist("gene_status[]")
@@ -125,19 +181,13 @@ def save_user():
             return f"Invalid gene entered: {g}", 400
 
         if s == "normal":
-            genes.append({
-                "name": g,
-                "variant": "Normal"
-            })
+            genes.append({"name": g, "variant": "Normal"})
         else:
             if not v:
                 return f"Variant required for gene {g}", 400
-            genes.append({
-                "name": g,
-                "variant": v
-            })
+            genes.append({"name": g, "variant": v})
 
-    # -------- Profile --------
+    # -------- PROFILE --------
     user_profile = {
         "user_id": user_id,
         "name": form["name"],
@@ -155,7 +205,8 @@ def save_user():
             "genes": today
         },
         "biomarkers": biomarkers,
-        "genes": genes
+        "genes": genes,
+        "unknown_biomarkers": unknown_biomarkers
     }
 
     with open(os.path.join(PROFILE_DIR, f"{user_id}.json"), "w") as f:
@@ -289,7 +340,13 @@ def generate_meal(user_id):
 
     plan = generate_nutrition_plan(user_profile)
 
-    return render_template("result.html", result={"plan": plan},rag_context=plan.get("rag_context", []),evidence=plan.get("rag_context", []) )
+    return render_template(
+        "result.html",
+        result={"plan": plan},
+        rag_context=plan.get("rag_context", []),
+        evidence=plan.get("evidence", []),
+        unknown_biomarkers=user_profile.get("unknown_biomarkers", [])
+    )
 
 
 if __name__ == "__main__":

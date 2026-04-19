@@ -9,7 +9,7 @@
 <div class="container card">
     <h2>New User Registration</h2>
 
-    <form method="POST" action="/save-user" onsubmit="return validateForm()">
+    <form method="POST" action="/save-user" enctype="multipart/form-data" onsubmit="return validateForm()">
 
         <label>Name</label>
         <input type="text" name="name" required>
@@ -42,7 +42,8 @@
             <option value="vegetarian">Vegetarian</option>
             <option value="non-vegetarian">Non-Vegetarian</option>
         </select>
-
+        <h3>Upload Lab Report(PDF)</h3>
+        <input type="file" name="report_pdf" accept=".pdf">
         <hr>
 
         <datalist id="biomarkerList">
@@ -71,7 +72,8 @@
             <button type="submit">Save Profile</button>
             <a href="/"><button type="button" class="back-btn">Back to home</button></a>
         </div>
-
+        
+        
     </form>
 </div>
 

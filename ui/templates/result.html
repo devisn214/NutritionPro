@@ -32,6 +32,17 @@
         <div class="pill">Fat: {{ result.plan.macros.fat_g }}g</div>
     </div>
 
+    {% if result.plan.unknown_biomarkers %}
+    <div class="section-box">
+        <h3>Unrecognized Biomarkers</h3>
+        <ul>
+        {% for b in result.plan.unknown_biomarkers %}
+            <li>{{ b.name }} ({{ b.value }})</li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    
     <!-- ===== BIOMARKERS ===== -->
     {% if result.plan.biomarker_recommendations %}
     <div class="section-box">
@@ -73,7 +84,7 @@
             </div>
 
             <p class="subtext">
-                Influences: {{ rec.nutrient_id }}
+                Influences: {{ rec.name}}
             </p>
 
             <div class="explain-box">
@@ -129,7 +140,7 @@
     </div>
     {% endif %}
 
-    <!-- ===== EXPLAINABLE AI ===== -->
+    <!-- ===== EXPLAINABLE AI ===== 
     {% if result.plan.evidence %}
     <div class="section-box">
         <h3>Explainable AI</h3>
@@ -140,7 +151,7 @@
         </div>
         {% endfor %}
     </div>
-    {% endif %}
+    {% endif %}-->
 
     <!-- ===== CONFIDENCE ===== -->
     <div class="section-box">

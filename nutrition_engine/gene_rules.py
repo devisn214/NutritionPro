@@ -39,6 +39,7 @@ def process_genes(user_gene_results):
             "gene": gene,
             "variant": variant,
             "nutrient_id": row["affected_nutrient"], # Standardized key name
+            "nutrient_name": row["nutrient_name"], # New field for display
             "impact": row["impact"],
             "direction": direction,
             "reason": row["variant_effect"]

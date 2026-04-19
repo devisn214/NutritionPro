@@ -9,7 +9,7 @@
 <div class="container card">
     <h2>Update Profile</h2>
 
-    <form method="POST" action="/save-updated-profile/{{ user.user_id }}" onsubmit="return validateForm()">
+    <form method="POST" action="/save-updated-profile/{{ user.user_id }}" enctype="multipart/form-data" onsubmit="return validateForm()">
 
         <label>Height (cm)</label>
         <input type="number" name="height" value="{{ user.height_cm }}" required>
@@ -18,6 +18,8 @@
         <input type="number" name="weight" value="{{ user.weight_kg }}" required>
 
         <hr>
+        <label>Upload Blood Report (PDF)</label>
+        <input type="file" name="report_pdf" accept=".pdf">
 
         <datalist id="biomarkerList">
             {% for bm in biomarkers %}
