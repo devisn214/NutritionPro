@@ -12,8 +12,8 @@ B010,Serum Sodium,N006,mmol/L,Sodium balance indicator
 B011,Serum Phosphate,N007,mg/dL,Phosphorus status indicator
 B012,Serum Selenium,N008,mcg/L,Selenium blood level
 B013,Serum Copper,N009,mcg/dL,Copper nutritional status
-B014,Thyroid Stimulating Hormone (TSH),N010,µIU/mL,Thyroid function (Iodine linked) [cite: 186]
-B015,25-Hydroxy Vitamin D,N011,ng/mL,Primary Vitamin D status indicator [cite: 88, 800]
+B014,Thyroid Stimulating Hormone (TSH),N010,µIU/mL,Thyroid function (Iodine linked) 
+B015,25-Hydroxy Vitamin D,N011,ng/mL,Primary Vitamin D status indicator 
 B016,Serum Vitamin B12,N012,pg/mL,B12 blood level
 B017,Serum Folate,N013,ng/mL,Folate (B9) status
 B018,Serum Retinol,N014,mcg/dL,Vitamin A status
@@ -21,22 +21,22 @@ B019,Plasma Vitamin C,N015,mg/dL,Vitamin C concentration
 B020,Serum Alpha-Tocopherol,N016,mg/L,Vitamin E level
 B021,Pyridoxal 5-Phosphate (PLP),N018,nmol/L,Active Vitamin B6 level
 B022,Homocysteine (Hcy),N018,µmol/L,Marker for B6/B9/B12 metabolism
-B023,LDL Cholesterol,N024,mg/dL,Atherogenic cholesterol fraction [cite: 51, 631]
-B024,HDL Cholesterol,N024,mg/dL,Reverse cholesterol transport [cite: 42, 631]
+B023,LDL Cholesterol,N024,mg/dL,Atherogenic cholesterol fraction 
+B024,HDL Cholesterol,N024,mg/dL,Reverse cholesterol transport 
 B025,Omega-3 Index,N026,%,EPA+DHA in RBC membranes
-B026,Serum Albumin,N027,g/dL,Protein status indicator [cite: 217, 463]
-B027,HbA1c,N028,%,Long-term carbohydrate metabolism [cite: 146, 662]
-B028,Fasting Glucose,N030,mg/dL,Glycemic impact marker [cite: 12, 394]
+B026,Serum Albumin,N027,g/dL,Protein status indicator 
+B027,HbA1c,N028,%,Long-term carbohydrate metabolism 
+B028,Fasting Glucose,N030,mg/dL,Glycemic impact marker 
 B029,hs-CRP,N053,mg/L,Systemic inflammation marker
-B030,Serum Bilirubin,N052,mg/dL,Heme catabolism marker [cite: 217, 486]
-B031,Triglycerides,N024,mg/dL,Blood fats influenced by sugar and alcohol [cite: 24, 631]
-B032,Uric Acid,N028,mg/dL,Product of purine and fructose metabolism [cite: 7, 421]
-B033,Total Cholesterol,N024,mg/dL,Overall lipid status [cite: 22, 631]
-B034,Hemoglobin,N001,g/dL,Oxygen transport (requires Iron/B12/Folate) [cite: 118, 246]
-B035,Total T3,N008,ng/dL,Active thyroid hormone (requires Selenium) [cite: 186, 730]
-B036,Total T4,N010,mcg/dL,Thyroxine (requires Iodine) [cite: 186, 735]
-B037,Blood Urea Nitrogen (BUN),N027,mg/dL,Protein intake/metabolism indicator [cite: 524]
-B038,Total Protein,N027,g/dL,Overall protein status [cite: 217, 458]
+B030,Serum Bilirubin,N052,mg/dL,Heme catabolism marker
+B031,Triglycerides,N024,mg/dL,Blood fats influenced by sugar and alcohol
+B032,Uric Acid,N028,mg/dL,Product of purine and fructose metabolism 
+B033,Total Cholesterol,N024,mg/dL,Overall lipid status
+B034,Hemoglobin,N001,g/dL,Oxygen transport (requires Iron/B12/Folate) 
+B035,Total T3,N008,ng/dL,Active thyroid hormone (requires Selenium)
+B036,Total T4,N010,mcg/dL,Thyroxine (requires Iodine) 
+B037,Blood Urea Nitrogen (BUN),N027,mg/dL,Protein intake/metabolism indicator
+B038,Total Protein,N027,g/dL,Overall protein status
 B039,Thiamine Pyrophosphate (TPP),N019,nmol/L,Active Vitamin B1 level
 B040,EGRAC,N020,ratio,Riboflavin (B2) function marker
 B041,Serum Niacin,N023,ng/mL,Vitamin B3 status

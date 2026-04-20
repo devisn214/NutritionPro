@@ -38,8 +38,8 @@ def process_genes(user_gene_results):
         recommendations.append({
             "gene": gene,
             "variant": variant,
-            "nutrient_id": row["affected_nutrient"], # Standardized key name
-            "nutrient_name": row["nutrient_name"], # New field for display
+            "nutrient_id": row["affected_nutrient"], 
+            "nutrient_name": row["nutrient_name"], 
             "impact": row["impact"],
             "direction": direction,
             "reason": row["variant_effect"]
