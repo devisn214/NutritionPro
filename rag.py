@@ -80,6 +80,7 @@ class NutritionRAG:
             MATCH (f:Food)-[r:CONTAINS]->(n:Nutrient)
 
             WHERE n.id IN $all_nutrients
+            AND NOT toLower(f.category) IN ['spice','masala','condiment','seasoning']
             AND (
                 $diet_pref = 'non-vegetarian'
                 OR f.diet_type = 'Vegetarian'

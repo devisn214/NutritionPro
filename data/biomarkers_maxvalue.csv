@@ -2,7 +2,7 @@
 B001,Serum Ferritin,30,400,15,150
 B002,Serum Iron,65,175,50,170
 B003,Transferrin Saturation (TSAT),20,50,20,50
-B004,Serum Calcium,8.6,10.3,8.6,10.3
+B004,Serum Calcium,8.4,10.2,8.4,10.2
 B005,Ionized Calcium,1.1,1.35,1.1,1.35
 B006,Bone Specific Alkaline Phosphatase,7,20,7,22
 B007,Serum Magnesium,1.7,2.2,1.7,2.2
@@ -54,7 +54,7 @@ B052,Omega-3 Index,8,12,8,12
 B053,Serum Albumin,3.4,5.4,3.4,5.4
 B054,HbA1c,4,5.6,4,5.6
 B055,Propionate/Acetate Ratio,0.15,0.25,0.15,0.25
-B056,Fasting Glucose,70,99,70,99
+B056,Fasting Glucose,60,99,60,99
 B057,Serum Manganese,4.7,18.3,4.7,18.3
 B058,Serum Choline,7,20,7,20
 B059,hs-CRP,0,1,0,1

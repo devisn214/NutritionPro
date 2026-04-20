@@ -7,26 +7,49 @@ class PDFBiomarkerExtractor:
     def __init__(self):
         pass
 
+    # -------------------------------------------------
+    # STRONG NORMALIZATION
+    # -------------------------------------------------
     def normalize(self, text):
         text = text.lower().strip()
-        text = re.sub(r"\s+", " ", text)
-        return text
 
+        # Replace punctuation with spaces
+        text = re.sub(r"[\(\)\[\],:/_\-]", " ", text)
+
+        # Remove unwanted symbols
+        text = re.sub(r"[^a-z0-9.%+ ]", "", text)
+
+        # Collapse multiple spaces
+        text = re.sub(r"\s+", " ", text)
+
+        return text.strip()
+
+    # -------------------------------------------------
+    # SMART NAME MATCHING
+    # -------------------------------------------------
     def match_name(self, line):
         clean = self.normalize(line)
 
         for std_name, aliases in BIOMARKER_SYNONYMS.items():
-            for alias in aliases:
+
+            # LONGER aliases first
+            sorted_aliases = sorted(aliases, key=len, reverse=True)
+
+            for alias in sorted_aliases:
                 alias_clean = self.normalize(alias)
 
-                if clean.startswith(alias_clean):
+                # containment match
+                if alias_clean in clean:
                     return std_name, alias_clean
 
         return None, None
 
+    # -------------------------------------------------
+    # UNIT EXTRACTION
+    # -------------------------------------------------
     def get_unit(self, line):
         m = re.search(
-            r"(mg/dl|g/dl|ng/ml|pg/ml|u/l|iu/ml|mm/hr|%|ratio|µg/dl|µiu/ml)",
+            r"(mg/dl|g/dl|ng/ml|pg/ml|u/l|iu/ml|mm/hr|%|ratio|µg/dl|µiu/ml|mcg/dl)",
             line.lower()
         )
 
@@ -35,15 +58,24 @@ class PDFBiomarkerExtractor:
 
         return ""
 
+    # -------------------------------------------------
+    # VALUE SAME LINE
+    # -------------------------------------------------
     def extract_value_same_line(self, line, alias):
         clean = self.normalize(line)
-        remain = clean[len(alias):].strip()
+
+        pos = clean.find(alias)
+
+        if pos == -1:
+            return None
+
+        remain = clean[pos + len(alias):].strip()
 
         if not remain:
             return None
 
-        if re.search(r"\d+\s*-\s*\d+", remain):
-            remain = re.sub(r"\d+\s*-\s*\d+", "", remain)
+        # Remove ranges like 70-100
+        remain = re.sub(r"\d+\s*-\s*\d+", "", remain)
 
         nums = re.findall(r"\d+\.\d+|\d+", remain)
 
@@ -55,7 +87,11 @@ class PDFBiomarkerExtractor:
 
         return None
 
+    # -------------------------------------------------
+    # VALUE NEXT LINES
+    # -------------------------------------------------
     def extract_value_next_lines(self, lines, i):
+
         blocked = [
             "reference", "range", "adult", "male", "female",
             "method", "units", "normal", "prediabetes",
@@ -65,21 +101,25 @@ class PDFBiomarkerExtractor:
         ]
 
         for j in range(1, 6):
+
             if i + j >= len(lines):
                 break
 
             nxt = lines[i + j].strip()
-            low = nxt.lower()
 
             if not nxt:
                 continue
 
+            low = nxt.lower()
+
             if any(word in low for word in blocked):
                 continue
 
+            # Skip ranges
             if re.search(r"\d+\s*-\s*\d+", nxt):
                 continue
 
+            # Skip < or >
             if "<" in nxt or ">" in nxt:
                 continue
 
@@ -89,6 +129,7 @@ class PDFBiomarkerExtractor:
                 try:
                     val = float(nums[0])
 
+                    # ESR false catch avoid
                     if "hr" in low and val < 5:
                         continue
 
@@ -104,13 +145,18 @@ class PDFBiomarkerExtractor:
 
         return None
 
+    # -------------------------------------------------
+    # MAIN EXTRACTION
+    # -------------------------------------------------
     def extract(self, text):
+
         lines = text.splitlines()
 
         results = []
         used = set()
 
         for i, line in enumerate(lines):
+
             line = line.strip()
 
             if not line:
@@ -127,7 +173,9 @@ class PDFBiomarkerExtractor:
             value = self.extract_value_same_line(line, alias)
             unit = self.get_unit(line)
 
+            # If not same line, check next lines
             if value is None:
+
                 value = self.extract_value_next_lines(lines, i)
 
                 for j in range(1, 4):
@@ -135,6 +183,7 @@ class PDFBiomarkerExtractor:
                         unit = self.get_unit(lines[i + j]) or unit
 
             if value is not None:
+
                 results.append({
                     "name": biomarker,
                     "value": value,

@@ -321,3 +321,137 @@ hr {
 .results-page .confidence-bar {
     transition: width 0.8s ease;
 }
+/* AFTER SAVE LOADER ONLY */
+
+.loading-screen{
+    text-align:center;
+}
+
+.loading-sub{
+    color:#555;
+    margin-bottom:25px;
+}
+
+.progress-ring-wrap{
+    display:flex;
+    justify-content:center;
+    margin:25px 0;
+}
+
+.progress-ring{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#1eb2a6,#0f4c75);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-size:26px;
+    font-weight:bold;
+    box-shadow:0 10px 30px rgba(0,0,0,0.15);
+    animation:pulseRing 1.2s infinite;
+}
+
+.progress-bar-wrap{
+    width:100%;
+    height:12px;
+    background:#e6eef5;
+    border-radius:30px;
+    overflow:hidden;
+    margin:20px 0;
+}
+
+.progress-bar-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,#1eb2a6,#0f4c75);
+    transition:0.3s;
+}
+
+.loading-step{
+    font-weight:600;
+    color:#0f4c75;
+    margin-top:15px;
+}
+
+@keyframes pulseRing{
+    0%{transform:scale(1);}
+    50%{transform:scale(1.05);}
+    100%{transform:scale(1);}
+}
+.score-wrap{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:relative;
+    margin:20px 0;
+}
+
+.score-circle-svg{
+    width:160px;
+    height:160px;
+    transform:rotate(-90deg);
+}
+
+.score-circle-svg circle{
+    fill:none;
+    stroke-width:10;
+    stroke:#e6eef5;
+}
+
+.score-circle-svg circle:nth-child(2){
+    stroke:#1eb2a6;
+    stroke-dasharray:377;
+    stroke-dashoffset:377;
+    transition:1.2s ease;
+}
+
+.score-text{
+    position:absolute;
+    font-size:22px;
+    font-weight:bold;
+    color:#0f4c75;
+}
+.meal-grid{
+    display:flex;
+    gap:15px;
+    justify-content:space-between;
+}
+
+.meal-card{
+    flex:1;
+    padding:15px;
+    border-radius:10px;
+    background:#f8fbff;
+    border-left:5px solid #0f4c75;
+}
+
+.meal-card h4{
+    margin:0 0 10px 0;
+}
+
+.breakfast{border-color:#1eb2a6;}
+.lunch{border-color:#0f4c75;}
+.dinner{border-color:#f39c12;}
+.risk-low{background:#ffe6e6;}
+.risk-high{background:#fff3e0;}
+.risk-normal{background:#e8f5e9;}
+.toggle-btn{
+    background:#0f4c75;
+    color:white;
+    border:none;
+    padding:6px 12px;
+    border-radius:6px;
+    font-size:12px;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+.toggle-btn:hover{
+    opacity:0.9;
+}
+
+.hidden{
+    display:none;
+}

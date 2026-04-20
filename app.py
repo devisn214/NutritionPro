@@ -215,7 +215,8 @@ def save_user():
     with open(USERS_INDEX, "r") as f:
         users = json.load(f)
 
-    users.append(user_id)
+    if user_id not in users:
+        users.append(user_id)
 
     with open(USERS_INDEX, "w") as f:
         json.dump(users, f, indent=4)
@@ -284,6 +285,25 @@ def save_updated_profile(user_id):
 
     today = datetime.today().strftime("%Y-%m-%d")
     valid_genes, valid_biomarkers = get_valid_sets()
+    # ---------- PDF UPDATE PROCESS ----------
+    pdf_file = request.files.get("report_pdf")
+
+    if pdf_file and pdf_file.filename != "" and allowed_file(pdf_file.filename):
+         try:
+            pdf_biomarkers = process_pdf(pdf_file)
+
+            for b in pdf_biomarkers:
+                name = (b.get("name") or "").lower()
+                value = b.get("value")
+                unit = b.get("unit", "")
+
+                if name in valid_biomarkers and value is not None:
+                    update_biomarker(user["biomarkers"], name, float(value), unit)
+
+            user["last_updated"]["biomarkers"] = today
+
+         except Exception as e:
+            print("PDF UPDATE ERROR:", e)
 
     if request.form.get("height"):
         user["height_cm"] = float(request.form["height"])

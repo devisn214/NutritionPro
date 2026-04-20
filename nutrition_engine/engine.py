@@ -19,7 +19,7 @@ def generate_nutrition_plan(user):
 
     calories = round(bmr * activity_factor)
 
-    # ===== 2. BIOMARKERS & GENES =====
+    # ===== 2. USER DATA =====
     biomarkers = user.get("biomarkers", []) or []
     genes = user.get("genes", []) or []
 
@@ -28,6 +28,7 @@ def generate_nutrition_plan(user):
 
     # ===== 3. RAG =====
     rag = NutritionRAG()
+
     rag_context = rag.retrieve_context(
         biomarkers=biomarkers,
         genes=genes,
@@ -39,15 +40,15 @@ def generate_nutrition_plan(user):
     evidence = rag.last_evidence or []
     rag.close()
 
-    # ===== 4. MACROS FROM FOODS =====
+    # ===== 4. MACROS =====
     macros = calculate_macros_from_foods(rag_context)
 
-    # ===== 5. FALLBACK (VERY IMPORTANT) =====
     if macros["protein_g"] == 0 and macros["carbs_g"] == 0:
         macros = fallback_macros(calories)
 
-    # ===== 6. LLM =====
+    # ===== 5. LLM =====
     llm = NutritionLLM()
+
     llm_recommendation = llm.generate_plan(
         user_profile=user,
         rag_context=rag_context,
@@ -55,6 +56,29 @@ def generate_nutrition_plan(user):
         macros=macros
     )
 
+    # ===== 6. NUTRITION EVIDENCE SCORE =====
+    score = 0
+
+# Biomarkers (max 45)
+    score += min(len(biomarker_recs) * 12, 45)
+
+# Genes (max 20)
+    score += min(len(gene_recs) * 10, 20)
+
+# Food Matches (max 20)
+    score += min(len(rag_context) * 2, 20)
+
+# LLM Meal Plan Quality
+    if llm_recommendation and "Service Error" not in llm_recommendation:
+        score += 10
+
+# Macro Available
+    if macros["protein_g"] > 0:
+        score += 5
+
+    confidence = min(round(score), 100)
+
+    # ===== RETURN =====
     return {
         "calories": calories,
         "macros": macros,
@@ -62,7 +86,8 @@ def generate_nutrition_plan(user):
         "gene_recommendations": gene_recs,
         "rag_context": rag_context,
         "llm_recommendation": llm_recommendation,
-        "evidence": evidence
+        "evidence": evidence,
+        "confidence": confidence
     }
 
 

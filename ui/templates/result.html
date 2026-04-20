@@ -18,87 +18,90 @@
 
 <div class="container card">
 
-    <!-- ===== HEADER ===== -->
+    <!-- HEADER -->
     <div class="header">
         <h2>🍽 Personalized Nutrition Plan</h2>
-        <p class="subtext">AI-powered insights based on biomarkers, genetics & food knowledge</p>
+        <p class="subtext">
+            AI-powered insights based on biomarkers, genetics & food knowledge
+        </p>
     </div>
 
-    <!-- ===== SUMMARY ===== -->
+    <!-- SUMMARY -->
     <div class="summary-pills">
-        <div class="pill pill-main"> {{ result.plan.calories }} kcal</div>
+        <div class="pill pill-main">{{ result.plan.calories }} kcal</div>
         <div class="pill">Protein: {{ result.plan.macros.protein_g }}g</div>
         <div class="pill">Carbs: {{ result.plan.macros.carbs_g }}g</div>
-        <div class="pill">Fat: {{ result.plan.macros.fat_g }}g</div>
+        <div class="pill">Fat: {{ result.plan.macros.fats_g }}g</div>
     </div>
 
-    {% if result.plan.unknown_biomarkers %}
-    <div class="section-box">
-        <h3>Unrecognized Biomarkers</h3>
-        <ul>
-        {% for b in result.plan.unknown_biomarkers %}
-            <li>{{ b.name }} ({{ b.value }})</li>
-        {% endfor %}
-        </ul>
-    </div>
-    {% endif %}
-    
-    <!-- ===== BIOMARKERS ===== -->
+    <!-- BIOMARKERS -->
     {% if result.plan.biomarker_recommendations %}
     <div class="section-box">
-        <h3> Biomarker Analysis</h3>
+        <h3>Biomarker Analysis</h3>
 
         {% for rec in result.plan.biomarker_recommendations %}
-        <div class="insight-card">
+        <div class="insight-card
+            {% if rec.status == 'low' %}risk-low
+            {% elif rec.status == 'high' %}risk-high
+            {% else %}risk-normal{% endif %}
+        ">
+
             <div class="insight-header">
                 <strong>{{ rec.biomarker }}</strong>
-                <span class="status-badge {{ 'status-low' if rec.direction=='increase' else 'status-high' }}">
-                    {{ rec.status }}
-                </span>
+                <span class="status-badge">{{ rec.status }}</span>
             </div>
 
             <p class="subtext">
-                Current: {{ rec.current_value }} | Normal: {{ rec.low }} – {{ rec.high }}
+                Current: {{ rec.current_value }} |
+                Normal: {{ rec.low }} – {{ rec.high }}
             </p>
 
-            <div class="explain-box">
-                <b>Why this matters:</b><br>
+            <button class="toggle-btn" onclick="toggleExplain(this)">
+                Explain AI reasoning ▼
+            </button>
+
+            <div class="explain-box hidden">
                 Your <b>{{ rec.biomarker }}</b> is {{ rec.status }},
                 so your body needs <b>{{ rec.direction }} {{ rec.target_nutrient }}</b>.
             </div>
+
         </div>
         {% endfor %}
     </div>
     {% endif %}
 
-    <!-- ===== GENES ===== -->
+    <!-- GENES -->
     {% if result.plan.gene_recommendations %}
     <div class="section-box">
         <h3>Genetic Insights</h3>
 
         {% for rec in result.plan.gene_recommendations %}
         <div class="insight-card">
+
             <div class="insight-header">
                 <strong>{{ rec.gene }}</strong>
                 <span class="gene-variant">{{ rec.variant }}</span>
             </div>
 
-            <p class="subtext">
-                Influences: {{ rec.name}}
-            </p>
+            <p class="subtext">Influences: {{ rec.name }}</p>
 
-            <div class="explain-box">
-                <b>Biological Impact:</b><br>
+            <button class="toggle-btn" onclick="toggleExplain(this)">
+                Explain AI reasoning ▼
+            </button>
+
+            <div class="explain-box hidden">
                 {{ rec.reason }}<br><br>
-                <b>Recommended Action:</b>
-                {{ rec.direction }} intake of this nutrient.
+                Recommended: {{ rec.direction }} intake of this nutrient.
             </div>
+
         </div>
         {% endfor %}
     </div>
     {% endif %}
 
-    <!-- ===== FOOD TABLE ===== -->
+    
+
+    <!-- FOOD TABLE -->
     {% if rag_context %}
     <div class="section-box">
         <h3>Recommended Foods</h3>
@@ -112,6 +115,7 @@
                     <th>Score</th>
                 </tr>
             </thead>
+
             <tbody>
                 {% for item in rag_context %}
                 <tr>
@@ -130,7 +134,7 @@
     </div>
     {% endif %}
 
-    <!-- ===== AI PLAN ===== -->
+    <!-- AI PLAN -->
     {% if result.plan.llm_recommendation %}
     <div class="section-box">
         <h3>AI Meal Plan</h3>
@@ -140,62 +144,60 @@
     </div>
     {% endif %}
 
-    <!-- ===== EXPLAINABLE AI ===== 
-    {% if result.plan.evidence %}
+    <!-- SCORE -->
     <div class="section-box">
-        <h3>Explainable AI</h3>
+        <h3>Personalized Fit Score</h3>
 
-        {% for e in result.plan.evidence %}
-        <div class="explain-box">
-            {{ e.logic_path }}
+        {% set conf = result.plan.confidence %}
+
+        <div class="score-wrap">
+            <svg class="score-circle-svg">
+                <circle cx="70" cy="70" r="60"></circle>
+                <circle cx="70" cy="70" r="60" id="progressCircle"></circle>
+            </svg>
+
+            <div class="score-text">{{ conf }}%</div>
         </div>
-        {% endfor %}
-    </div>
-    {% endif %}-->
-
-    <!-- ===== CONFIDENCE ===== -->
-    <div class="section-box">
-        <h3>Model Confidence</h3>
-
-        {% set conf = (
-            (rag_context|length * 5) +
-            (result.plan.biomarker_recommendations|length * 7)
-        ) %}
 
         <p class="subtext">
-            Confidence derived from biological signals + knowledge graph matches
+            AI confidence based on biological + nutrition evidence
         </p>
-
-        <div class="confidence-wrapper">
-            <div class="confidence-bar" data-width="{{ conf }}">
-                {{ conf }}%
-            </div>
-        </div>
     </div>
 
-    <!-- ===== NAV ===== -->
+    <!-- NAV -->
     <div class="nav">
         <a href="/" class="back-link">← Back to Dashboard</a>
     </div>
 
 </div>
-</div>
 
-<!-- ===== SCRIPT ===== -->
+<!-- SAFE SCRIPT (FIXED JINJA ISSUE) -->
 <script>
-    // Loading
-    setTimeout(() => {
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("content").classList.remove("hidden");
-    }, 1000);
 
-    // Confidence bar animation
-    const bar = document.querySelector(".confidence-bar");
-    if (bar) {
-        let width = parseInt(bar.getAttribute("data-width")) || 0;
-        width = Math.min(width, 100);
-        bar.style.width = width + "%";
-    }
+function toggleExplain(btn){
+    const box = btn.nextElementSibling;
+    box.classList.toggle("hidden");
+}
+
+// SAFE injection using JSON parsing
+const score = JSON.parse('{{ result.plan.confidence | tojson | safe }}');
+
+const circle = document.getElementById("progressCircle");
+
+if(circle){
+    const radius = circle.r.baseVal.value;
+    const circumference = 2 * Math.PI * radius;
+
+    circle.style.strokeDasharray = circumference;
+    circle.style.strokeDashoffset = circumference;
+
+    const offset = circumference - (score / 100) * circumference;
+
+    setTimeout(() => {
+        circle.style.strokeDashoffset = offset;
+    }, 300);
+}
+
 </script>
 
 </body>
