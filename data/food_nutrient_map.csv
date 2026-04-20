@@ -125,7 +125,7 @@ N008,F021,Mushroom,Selenium,9.3,mcg
 N020,F021,Mushroom,Vitamin B2 (Riboflavin),0.4,mg
 N023,F021,Mushroom,Vitamin B3 (Niacin),3.6,mg
 N027,F021,Mushroom,Net Protein,3.1,g
-N032,F021,Mushroom,Choline,17,mg
+
 N011,F021,Mushroom,Vitamin D,18.3,mcg
 N005,F022,Potato,Potassium,421,mg
 N015,F022,Potato,Vitamin C,19.7,mg
@@ -672,12 +672,12 @@ N003,F118,Karikku (Coconut Water),Magnesium,25,mg
 N005,F118,Karikku (Coconut Water),Potassium,250,mg
 N006,F118,Karikku (Coconut Water),Sodium,105,mg
 N002,F118,Karikku (Coconut Water),Calcium,24,mg
-N032,F118,Karikku (Coconut Water),Choline,1.1,mg
+
 N030,F118,Karikku (Coconut Water),Glucose/Glycemic Impact,3,index
 N025,F119,Coconut Oil,Saturated Fat,87,g
 N016,F119,Coconut Oil,Vitamin E,0.1,mg
 N017,F119,Coconut Oil,Vitamin K,0.5,mcg
-N032,F119,Coconut Oil,Choline,0.3,mg
+
 N024,F119,Coconut Oil,Cholesterol (Total),0,mg
 N026,F119,Coconut Oil,Omega-3 Fatty Acids,0,g
 N016,F120,Nallenna (Sesame Oil),Vitamin E,1.4,mg
@@ -685,13 +685,13 @@ N017,F120,Nallenna (Sesame Oil),Vitamin K,13.6,mcg
 N026,F120,Nallenna (Sesame Oil),Omega-3 Fatty Acids,0.3,g
 N025,F120,Nallenna (Sesame Oil),Saturated Fat,14.2,g
 N024,F120,Nallenna (Sesame Oil),Cholesterol (Total),0,mg
-N032,F120,Nallenna (Sesame Oil),Choline,0.2,mg
+
 N016,F121,Rice Bran Oil,Vitamin E,32.3,mg
 N017,F121,Rice Bran Oil,Vitamin K,24.7,mcg
 N025,F121,Rice Bran Oil,Saturated Fat,19.7,g
 N026,F121,Rice Bran Oil,Omega-3 Fatty Acids,1.6,g
 N024,F121,Rice Bran Oil,Cholesterol (Total),0,mg
-N032,F121,Rice Bran Oil,Choline,0.4,mg
+
 N001,F122,Manjal (Turmeric),Iron,41.4,mg
 N031,F122,Manjal (Turmeric),Manganese,26.3,mg
 N018,F122,Manjal (Turmeric),Vitamin B6,1.8,mg
@@ -1056,19 +1056,19 @@ N016,F182,Sunflower Oil,Vitamin E,41,mg
 N025,F182,Sunflower Oil,Saturated Fat,10.3,g
 N026,F182,Sunflower Oil,Omega-3 Fatty Acids,0,g
 N024,F182,Sunflower Oil,Cholesterol (Total),0,mg
-N032,F182,Sunflower Oil,Choline,0.4,mg
+
 N017,F182,Sunflower Oil,Vitamin K,5.4,mcg
 N016,F183,Olive Oil,Vitamin E,14.4,mg
 N017,F183,Olive Oil,Vitamin K,60.2,mcg
 N025,F183,Olive Oil,Saturated Fat,13.8,g
 N026,F183,Olive Oil,Omega-3 Fatty Acids,0.8,g
 N024,F183,Olive Oil,Cholesterol (Total),0,mg
-N032,F183,Olive Oil,Choline,0.3,mg
+
 N014,F184,Palm Oil,Vitamin A,75,mcg
 N016,F184,Palm Oil,Vitamin E,15.9,mg
 N025,F184,Palm Oil,Saturated Fat,49.3,g
 N024,F184,Palm Oil,Cholesterol (Total),0,mg
-N032,F184,Palm Oil,Choline,0.3,mg
+
 N017,F184,Palm Oil,Vitamin K,8,mcg
 N011,F185,Fish Oil,Vitamin D,100,mcg
 N014,F185,Fish Oil,Vitamin A,3000,mcg
@@ -1122,7 +1122,7 @@ N003,F193,Coffee,Magnesium,2,mg
 N023,F193,Coffee,Vitamin B3 (Niacin),0.2,mg
 N030,F193,Coffee,Glucose/Glycemic Impact,0,index
 N005,F193,Coffee,Potassium,49,mg
-N032,F193,Coffee,Choline,2.6,mg
+
 N031,F193,Coffee,Manganese,0.1,mg
 N002,F194,Bone Broth,Calcium,10,mg
 N003,F194,Bone Broth,Magnesium,5,mg

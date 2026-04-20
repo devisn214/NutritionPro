@@ -19,7 +19,7 @@ F017,Green Chilli,Veg,100,g,Vegetarian,Magnesium|Potassium|Vitamin A|Vitamin C|V
 F018,Brinjal (Eggplant),Veg,100,g,Vegetarian,Iron|Zinc|Potassium|Dietary Fiber|Vitamin B6|Manganese
 F019,Mathanga (Pumpkin),Veg,100,g,Vegetarian,Magnesium|Potassium|Vitamin A|Vitamin C|Dietary Fiber|Total Carbohydrates
 F020,Green Peas,Veg,100,g,Vegetarian,Magnesium|Potassium|Folate (Vitamin B9)|Vitamin C|Net Protein|Dietary Fiber
-F021,Mushroom,Veg,100,g,Vegetarian,Potassium|Selenium|Vitamin B2 (Riboflavin)|Vitamin B3 (Niacin)|Net Protein|Choline|Vitamin D
+F021,Mushroom,Veg,100,g,Vegetarian,Potassium|Selenium|Vitamin B2 (Riboflavin)|Vitamin B3 (Niacin)|Net Protein|Vitamin D
 F022,Potato,Veg,100,g,Vegetarian,Potassium|Vitamin C|Vitamin B6|Total Carbohydrates|Dietary Fiber|Glucose/Glycemic Impact
 F023,Sweet Potato,Veg,100,g,Vegetarian,Potassium|Vitamin A|Vitamin B5 (Pantothenic Acid)|Total Carbohydrates|Dietary Fiber|Vitamin B6
 F024,Chena (Yam),Veg,100,g,Vegetarian,Potassium|Vitamin C|Vitamin B6|Total Carbohydrates|Dietary Fiber|Magnesium
@@ -116,10 +116,10 @@ F114,Apple,Fruit,100,g,Vegetarian,Potassium|Vitamin C|Vitamin K|Dietary Fiber|To
 F115,Chikoo (Sapota),Fruit,100,g,Vegetarian,Iron|Calcium|Magnesium|Potassium|Vitamin C|Dietary Fiber
 F116,Custard Apple,Fruit,100,g,Vegetarian,Iron|Calcium|Magnesium|Potassium|Vitamin C|Total Carbohydrates
 F117,Ripe Jackfruit,Fruit,100,g,Vegetarian,Magnesium|Potassium|Vitamin C|Vitamin B6|Total Carbohydrates|Dietary Fiber
-F118,Karikku (Coconut Water),Drink,100,ml,Vegetarian,Magnesium|Potassium|Sodium|Calcium|Choline|Glucose/Glycemic Impact
-F119,Coconut Oil,Oil,100,ml,Vegetarian,Saturated Fat|Vitamin E|Vitamin K|Choline|Cholesterol (Total)|Omega-3 Fatty Acids
-F120,Nallenna (Sesame Oil),Oil,100,ml,Vegetarian,Vitamin E|Vitamin K|Omega-3 Fatty Acids|Saturated Fat|Cholesterol (Total)|Choline
-F121,Rice Bran Oil,Oil,100,ml,Vegetarian,Vitamin E|Vitamin K|Saturated Fat|Omega-3 Fatty Acids|Cholesterol (Total)|Choline
+F118,Karikku (Coconut Water),Drink,100,ml,Vegetarian,Magnesium|Potassium|Sodium|Calcium|Glucose/Glycemic Impact
+F119,Coconut Oil,Oil,100,ml,Vegetarian,Saturated Fat|Vitamin E|Vitamin K|Cholesterol (Total)|Omega-3 Fatty Acids
+F120,Nallenna (Sesame Oil),Oil,100,ml,Vegetarian,Vitamin E|Vitamin K|Omega-3 Fatty Acids|Saturated Fat|Cholesterol (Total)
+F121,Rice Bran Oil,Oil,100,ml,Vegetarian,Vitamin E|Vitamin K|Saturated Fat|Omega-3 Fatty Acids|Cholesterol (Total)
 F122,Manjal (Turmeric),Spice,100,g,Vegetarian,Iron|Manganese|Vitamin B6|Vitamin C|Glucose/Glycemic Impact|Potassium
 F123,Black Pepper,Spice,100,g,Vegetarian,Manganese|Vitamin K|Iron|Copper|Calcium|Magnesium
 F124,Inchi (Ginger),Spice,100,g,Vegetarian,Iron|Magnesium|Potassium|Vitamin C|Glucose/Glycemic Impact|Manganese
@@ -180,9 +180,9 @@ F178,Pecan,Nut,100,g,Vegetarian,Magnesium|Zinc|Vitamin E|Manganese|Copper|Dietar
 F179,Macadamia,Nut,100,g,Vegetarian,Vitamin B1 (Thiamine)|Saturated Fat|Manganese|Copper|Magnesium|Dietary Fiber
 F180,Hazelnut,Nut,100,g,Vegetarian,Magnesium|Copper|Vitamin E|Manganese|Net Protein|Dietary Fiber
 F181,Kasakas (Poppy Seeds),Seed,100,g,Vegetarian,Iron|Calcium|Magnesium|Manganese|Phosphorus|Copper
-F182,Sunflower Oil,Oil,100,ml,Vegetarian,Vitamin E|Saturated Fat|Omega-3 Fatty Acids|Cholesterol (Total)|Choline|Vitamin K
-F183,Olive Oil,Oil,100,ml,Vegetarian,Vitamin E|Vitamin K|Saturated Fat|Omega-3 Fatty Acids|Cholesterol (Total)|Choline
-F184,Palm Oil,Oil,100,ml,Vegetarian,Vitamin A|Vitamin E|Saturated Fat|Cholesterol (Total)|Choline|Vitamin K
+F182,Sunflower Oil,Oil,100,ml,Vegetarian,Vitamin E|Saturated Fat|Omega-3 Fatty Acids|Cholesterol (Total)|Vitamin K
+F183,Olive Oil,Oil,100,ml,Vegetarian,Vitamin E|Vitamin K|Saturated Fat|Omega-3 Fatty Acids|Cholesterol (Total)
+F184,Palm Oil,Oil,100,ml,Vegetarian,Vitamin A|Vitamin E|Saturated Fat|Cholesterol (Total)|Vitamin K
 F185,Fish Oil,Supplement,10,ml,Non-Vegetarian,Vitamin D|Vitamin A|Omega-3 Fatty Acids|Cholesterol (Total)|Saturated Fat|Vitamin E
 F186,Cod Liver Oil,Supplement,10,ml,Non-Vegetarian,Vitamin D|Vitamin A|Omega-3 Fatty Acids|Cholesterol (Total)|Saturated Fat|Vitamin E
 F187,Brewer's Yeast,Veggie,100,g,Vegetarian,Folate (Vitamin B9)|Vitamin B6|Vitamin B1 (Thiamine)|Vitamin B2 (Riboflavin)|Vitamin B7 (Biotin)|Vitamin B3 (Niacin)
@@ -191,7 +191,7 @@ F189,Nutritional Yeast,Veggie,100,g,Vegetarian,Vitamin B12|Folate (Vitamin B9)|V
 F190,Dark Cocoa Powder,Veggie,100,g,Vegetarian,Iron|Magnesium|Zinc|Copper|Manganese|Dietary Fiber
 F191,Green Tea,Drink,1,cup,Vegetarian,Glucose/Glycemic Impact|Manganese|Potassium|Magnesium|Vitamin C|Sodium
 F192,Black Tea,Drink,1,cup,Vegetarian,Glucose/Glycemic Impact|Manganese|Potassium|Magnesium|Fluoride|Sodium
-F193,Coffee,Drink,1,cup,Vegetarian,Magnesium|Vitamin B3 (Niacin)|Glucose/Glycemic Impact|Potassium|Choline|Manganese
+F193,Coffee,Drink,1,cup,Vegetarian,Magnesium|Vitamin B3 (Niacin)|Glucose/Glycemic Impact|Potassium|Manganese
 F194,Bone Broth,Meat,1,cup,Non-Vegetarian,Calcium|Magnesium|Potassium|Net Protein|Sodium|Phosphorus
 F195,Gelatin,Meat,100,g,Non-Vegetarian,Net Protein|Sodium|Copper|Selenium|Calcium|Magnesium
 F196,Honey,Sweet,1,tbsp,Vegetarian,Glucose/Glycemic Impact|Potassium|Magnesium|Calcium|Vitamin C|Iron
