@@ -3,7 +3,89 @@
 <head>
     <title>Next Step</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        html, body{
+            margin:0;
+            padding:0;
+            width:100%;
+            height:100%;
+            background:linear-gradient(135deg, #0f4c75, #1eb2a6);
+        }
+
+        .hidden{
+            display:none;
+        }
+
+        #loaderScreen{
+            position:fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            background:linear-gradient(135deg, #0f4c75, #1eb2a6);
+            padding:20px;
+            z-index:9999;
+        }
+
+        #loaderScreen.show{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+        }
+
+        .loading-box{
+            text-align:center;
+            max-width:500px;
+            width:100%;
+        }
+
+        .spinner{
+            width:75px;
+            height:75px;
+            margin:25px auto;
+            border:6px solid #dbeafe;
+            border-top:6px solid #2563ef;
+            border-radius:50%;
+            animation:spin 1s linear infinite;
+        }
+
+        @keyframes spin{
+            from{transform:rotate(0deg);}
+            to{transform:rotate(360deg);}
+        }
+
+        .loading-text{
+            font-size:22px;
+            font-weight:700;
+            color:#111827;
+            margin-top:15px;
+        }
+
+        .subtext{
+            margin-top:10px;
+            color:#111827;
+            font-size:16px;
+            line-height:1.6;
+        }
+
+        .dot::after{
+            content:"";
+            animation:dots 1.5s steps(4,end) infinite;
+        }
+
+        @keyframes dots{
+            0%{content:"";}
+            25%{content:".";}
+            50%{content:"..";}
+            75%{content:"...";}
+            100%{content:"";}
+        }
+
+    </style>
 </head>
+
 <body>
 
 <!-- NORMAL PAGE -->
@@ -21,90 +103,47 @@
         </form>
 
         <a href="/">
-            <button class="back-btn">Return to Home</button>
+            <button type="button" class="back-btn">
+                Return to Home
+            </button>
         </a>
 
     </div>
 
 </div>
 
-
-<!-- LOADER SCREEN -->
+<!-- LOADER PAGE -->
 <div id="loaderScreen" class="hidden">
 
-    <div class="container loading-screen">
+    <div class="loading-box">
 
-        <h2>Generating Your Personalized Plan...</h2>
+        <div class="spinner"></div>
 
-        <p class="loading-sub">
-            Analyzing biomarkers, genes, calories & meal suitability
-        </p>
-
-        <div class="progress-ring-wrap">
-            <div class="progress-ring">
-                <span id="progressNum">0%</span>
-            </div>
+        <div class="loading-text">
+            AI generating meal plan<span class="dot"></span>
         </div>
 
-        <div class="progress-bar-wrap">
-            <div id="progressBar" class="progress-bar-fill"></div>
-        </div>
-
-        <div id="progressText" class="loading-step">
-            Initializing...
+        <div class="subtext">
+            Analyzing your profile, genes, biomarkers and calories
         </div>
 
     </div>
 
 </div>
 
-
 <script>
 
-const form = document.getElementById("mealForm");
-
-form.addEventListener("submit", function(e){
+document.getElementById("mealForm").addEventListener("submit", function(e){
 
     e.preventDefault();
 
     document.getElementById("mainCard").style.display = "none";
-    document.getElementById("loaderScreen").classList.remove("hidden");
 
-    const steps = [
-        "Reading profile...",
-        "Analyzing biomarkers...",
-        "Checking gene variants...",
-        "Matching food database...",
-        "Calculating calories...",
-        "Generating AI meal plan...",
-        "Finalizing report..."
-    ];
+    const loader = document.getElementById("loaderScreen");
+    loader.classList.remove("hidden");
+    loader.classList.add("show");
 
-    let progress = 0;
-    let step = 0;
-
-    const num = document.getElementById("progressNum");
-    const bar = document.getElementById("progressBar");
-    const text = document.getElementById("progressText");
-
-    const interval = setInterval(() => {
-
-        progress++;
-
-        num.innerText = progress + "%";
-        bar.style.width = progress + "%";
-
-        if(progress % 15 === 0 && step < steps.length-1){
-            step++;
-            text.innerText = steps[step];
-        }
-
-        if(progress >= 100){
-            clearInterval(interval);
-            form.submit();
-        }
-
-    }, 25);
+    window.location.href = this.action;
 
 });
 
