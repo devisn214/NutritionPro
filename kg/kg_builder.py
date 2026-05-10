@@ -91,6 +91,7 @@ class NutritionKGBuilder:
                 MATCH (b:Biomarker {id:$id})
                 MERGE (range:Range {biomarker_id:$id})
                 SET range.name = $name,
+                    range.unit = $unit, 
                     range.low_male = coalesce(toFloat($low_male), 0.0),
                     range.high_male = coalesce(toFloat($high_male), 9999.0),
                     range.low_female = coalesce(toFloat($low_female), 0.0),
@@ -99,6 +100,7 @@ class NutritionKGBuilder:
             """, {
                 "id": r.biomarker_id,
                 "name": r["name"],
+                "unit": str(r.get("unit", "")).strip().lower(),
                 "low_male": r.low_male,
                 "high_male": r.high_male,
                 "low_female": r.low_female,

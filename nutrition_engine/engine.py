@@ -2,6 +2,7 @@ from .bmr import calculate_bmr
 from .constants import ACTIVITY_LEVELS
 from .biomarker_rules import process_biomarkers
 from .gene_rules import process_genes
+from .biomarker_interaction import get_biomarker_interactions
 from rag import NutritionRAG
 from llm import NutritionLLM
 
@@ -25,8 +26,27 @@ def generate_nutrition_plan(user):
 
     biomarker_recs = process_biomarkers(biomarkers, user)
     gene_recs = process_genes(genes)
+    biomarker_recs = [b for b in biomarker_recs if b.get("status") != "normal"]
 
-    # ===== 3. RAG =====
+    interaction = get_biomarker_interactions(biomarker_recs)
+
+
+    for nid in interaction["increase"]:
+        biomarker_recs.append({
+            "name": "Interaction Rule",
+            "nutrient_id": nid,
+            "direction": "increase"
+        })
+
+    for nid in interaction["decrease"]:
+        biomarker_recs.append({
+            "name": "Interaction Rule",
+            "nutrient_id": nid,
+            "direction": "decrease"
+        })
+
+    biomarker_recs = remove_duplicate_recommendations(biomarker_recs)
+
     rag = NutritionRAG()
 
     rag_context = rag.retrieve_context(
@@ -84,12 +104,30 @@ def generate_nutrition_plan(user):
         "macros": macros,
         "biomarker_recommendations": biomarker_recs,
         "gene_recommendations": gene_recs,
+        "interaction_notes": interaction["notes"],
         "rag_context": rag_context,
         "llm_recommendation": llm_recommendation,
         "evidence": evidence,
         "confidence": confidence
     }
 
+
+def remove_duplicate_recommendations(recs):
+
+    seen = set()
+    final = []
+
+    for r in recs:
+        key = (
+            r.get("nutrient_id", ""),
+            r.get("direction", "")
+        )
+
+        if key not in seen:
+            seen.add(key)
+            final.append(r)
+
+    return final
 
 
 def calculate_macros_from_foods(rag_context):
@@ -126,7 +164,6 @@ def calculate_macros_from_foods(rag_context):
         "carbs_g": round(carbs, 1),
         "fats_g": round(fat, 1)
     }
-
 
 
 def fallback_macros(calories):

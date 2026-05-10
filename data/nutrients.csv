@@ -30,4 +30,7 @@ N028,Total Carbohydrates,g,macronutrient
 N029,Dietary Fiber,g,carbohydrate
 N030,Glucose/Glycemic Impact,mg/dL,metabolic
 N031,Manganese,mcg/L,mineral
+N032,Monounsaturated Fat,g,lipid
+N033,Polyunsaturated Fat,g,lipid
+N034Soluble Fiber,g,carbohydrate
 

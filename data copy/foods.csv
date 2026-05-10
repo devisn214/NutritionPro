@@ -1,201 +1,201 @@
-food_id,food_name,category,serving_size,serving_unit,nutrients
-F001,Spinach (Raw),Vegetable,30,g,Iron|Calcium|Magnesium|Vitamin C|Folate
-F002,Broccoli,Vegetable,90,g,Calcium|Vitamin C|Vitamin K|Folate
-F003,Carrot,Vegetable,120,g,Vitamin A|Vitamin K|Fiber
-F004,Tomato,Vegetable,120,g,Vitamin C|Potassium|Antioxidants
-F005,Sweet Potato,Vegetable,150,g,Carbohydrates|Vitamin A|Potassium
-F006,Apple,Fruit,180,g,Carbohydrates|Fiber|Vitamin C
-F007,Banana,Fruit,120,g,Potassium|Carbohydrates|Vitamin B6
-F008,Orange,Fruit,130,g,Vitamin C|Folate|Antioxidants
-F009,Blueberries,Fruit,150,g,Antioxidants|Vitamin C|Fiber
-F010,Avocado,Fruit,50,g,Fat|Potassium|Vitamin E
-F011,Oats (Dry),Grain,40,g,Carbohydrates|Protein|Magnesium|Fiber
-F012,Brown Rice (Dry),Grain,45,g,Carbohydrates|Magnesium|Phosphorus
-F013,Quinoa (Dry),Grain,45,g,Protein|Iron|Magnesium
-F014,Whole Wheat Bread,Grain,1,slice,Carbohydrates|Protein|Fiber
-F015,Barley (Dry),Grain,45,g,Carbohydrates|Fiber|Selenium
-F016,Milk,Dairy,240,ml,Calcium|Protein|Vitamin B12
-F017,Yogurt,Dairy,170,g,Protein|Calcium|Probiotics
-F018,Cheese,Dairy,28,g,Calcium|Fat|Protein
-F019,Paneer,Dairy,40,g,Protein|Calcium|Fat
-F020,Egg,Eggs,1,large,Protein|Vitamin D|Vitamin B12
-F021,Salmon,Fish,100,g,Protein|Omega-3|Vitamin D
-F022,Tuna,Fish,100,g,Protein|Omega-3|Vitamin B12
-F023,Sardines,Fish,100,g,Omega-3|Calcium|Vitamin D
-F024,Chicken Breast,Meat,100,g,Protein|Vitamin B6|Phosphorus
-F025,Lean Beef,Meat,100,g,Protein|Iron|Vitamin B12
-F026,Lentils (Dry),Legume,35,g,Protein|Iron|Folate
-F027,Chickpeas (Dry),Legume,35,g,Protein|Fiber|Iron
-F028,Black Beans (Dry),Legume,35,g,Protein|Fiber|Magnesium
-F029,Tofu,Legume,100,g,Protein|Calcium|Iron
-F030,Soy Milk,Legume,240,ml,Protein|Calcium|Vitamin B12
-F031,Almonds,Nuts,28,g,Fat|Vitamin E|Magnesium|Cholestrol
-F032,Walnuts,Nuts,28,g,Omega-3|Fat|Antioxidants
-F033,Peanuts,Nuts,28,g,Protein|Fat|Niacin|Cholestrol
-F034,Chia Seeds,Seeds,12,g,Omega-3|Fiber|Calcium
-F035,Flax Seeds,Seeds,10,g,Omega-3|Fiber|Magnesium
-F036,Olive Oil,Oil,15,ml,Fat|Antioxidants|Cholestrol
-F037,Coconut Oil,Oil,15,ml,Fat|Cholestrol
-F038,Sunflower Oil,Oil,15,ml,Vitamin E|Fat|Cholestrol
-F039,Butter,Dairy Fat,14,g,Fat|Vitamin A|Cholestrol
-F040,Ghee,Dairy Fat,14,g,Fat|Vitamin A|Cholestrol
-F041,Dark Chocolate,Sweets,28,g,Magnesium|Antioxidants
-F042,Green Tea,Beverage,240,ml,Antioxidants
-F043,Coffee,Beverage,240,ml,Antioxidants
-F044,Turmeric,Spice,1,g,Antioxidants|Anti-inflammatory
-F045,Ginger,Spice,2,g,Antioxidants|Digestive Support
-F046,Brazil Nuts,Nuts,5,g,Selenium|Fat|Magnesium
-F047,Mushrooms,Vegetable,70,g,Vitamin B5|Vitamin B2|Selenium
-F048,Sunflower Seeds,Seeds,28,g,Vitamin E|Vitamin B1|Vitamin B6
-F049,Pork Lean,Meat,100,g,Vitamin B1|Protein|Zinc
-F050,Beef Liver,Organ Meat,85,g,Vitamin A|Vitamin B12|Vitamin B7|Iron
-F051,Oysters,Seafood,85,g,Zinc|Vitamin B12|Copper|Iodine
-F052,Seaweed (Nori),Vegetable,3,g,Iodine|Vitamin K|Antioxidants
-F053,Kale (Raw),Vegetable,25,g,Vitamin K|Vitamin C|Vitamin A
-F054,Yeast Extract,Condiment,2,g,Vitamin B3|Vitamin B1|Vitamin B12
-F055,Peas,Legume,80,g,Vitamin B1|Vitamin B3|Fiber
-F056,Shrimp,Seafood,100,g,Iodine|Protein|Selenium
-F057,Pumpkin Seeds,Seeds,28,g,Zinc|Magnesium|Iron
-F058,Wheat Germ,Grain,7,g,Vitamin B1|Vitamin E|Folate
-F059,Yogurt (Greek),Dairy,170,g,Protein|Iodine|Calcium
-F060,Cashews,Nuts,28,g,Copper|Magnesium|Fat|Cholestrol
-F061,Bajra (Pearl Millet),Grain,45,g,Iron|Magnesium|Fiber
-F062,Jowar (Sorghum),Grain,45,g,Protein|Calcium|Fiber
-F063,Ragi (Finger Millet),Grain,45,g,Calcium|Iron|Fiber
-F064,Amaranth (Rajgira),Grain,45,g,Protein|Calcium|Iron
-F065,Buckwheat (Kuttu),Grain,45,g,Magnesium|Antioxidants|Fiber
-F066,Fox Nuts (Makhana),Grain,30,g,Protein|Magnesium|Potassium
-F067,Poha (Flattened Rice),Grain,40,g,Carbohydrates|Iron
-F068,Moong Dal (Yellow),Legume,35,g,Protein|Folate|Potassium
-F069,Masoor Dal (Red),Legume,35,g,Protein|Iron|Folate
-F070,Chana Dal,Legume,35,g,Protein|Zinc|Fiber
-F071,Urad Dal (Black),Legume,35,g,Protein|Calcium|Folate
-F072,Rajma (Kidney Beans),Legume,35,g,Protein|Iron|Magnesium
-F073,Horse Gram (Kulthi),Legume,35,g,Protein|Iron|Calcium
-F074,Soya Chunks,Legume,25,g,Protein|Iron|Fiber
-F075,Okra (Bhindi),Vegetable,100,g,Fiber|Vitamin K|Folate
-F076,Bitter Gourd (Karela),Vegetable,100,g,Vitamin C|Antioxidants
-F077,Bottle Gourd (Lauki),Vegetable,150,g,Water|Vitamin C
-F078,Drumstick (Moringa),Vegetable,50,g,Vitamin C|Calcium|Vitamin A
-F079,Fenugreek (Methi),Vegetable,30,g,Iron|Fiber|Vitamin A
-F080,Indian Gooseberry (Amla),Fruit,30,g,Vitamin C|Antioxidants
-F081,Guava,Fruit,150,g,Vitamin C|Fiber|Lycopene
-F082,Mango,Fruit,150,g,Vitamin A|Vitamin C|Potassium
-F083,Papaya,Fruit,150,g,Vitamin C|Vitamin A|Folate
-F084,Pomegranate,Fruit,100,g,Antioxidants|Vitamin K|Vitamin C
-F085,Garlic,Spice,4,g,Antioxidants|Vitamin B6
-F086,Cumin Seeds (Jeera),Spice,2,g,Iron|Antioxidants
-F087,Coriander Seeds,Spice,2,g,Fiber|Vitamin C
-F088,Black Pepper,Spice,1,g,Antioxidants|Manganese
-F089,Cardamom (Elaichi),Spice,1,g,Antioxidants|Manganese
-F090,Cinnamon (Dalchini),Spice,1,g,Antioxidants|Manganese
-F091,Cloves (Laung),Spice,1,g,Manganese|Antioxidants
-F092,Ashwagandha,Herb,2,g,Adaptogen|Antioxidants
-F093,Neem Leaves,Herb,2,g,Antioxidants|Anti-inflammatory
-F094,Tulsi (Holy Basil),Herb,2,g,Vitamin K|Antioxidants
-F095,Custard Apple,Fruit,150,g,Magnesium|Vitamin B6
-F096,Jackfruit,Fruit,100,g,Vitamin C|Potassium|Fiber
-F097,Coconut (Fresh),Fruit,30,g,Fat|Manganese|Copper
-F098,Coconut Water,Beverage,240,ml,Potassium|Sodium|Magnesium
-F099,Jaggery,Sweets,10,g,Iron|Magnesium|Potassium
-F100,Saffron,Spice,0.1,g,Antioxidants|Vitamin B2
-F101,Eggplant (Brinjal),Vegetable,100,g,Fiber|Antioxidants
-F102,Radish (Mooli),Vegetable,100,g,Vitamin C|Potassium
-F103,Ridge Gourd (Turiya),Vegetable,100,g,Vitamin C|Fiber
-F104,Colocasia (Arbi),Vegetable,100,g,Fiber|Vitamin B6
-F105,Yam (Suran),Vegetable,100,g,Fiber|Potassium|Vitamin C
-F106,Snake Gourd,Vegetable,100,g,Vitamin C|Water
-F107,Curry Leaves,Herb,1,g,Iron|Antioxidants|Vitamin A
-F108,Tamarind,Spice,10,g,Magnesium|Potassium|Iron
-F109,Asafoetida (Hing),Spice,0.5,g,Antioxidants
-F110,Mustard Seeds (Rai),Spice,2,g,Selenium|Omega-3|Magnesium
-F111,Fennel Seeds (Saunf),Spice,2,g,Manganese|Fiber
-F112,Sesame Seeds (Til),Seeds,10,g,Calcium|Magnesium|Zinc
-F113,Nigella Seeds (Kalonji),Seeds,1,g,Antioxidants|Fiber
-F114,Muskmelon,Fruit,150,g,Vitamin A|Vitamin C|Potassium
-F115,Chikoo (Sapodilla),Fruit,100,g,Fiber|Vitamin C
-F116,Jamun,Fruit,100,g,Antioxidants|Vitamin C
-F117,Lychee,Fruit,100,g,Vitamin C|Potassium
-F118,Dates,Fruit,25,g,Fiber|Potassium|Magnesium
-F119,Raisins (Kishmish),Fruit,20,g,Iron|Potassium|Antioxidants
-F120,Apricots (Dried),Fruit,30,g,Vitamin A|Potassium
-F121,Figs (Anjeer),Fruit,30,g,Calcium|Fiber|Potassium
-F122,Pistachios,Nuts,28,g,Vitamin B6|Protein|Fat
-F123,Pine Nuts,Nuts,28,g,Vitamin E|Vitamin K|Fat
-F124,Pecan Nuts,Nuts,28,g,Antioxidants|Fat
-F125,Macadamia Nuts,Nuts,28,g,Fat|Thiamine|Cholestrol
-F126,Hemp Seeds,Seeds,20,g,Omega-3|Protein|Magnesium
-F127,Poppy Seeds (Khus Khus),Seeds,10,g,Calcium|Manganese|Fiber
-F128,Garden Cress Seeds,Seeds,5,g,Iron|Folate|Vitamin C
-F129,Quail Egg,Eggs,1,unit,Protein|Vitamin B12|Selenium
-F130,Duck Egg,Eggs,1,unit,Protein|Vitamin B12|Vitamin A
-F131,Goat Milk,Dairy,240,ml,Calcium|Potassium|Vitamin A|Cholestrol
-F132,Buffalo Milk,Dairy,240,ml,Calcium|Fat|Phosphorus
-F133,Buttermilk (Chaas),Dairy,240,ml,Calcium|Probiotics|Vitamin B12
-F134,Camel Milk,Dairy,240,ml,Vitamin C|Iron|Calcium
-F135,Sheep Milk,Dairy,240,ml,Protein|Calcium|Vitamin B12|Cholestrol
-F136,Greek Yogurt,Dairy,170,g,Protein|Calcium|Iodine
-F137,Mozzarella Cheese,Dairy,28,g,Calcium|Protein|Vitamin B12
-F138,Ricotta Cheese,Dairy,60,g,Calcium|Protein|Selenium
-F139,Gouda Cheese,Dairy,28,g,Calcium|Vitamin K
-F140,Brie Cheese,Dairy,28,g,Vitamin B12|Vitamin B2
-F141,Sea Bass,Fish,100,g,Protein|Omega-3|Selenium
-F142,Cod,Fish,100,g,Protein|Iodine|Vitamin B12
-F143,Mackerel,Fish,100,g,Omega-3|Vitamin D|Vitamin B12
-F144,Trout,Fish,100,g,Omega-3|Vitamin B12|Protein
-F145,Herring,Fish,100,g,Omega-3|Vitamin D|Vitamin B12
-F146,Clams,Seafood,85,g,Iron|Vitamin B12|Vitamin C
-F147,Lobster,Seafood,85,g,Selenium|Protein|Zinc
-F148,Crab,Seafood,85,g,Vitamin B12|Zinc|Selenium
-F149,Scallops,Seafood,85,g,Vitamin B12|Magnesium|Potassium
-F150,Squid (Calamari),Seafood,85,g,Vitamin B12|Selenium|Copper
-F151,Turkey Breast,Meat,100,g,Protein|Vitamin B6|Selenium
-F152,Duck Meat,Meat,100,g,Protein|Iron|Vitamin B1|Vitamin B2
-F153,Lamb Chop,Meat,100,g,Protein|Vitamin B12|Zinc
-F154,Goat Meat (Mutton),Meat,100,g,Protein|Iron|Vitamin B12
-F155,Venison,Meat,100,g,Protein|Iron|Vitamin B12
-F156,Quinoa Flour,Grain,45,g,Protein|Magnesium|Iron
-F157,Sorghum Flour,Grain,45,g,Fiber|Iron|Protein
-F158,Rice Flour,Grain,45,g,Carbohydrates|Manganese
-F159,Chickpea Flour (Besan),Grain,45,g,Protein|Folate|Fiber
-F160,Cornmeal (Maize),Grain,45,g,Carbohydrates|Vitamin A|Fiber
-F161,Millet Flour (Bajra),Grain,45,g,Iron|Magnesium|Fiber
-F162,Arrowroot Powder,Grain,10,g,Carbohydrates|Folate
-F163,Tapioca (Sabudana),Grain,50,g,Carbohydrates|Calcium
-F164,Bulgur Wheat,Grain,45,g,Fiber|Manganese|Magnesium
-F165,Spelt,Grain,45,g,Fiber|Manganese|Phosphorus
-F166,Artichoke,Vegetable,120,g,Fiber|Vitamin K|Folate
-F167,Asparagus,Vegetable,90,g,Vitamin K|Folate|Vitamin A
-F168,Brussels Sprouts,Vegetable,90,g,Vitamin K|Vitamin C|Fiber
-F169,Cabbage,Vegetable,90,g,Vitamin K|Vitamin C|Folate
-F170,Cauliflower,Vegetable,100,g,Vitamin C|Vitamin K|Folate
-F171,Celery,Vegetable,100,g,Vitamin K|Water|Potassium
-F172,Swiss Chard,Vegetable,30,g,Vitamin K|Vitamin A|Magnesium
-F173,Beetroot,Vegetable,100,g,Folate|Manganese|Antioxidants
-F174,Bell Pepper (Red),Vegetable,100,g,Vitamin C|Vitamin A|Vitamin B6
-F175,Zucchini,Vegetable,100,g,Vitamin C|Potassium|Vitamin B6
-F176,Pumpkin,Vegetable,100,g,Vitamin A|Potassium|Fiber
-F177,Pear,Fruit,180,g,Fiber|Vitamin C|Vitamin K
-F178,Peach,Fruit,150,g,Vitamin C|Vitamin A|Potassium
-F179,Plum,Fruit,100,g,Vitamin C|Vitamin A|Antioxidants
-F180,Strawberries,Fruit,150,g,Vitamin C|Manganese|Folate
-F181,Raspberries,Fruit,120,g,Fiber|Vitamin C|Manganese
-F182,Blackberries,Fruit,140,g,Fiber|Vitamin C|Vitamin K
-F183,Cherries,Fruit,140,g,Vitamin C|Potassium|Antioxidants
-F184,Kiwi,Fruit,70,g,Vitamin C|Vitamin K|Fiber
-F185,Pineapple,Fruit,150,g,Vitamin C|Manganese|Vitamin B6
-F186,Watermelon,Fruit,280,g,Lycopene|Vitamin C|Vitamin A
-F187,Cranberries,Fruit,100,g,Antioxidants|Vitamin C|Fiber
-F188,Soybeans (Edamame),Legume,100,g,Protein|Fiber|Vitamin K
-F189,Lima Beans,Legume,35,g,Fiber|Manganese|Copper
-F190,Navy Beans,Legume,35,g,Fiber|Folate|Magnesium
-F191,Pinto Beans,Legume,35,g,Folate|Fiber|Iron
-F192,Mung Beans (Whole),Legume,35,g,Protein|Folate|Magnesium
-F193,Adzuki Beans,Legume,35,g,Protein|Fiber|Manganese
-F194,Sprouted Moong,Legume,50,g,Protein|Vitamin C|Folate
-F195,Sprouted Fenugreek,Legume,10,g,Iron|Fiber|Antioxidants
-F196,Kefir,Dairy,240,ml,Calcium|Probiotics|Vitamin B12
-F197,Miso,Legume,15,g,Sodium|Probiotics|Manganese
-F198,Tempeh,Legume,100,g,Protein|Probiotics|Manganese
-F199,Spirulina,Supp,3,g,Protein|Vitamin B2|Iron
-F200,Chlorella,Supp,3,g,Vitamin A|Iron|Vitamin B12
+﻿food_id,food_name,category,serving_size,serving_unit,diet_type,nutrients
+F001,Spinach (Cheera),Leaf,100,g,Vegetarian,Iron|Magnesium|Folate (Vitamin B9)|Vitamin A|Vitamin C|Vitamin K|Dietary Fiber|Potassium
+F002,Muringila (Moringa Leaves),Leaf,100,g,Vegetarian,Iron|Calcium|Vitamin A|Vitamin C|Net Protein|Dietary Fiber|Magnesium|Potassium
+F003,Methi (Fenugreek Leaves),Leaf,100,g,Vegetarian,Iron|Folate (Vitamin B9)|Vitamin C|Dietary Fiber|Glucose/Glycemic Impact|Potassium|Magnesium
+F004,Curry Leaves,Leaf,100,g,Vegetarian,Iron|Calcium|Magnesium|Vitamin A|Vitamin C|Manganese|Potassium
+F005,Amaranth Leaves,Leaf,100,g,Vegetarian,Iron|Calcium|Folate (Vitamin B9)|Vitamin A|Vitamin C|Dietary Fiber|Magnesium
+F006,Parsley,Leaf,100,g,Vegetarian,Iron|Folate (Vitamin B9)|Vitamin C|Vitamin K|Potassium|Calcium|Magnesium
+F007,Malliyila (Coriander),Leaf,100,g,Vegetarian,Iron|Folate (Vitamin B9)|Vitamin A|Vitamin K|Vitamin C|Potassium|Magnesium
+F008,Pudina (Mint Leaves),Leaf,100,g,Vegetarian,Iron|Potassium|Vitamin A|Vitamin C|Manganese|Dietary Fiber|Magnesium
+F009,Lettuce,Leaf,100,g,Vegetarian,Potassium|Vitamin A|Vitamin K|Dietary Fiber|Folate (Vitamin B9)|Vitamin C|Magnesium
+F010,Cabbage,Veg,100,g,Vegetarian,Calcium|Folate (Vitamin B9)|Vitamin C|Vitamin K|Dietary Fiber|Potassium|Manganese
+F011,Carrot,Veg,100,g,Vegetarian,Potassium|Folate (Vitamin B9)|Vitamin A|Vitamin C|Dietary Fiber|Total Carbohydrates
+F012,Beetroot,Veg,100,g,Vegetarian,Potassium|Folate (Vitamin B9)|Vitamin C|Vitamin B6|Dietary Fiber|Glucose/Glycemic Impact|Manganese
+F013,Cucumber,Veg,100,g,Vegetarian,Magnesium|Potassium|Vitamin C|Vitamin K|Manganese|Sodium
+F014,Tomato,Veg,100,g,Vegetarian,Magnesium|Potassium|Folate (Vitamin B9)|Vitamin C|Vitamin A|Glucose/Glycemic Impact
+F015,Onion,Veg,100,g,Vegetarian,Magnesium|Potassium|Vitamin C|Vitamin B6|Dietary Fiber|Glucose/Glycemic Impact
+F016,Garlic,Veg,100,g,Vegetarian,Magnesium|Potassium|Vitamin C|Vitamin B6|Selenium|Manganese
+F017,Green Chilli,Veg,100,g,Vegetarian,Magnesium|Potassium|Vitamin A|Vitamin C|Vitamin B6|Iron
+F018,Brinjal (Eggplant),Veg,100,g,Vegetarian,Iron|Zinc|Potassium|Dietary Fiber|Vitamin B6|Manganese|Magnesium
+F019,Mathanga (Pumpkin),Veg,100,g,Vegetarian,Magnesium|Potassium|Vitamin A|Vitamin C|Dietary Fiber|Total Carbohydrates
+F020,Green Peas,Veg,100,g,Vegetarian,Magnesium|Potassium|Folate (Vitamin B9)|Vitamin C|Net Protein|Dietary Fiber|Iron
+F021,Mushroom,Veg,100,g,Vegetarian,Potassium|Selenium|Vitamin B2 (Riboflavin)|Vitamin B3 (Niacin)|Net Protein|Vitamin D|Copper
+F022,Potato,Veg,100,g,Vegetarian,Potassium|Vitamin C|Vitamin B6|Total Carbohydrates|Dietary Fiber|Glucose/Glycemic Impact|Magnesium
+F023,Sweet Potato,Veg,100,g,Vegetarian,Potassium|Vitamin A|Vitamin B5 (Pantothenic Acid)|Total Carbohydrates|Dietary Fiber|Vitamin B6|Magnesium
+F024,Chena (Yam),Veg,100,g,Vegetarian,Potassium|Vitamin C|Vitamin B6|Total Carbohydrates|Dietary Fiber|Magnesium
+F025,Kappa (Tapioca),Tuber,100,g,Vegetarian,Potassium|Calcium|Total Carbohydrates|Dietary Fiber|Glucose/Glycemic Impact|Vitamin C
+F026,Corn (Maize),Grain,100,g,Vegetarian,Magnesium|Potassium|Vitamin B3 (Niacin)|Total Carbohydrates|Dietary Fiber|Phosphorus
+F027,White Rice,Grain,100,g,Vegetarian,Magnesium|Phosphorus|Vitamin B1 (Thiamine)|Vitamin B3 (Niacin)|Total Carbohydrates|Net Protein
+F028,Matta Rice (Red Rice),Grain,100,g,Vegetarian,Magnesium|Phosphorus|Vitamin B1 (Thiamine)|Total Carbohydrates|Dietary Fiber|Net Protein|Iron
+F029,Wheat (Atta),Grain,100,g,Vegetarian,Magnesium|Phosphorus|Vitamin B1 (Thiamine)|Vitamin B3 (Niacin)|Total Carbohydrates|Dietary Fiber|Zinc
+F030,Oats,Grain,100,g,Vegetarian,Magnesium|Phosphorus|Vitamin B1 (Thiamine)|Vitamin B3 (Niacin)|Total Carbohydrates|Dietary Fiber|Zinc
+F031,Ragi (Finger Millet),Grain,100,g,Vegetarian,Iron|Calcium|Magnesium|Phosphorus|Total Carbohydrates|Dietary Fiber
+F032,Bajra (Pearl Millet),Grain,100,g,Vegetarian,Iron|Magnesium|Phosphorus|Vitamin B1 (Thiamine)|Total Carbohydrates|Net Protein|Zinc
+F033,Jowar (Sorghum),Grain,100,g,Vegetarian,Magnesium|Potassium|Folate (Vitamin B9)|Total Carbohydrates|Dietary Fiber|Net Protein|Iron
+F034,Barley,Grain,100,g,Vegetarian,Magnesium|Phosphorus|Vitamin B1 (Thiamine)|Vitamin B3 (Niacin)|Total Carbohydrates|Dietary Fiber|Selenium
+F035,Quinoa,Grain,100,g,Vegetarian,Iron|Magnesium|Potassium|Net Protein|Dietary Fiber|Zinc|Phosphorus
+F036,Bamboo Rice,Grain,100,g,Vegetarian,Iron|Magnesium|Phosphorus|Net Protein|Total Carbohydrates|Dietary Fiber
+F037,Cherupayaru (Moong Dal),Legume,100,g,Vegetarian,Iron|Magnesium|Zinc|Folate (Vitamin B9)|Net Protein|Dietary Fiber|Potassium
+F038,Masoor Dal (Red Lentil),Legume,100,g,Vegetarian,Iron|Magnesium|Zinc|Folate (Vitamin B9)|Net Protein|Dietary Fiber|Potassium
+F039,Uzhunnu (Urad Dal),Legume,100,g,Vegetarian,Iron|Magnesium|Zinc|Folate (Vitamin B9)|Net Protein|Dietary Fiber|Calcium
+F040,Chana Dal,Legume,100,g,Vegetarian,Iron|Magnesium|Zinc|Folate (Vitamin B9)|Net Protein|Dietary Fiber|Potassium
+F041,Rajma (Kidney Beans),Legume,100,g,Vegetarian,Iron|Magnesium|Zinc|Folate (Vitamin B9)|Net Protein|Dietary Fiber|Potassium
+F042,Vella Kadala (Chickpeas),Legume,100,g,Vegetarian,Iron|Zinc|Potassium|Folate (Vitamin B9)|Net Protein|Dietary Fiber|Magnesium
+F043,Soybean,Legume,100,g,Vegetarian,Iron|Calcium|Magnesium|Folate (Vitamin B9)|Net Protein|Dietary Fiber|Zinc|Potassium
+F044,Green Gram (Whole),Legume,100,g,Vegetarian,Iron|Potassium|Folate (Vitamin B9)|Vitamin C|Net Protein|Dietary Fiber|Magnesium
+F045,Karutha Kadala (Black Chana),Legume,100,g,Vegetarian,Iron|Magnesium|Zinc|Folate (Vitamin B9)|Net Protein|Dietary Fiber|Calcium
+F046,Muthira (Horse Gram),Legume,100,g,Vegetarian,Iron|Magnesium|Potassium|Folate (Vitamin B9)|Net Protein|Dietary Fiber|Calcium
+F047,Almond,Nut,100,g,Vegetarian,Calcium|Magnesium|Zinc|Vitamin E|Vitamin B7 (Biotin)|Net Protein|Dietary Fiber|Potassium
+F048,Cashew,Nut,100,g,Vegetarian,Magnesium|Zinc|Copper|Net Protein|Total Carbohydrates|Phosphorus|Iron
+F049,Pistachio,Nut,100,g,Vegetarian,Potassium|Copper|Vitamin B6|Net Protein|Vitamin B1 (Thiamine)|Magnesium|Dietary Fiber
+F050,Walnut,Nut,100,g,Vegetarian,Magnesium|Zinc|Copper|Vitamin E|Omega-3 Fatty Acids|Net Protein|Dietary Fiber
+F051,Peanut,Nut,100,g,Vegetarian,Magnesium|Zinc|Copper|Vitamin B3 (Niacin)|Net Protein|Folate (Vitamin B9)|Dietary Fiber
+F052,Coconut (Grated),Nut,100,g,Vegetarian,Magnesium|Potassium|Copper|Saturated Fat|Dietary Fiber|Manganese
+F053,Pumpkin Seeds,Seed,100,g,Vegetarian,Iron|Magnesium|Zinc|Copper|Net Protein|Manganese|Phosphorus
+F054,Flax Seeds,Seed,100,g,Vegetarian,Magnesium|Zinc|Copper|Vitamin E|Omega-3 Fatty Acids|Dietary Fiber|Manganese
+F055,Ellu (Sesame Seeds),Seed,100,g,Vegetarian,Iron|Calcium|Magnesium|Zinc|Copper|Net Protein|Dietary Fiber
+F056,Sunflower Seeds,Seed,100,g,Vegetarian,Magnesium|Zinc|Copper|Vitamin E|Net Protein|Folate (Vitamin B9)|Selenium
+F057,Chia Seeds,Seed,100,g,Vegetarian,Calcium|Magnesium|Zinc|Copper|Omega-3 Fatty Acids|Dietary Fiber|Phosphorus
+F058,Milk,Dairy,100,g,Vegetarian,Calcium|Vitamin D|Vitamin B12|Vitamin B5 (Pantothenic Acid)|Net Protein|Cholesterol (Total)|Saturated Fat|Phosphorus|Potassium
+F059,Curd (Yogurt),Dairy,100,g,Vegetarian,Calcium|Sodium|Vitamin D|Vitamin B12|Net Protein|Iodine|Phosphorus|Potassium
+F060,Paneer,Dairy,100,g,Vegetarian,Calcium|Vitamin D|Vitamin B12|Net Protein|Cholesterol (Total)|Saturated Fat|Phosphorus
+F061,Cheese,Dairy,100,g,Vegetarian,Calcium|Sodium|Vitamin B12|Net Protein|Saturated Fat|Cholesterol (Total)|Zinc
+F062,Butter,Dairy,100,g,Vegetarian,Vitamin B12|Vitamin A|Saturated Fat|Cholesterol (Total)|Sodium|Vitamin D|Vitamin E
+F063,Ghee,Dairy,100,g,Vegetarian,Vitamin A|Vitamin D|Vitamin E|Saturated Fat|Cholesterol (Total)
+F064,Egg,Egg,100,g,Non-Vegetarian,Potassium|Vitamin D|Vitamin B12|Vitamin A|Net Protein|Cholesterol (Total)|Saturated Fat|Selenium|Iron
+F065,Chicken Breast,Meat,100,g,Non-Vegetarian,Vitamin B12|Vitamin B6|Vitamin B3 (Niacin)|Net Protein|Selenium|Cholesterol (Total)|Phosphorus|Magnesium
+F066,Mutton,Meat,100,g,Non-Vegetarian,Iron|Zinc|Phosphorus|Vitamin B12|Net Protein|Saturated Fat|Cholesterol (Total)|Vitamin B3 (Niacin)
+F067,Pork,Meat,100,g,Non-Vegetarian,Iron|Vitamin B12|Vitamin B6|Vitamin B1 (Thiamine)|Net Protein|Saturated Fat|Cholesterol (Total)|Selenium
+F068,Beef,Meat,100,g,Non-Vegetarian,Iron|Zinc|Phosphorus|Vitamin B12|Net Protein|Saturated Fat|Cholesterol (Total)|Selenium
+F069,Duck Meat,Meat,100,g,Non-Vegetarian,Iron|Zinc|Phosphorus|Vitamin B12|Net Protein|Saturated Fat|Cholesterol (Total)|Vitamin B2 (Riboflavin)
+F070,Turkey,Meat,100,g,Non-Vegetarian,Potassium|Vitamin B6|Vitamin B3 (Niacin)|Net Protein|Selenium|Cholesterol (Total)|Phosphorus
+F071,Goat Meat,Meat,100,g,Non-Vegetarian,Iron|Potassium|Vitamin B12|Net Protein|Zinc|Saturated Fat|Cholesterol (Total)|Phosphorus
+F072,Chicken Liver,Meat,100,g,Non-Vegetarian,Iron|Vitamin B12|Folate (Vitamin B9)|Vitamin A|Net Protein|Copper|Cholesterol (Total)|Zinc|Vitamin B2 (Riboflavin)
+F073,Mathi (Sardine),Fish,100,g,Non-Vegetarian,Iron|Selenium|Vitamin D|Vitamin B12|Omega-3 Fatty Acids|Net Protein|Cholesterol (Total)|Calcium|Iodine
+F074,Ayala (Mackerel),Fish,100,g,Non-Vegetarian,Potassium|Selenium|Vitamin D|Vitamin B12|Omega-3 Fatty Acids|Net Protein|Cholesterol (Total)|Magnesium
+F075,Karimeen (Pearl Spot),Fish,100,g,Non-Vegetarian,Potassium|Phosphorus|Vitamin D|Net Protein|Omega-3 Fatty Acids|Vitamin B12|Cholesterol (Total)
+F076,Neymeen (Seer Fish),Fish,100,g,Non-Vegetarian,Iron|Calcium|Zinc|Vitamin B12|Omega-3 Fatty Acids|Net Protein|Cholesterol (Total)|Selenium
+F077,Netholi (Anchovy),Fish,100,g,Non-Vegetarian,Magnesium|Potassium|Vitamin B12|Net Protein|Calcium|Selenium|Cholesterol (Total)|Omega-3 Fatty Acids
+F078,Choora (Tuna),Fish,100,g,Non-Vegetarian,Magnesium|Potassium|Vitamin B12|Net Protein|Selenium|Cholesterol (Total)|Phosphorus
+F079,Salmon,Fish,100,g,Non-Vegetarian,Potassium|Selenium|Vitamin D|Omega-3 Fatty Acids|Net Protein|Vitamin B12|Cholesterol (Total)
+F080,Tilapia,Fish,100,g,Non-Vegetarian,Potassium|Phosphorus|Vitamin B12|Net Protein|Magnesium|Selenium|Cholesterol (Total)
+F081,Catfish,Fish,100,g,Non-Vegetarian,Magnesium|Potassium|Vitamin B12|Net Protein|Phosphorus|Cholesterol (Total)|Vitamin D
+F082,Sheelavu (Barracuda),Fish,100,g,Non-Vegetarian,Iron|Zinc|Phosphorus|Vitamin B12|Net Protein|Selenium|Cholesterol (Total)|Omega-3 Fatty Acids
+F083,Njandu (Crab),Seafood,100,g,Non-Vegetarian,Zinc|Potassium|Selenium|Net Protein|Vitamin B12|Cholesterol (Total)|Copper
+F084,Koonthal (Squid),Seafood,100,g,Non-Vegetarian,Potassium|Selenium|Copper|Vitamin B12|Net Protein|Sodium|Cholesterol (Total)
+F085,Octopus,Seafood,100,g,Non-Vegetarian,Iron|Potassium|Vitamin B12|Net Protein|Selenium|Copper|Cholesterol (Total)
+F086,Chemmeen (Shrimp),Seafood,100,g,Non-Vegetarian,Potassium|Iodine|Vitamin B12|Net Protein|Cholesterol (Total)|Selenium|Zinc|Saturated Fat
+F087,Oyster,Seafood,100,g,Non-Vegetarian,Zinc|Potassium|Selenium|Vitamin B12|Net Protein|Iron|Copper|Cholesterol (Total)
+F088,Pacha Chakka (Raw Jackfruit),Fruit,100,g,Vegetarian,Potassium|Vitamin C|Dietary Fiber|Glucose/Glycemic Impact|Total Carbohydrates|Magnesium
+F089,Jackfruit Seeds,Veg,100,g,Vegetarian,Iron|Magnesium|Vitamin B1 (Thiamine)|Total Carbohydrates|Dietary Fiber|Net Protein|Potassium
+F090,Pavakka (Bitter Gourd),Veg,100,g,Vegetarian,Vitamin C|Dietary Fiber|Glucose/Glycemic Impact|Manganese|Iron|Magnesium|Potassium
+F091,Padavalanga (Snake Gourd),Veg,100,g,Vegetarian,Calcium|Potassium|Vitamin C|Dietary Fiber|Vitamin B6|Magnesium
+F092,Kovakkai (Ivy Gourd),Veg,100,g,Vegetarian,Iron|Calcium|Vitamin C|Vitamin B1 (Thiamine)|Vitamin B2 (Riboflavin)|Dietary Fiber|Magnesium
+F093,Lauki (Bottle Gourd),Veg,100,g,Vegetarian,Iron|Calcium|Potassium|Vitamin C|Dietary Fiber|Vitamin B6|Magnesium
+F094,Kumbalanga (Ash Gourd),Veg,100,g,Vegetarian,Calcium|Magnesium|Potassium|Vitamin C|Dietary Fiber|Vitamin B6
+F095,Muringakkai (Drumstick),Veg,100,g,Vegetarian,Calcium|Magnesium|Potassium|Vitamin C|Dietary Fiber|Vitamin A|Iron
+F096,Vendakka (Okra),Veg,100,g,Vegetarian,Iron|Calcium|Magnesium|Folate (Vitamin B9)|Vitamin C|Dietary Fiber|Potassium
+F097,Chembu (Colocasia),Tuber,100,g,Vegetarian,Iron|Magnesium|Potassium|Vitamin B6|Total Carbohydrates|Dietary Fiber
+F098,Chena (Elephant Foot Yam),Tuber,100,g,Vegetarian,Potassium|Folate (Vitamin B9)|Vitamin C|Total Carbohydrates|Dietary Fiber|Vitamin B6|Magnesium
+F099,Vazhakka (Raw Plantain),Veg,100,g,Vegetarian,Potassium|Vitamin C|Vitamin B6|Total Carbohydrates|Dietary Fiber|Magnesium
+F100,Vazhapoo (Plantain Flower),Veg,100,g,Vegetarian,Iron|Magnesium|Potassium|Vitamin C|Dietary Fiber|Vitamin E
+F101,Vazhapindi (Plantain Stem),Veg,100,g,Vegetarian,Potassium|Vitamin C|Dietary Fiber|Magnesium|Calcium|Iron
+F102,Raw Papaya,Veg,100,g,Vegetarian,Potassium|Vitamin C|Glucose/Glycemic Impact|Dietary Fiber|Magnesium|Calcium|Vitamin A
+F103,Shallots (Small Onions),Veg,100,g,Vegetarian,Potassium|Vitamin C|Glucose/Glycemic Impact|Folate (Vitamin B9)|Manganese|Selenium|Magnesium
+F104,Nendran Banana,Fruit,100,g,Vegetarian,Magnesium|Potassium|Vitamin B6|Total Carbohydrates|Dietary Fiber|Folate (Vitamin B9)
+F105,Palayankodan Banana,Fruit,100,g,Vegetarian,Potassium|Vitamin C|Total Carbohydrates|Dietary Fiber|Vitamin B6|Magnesium
+F106,Ripe Mango,Fruit,100,g,Vegetarian,Potassium|Vitamin A|Vitamin C|Total Carbohydrates|Dietary Fiber|Folate (Vitamin B9)
+F107,Raw Mango,Fruit,100,g,Vegetarian,Vitamin C|Glucose/Glycemic Impact|Dietary Fiber|Potassium|Vitamin A|Vitamin K
+F108,Ripe Papaya,Fruit,100,g,Vegetarian,Potassium|Vitamin A|Vitamin C|Dietary Fiber|Folate (Vitamin B9)|Magnesium
+F109,Pera (Guava),Fruit,100,g,Vegetarian,Potassium|Folate (Vitamin B9)|Vitamin C|Dietary Fiber|Vitamin A|Magnesium
+F110,Pomegranate,Fruit,100,g,Vegetarian,Potassium|Folate (Vitamin B9)|Vitamin C|Vitamin K|Dietary Fiber|Total Carbohydrates
+F111,Watermelon,Fruit,100,g,Vegetarian,Potassium|Vitamin A|Vitamin C|Magnesium|Total Carbohydrates|Glucose/Glycemic Impact
+F112,Pineapple,Fruit,100,g,Vegetarian,Potassium|Folate (Vitamin B9)|Vitamin C|Manganese|Dietary Fiber|Total Carbohydrates
+F113,Grapes,Fruit,100,g,Vegetarian,Potassium|Vitamin C|Vitamin K|Total Carbohydrates|Glucose/Glycemic Impact|Dietary Fiber
+F114,Apple,Fruit,100,g,Vegetarian,Potassium|Vitamin C|Vitamin K|Dietary Fiber|Total Carbohydrates|Glucose/Glycemic Impact
+F115,Chikoo (Sapota),Fruit,100,g,Vegetarian,Iron|Calcium|Magnesium|Potassium|Vitamin C|Dietary Fiber
+F116,Custard Apple,Fruit,100,g,Vegetarian,Iron|Calcium|Magnesium|Potassium|Vitamin C|Total Carbohydrates|Dietary Fiber
+F117,Ripe Jackfruit,Fruit,100,g,Vegetarian,Magnesium|Potassium|Vitamin C|Vitamin B6|Total Carbohydrates|Dietary Fiber
+F118,Karikku (Coconut Water),Drink,100,ml,Vegetarian,Magnesium|Potassium|Sodium|Calcium|Glucose/Glycemic Impact
+F119,Coconut Oil,Oil,100,ml,Vegetarian,Saturated Fat|Vitamin E|Vitamin K
+F120,Nallenna (Sesame Oil),Oil,100,ml,Vegetarian,Vitamin E|Vitamin K|Saturated Fat
+F121,Rice Bran Oil,Oil,100,ml,Vegetarian,Vitamin E|Vitamin K|Saturated Fat|Omega-3 Fatty Acids
+F122,Manjal (Turmeric),Spice,100,g,Vegetarian,Iron|Manganese|Vitamin B6|Vitamin C|Glucose/Glycemic Impact|Potassium|Magnesium
+F123,Black Pepper,Spice,100,g,Vegetarian,Manganese|Vitamin K|Iron|Copper|Calcium|Magnesium
+F124,Inchi (Ginger),Spice,100,g,Vegetarian,Iron|Magnesium|Potassium|Vitamin C|Glucose/Glycemic Impact|Manganese
+F125,Cardamom,Spice,100,g,Vegetarian,Magnesium|Potassium|Manganese|Iron|Calcium|Vitamin C
+F126,Cinnamon,Spice,100,g,Vegetarian,Calcium|Manganese|Iron|Dietary Fiber|Vitamin K|Glucose/Glycemic Impact|Magnesium
+F127,Cloves,Spice,100,g,Vegetarian,Manganese|Vitamin K|Vitamin C|Calcium|Magnesium|Iron
+F128,Jeerakam (Cumin),Spice,100,g,Vegetarian,Iron|Magnesium|Manganese|Calcium|Zinc|Potassium
+F129,Kaduku (Mustard Seeds),Spice,100,g,Vegetarian,Iron|Selenium|Magnesium|Manganese|Calcium|Omega-3 Fatty Acids|Phosphorus
+F130,Valan Puli (Tamarind),Spice,100,g,Vegetarian,Magnesium|Potassium|Calcium|Iron|Vitamin B1 (Thiamine)|Dietary Fiber
+F131,Kodampuli (Camboge),Spice,100,g,Vegetarian,Vitamin C|Glucose/Glycemic Impact|Dietary Fiber|Potassium|Magnesium|Calcium
+F132,Kayam (Asafoetida),Spice,100,g,Vegetarian,Iron|Calcium|Phosphorus|Dietary Fiber|Magnesium|Potassium
+F133,Uluva (Fenugreek Seeds),Spice,100,g,Vegetarian,Iron|Magnesium|Folate (Vitamin B9)|Glucose/Glycemic Impact|Dietary Fiber|Net Protein|Potassium
+F134,Alfalfa Sprouts,Sprout,100,g,Vegetarian,Vitamin C|Vitamin K|Net Protein|Folate (Vitamin B9)|Manganese|Copper|Magnesium
+F135,Moong Sprouted,Sprout,100,g,Vegetarian,Folate (Vitamin B9)|Vitamin C|Net Protein|Dietary Fiber|Iron|Magnesium|Potassium
+F136,Bengal Gram Sprouted,Sprout,100,g,Vegetarian,Iron|Folate (Vitamin B9)|Vitamin C|Net Protein|Dietary Fiber|Magnesium|Potassium
+F137,Tofu,Veggie,100,g,Vegetarian,Calcium|Magnesium|Zinc|Net Protein|Manganese|Copper|Phosphorus
+F138,Soy Chunks,Veggie,100,g,Vegetarian,Iron|Calcium|Magnesium|Net Protein|Dietary Fiber|Folate (Vitamin B9)|Potassium
+F139,Duck Egg,Egg,100,g,Non-Vegetarian,Iron|Vitamin D|Vitamin B12|Vitamin A|Net Protein|Cholesterol (Total)|Saturated Fat|Selenium
+F140,Quail Egg,Egg,100,g,Non-Vegetarian,Iron|Vitamin B12|Vitamin B6|Vitamin B2 (Riboflavin)|Net Protein|Cholesterol (Total)|Saturated Fat|Vitamin A
+F141,Beef Liver,Meat,100,g,Non-Vegetarian,Iron|Zinc|Vitamin B12|Folate (Vitamin B9)|Vitamin A|Net Protein|Cholesterol (Total)|Copper|Vitamin B2 (Riboflavin)
+F142,Mutton Liver,Meat,100,g,Non-Vegetarian,Iron|Zinc|Vitamin B12|Folate (Vitamin B9)|Vitamin A|Net Protein|Cholesterol (Total)|Copper|Vitamin B2 (Riboflavin)
+F143,Chicken Gizzard,Meat,100,g,Non-Vegetarian,Iron|Zinc|Vitamin B12|Net Protein|Selenium|Vitamin B2 (Riboflavin)|Cholesterol (Total)
+F144,Beef Heart,Meat,100,g,Non-Vegetarian,Iron|Vitamin B12|Selenium|Net Protein|Vitamin B2 (Riboflavin)|Vitamin B3 (Niacin)|Cholesterol (Total)
+F145,Kakka (Clams),Seafood,100,g,Non-Vegetarian,Iron|Zinc|Vitamin B12|Net Protein|Selenium|Copper|Cholesterol (Total)|Omega-3 Fatty Acids
+F146,Kallumakkaya (Mussels),Seafood,100,g,Non-Vegetarian,Iron|Selenium|Vitamin B12|Folate (Vitamin B9)|Net Protein|Zinc|Cholesterol (Total)|Omega-3 Fatty Acids
+F147,Lobster,Seafood,100,g,Non-Vegetarian,Zinc|Selenium|Copper|Vitamin B12|Net Protein|Sodium|Cholesterol (Total)|Saturated Fat
+F148,Large Crab,Seafood,100,g,Non-Vegetarian,Zinc|Selenium|Vitamin B12|Net Protein|Copper|Cholesterol (Total)|Sodium
+F149,Avoli (Pomfret),Fish,100,g,Non-Vegetarian,Selenium|Vitamin D|Vitamin B12|Omega-3 Fatty Acids|Net Protein|Potassium|Cholesterol (Total)
+F150,Neymeen (King Fish),Fish,100,g,Non-Vegetarian,Iron|Selenium|Vitamin B12|Omega-3 Fatty Acids|Net Protein|Phosphorus|Cholesterol (Total)
+F151,Vatta (Malabar Trevally),Fish,100,g,Non-Vegetarian,Potassium|Selenium|Vitamin B12|Net Protein|Phosphorus|Magnesium|Cholesterol (Total)
+F152,Nangu (Sole Fish),Fish,100,g,Non-Vegetarian,Potassium|Vitamin B12|Net Protein|Selenium|Magnesium|Cholesterol (Total)|Omega-3 Fatty Acids
+F153,Kanambu (Mullet),Fish,100,g,Non-Vegetarian,Selenium|Vitamin B12|Omega-3 Fatty Acids|Net Protein|Potassium|Phosphorus|Cholesterol (Total)
+F154,Poomeen (Milkfish),Fish,100,g,Non-Vegetarian,Calcium|Potassium|Vitamin B12|Net Protein|Selenium|Phosphorus|Cholesterol (Total)|Omega-3 Fatty Acids
+F155,Sankara (Red Snapper),Fish,100,g,Non-Vegetarian,Selenium|Vitamin B12|Net Protein|Potassium|Phosphorus|Magnesium|Cholesterol (Total)
+F156,Sravu (Shark),Fish,100,g,Non-Vegetarian,Vitamin A|Vitamin B12|Net Protein|Selenium|Phosphorus|Magnesium|Cholesterol (Total)
+F157,Thirandi (Stingray),Fish,100,g,Non-Vegetarian,Vitamin B12|Net Protein|Selenium|Phosphorus|Magnesium|Zinc|Cholesterol (Total)
+F158,Kaala (Indian Salmon),Fish,100,g,Non-Vegetarian,Selenium|Vitamin D|Omega-3 Fatty Acids|Net Protein|Vitamin B12|Potassium|Cholesterol (Total)
+F159,Malanjil (Eel),Fish,100,g,Non-Vegetarian,Vitamin A|Vitamin B12|Net Protein|Vitamin D|Selenium|Phosphorus|Cholesterol (Total)|Omega-3 Fatty Acids
+F160,Butter Fish (Puzha Meen),Fish,100,g,Non-Vegetarian,Vitamin B12|Net Protein|Selenium|Phosphorus|Magnesium|Cholesterol (Total)|Omega-3 Fatty Acids
+F161,Kalanji (Sea Bass),Fish,100,g,Non-Vegetarian,Selenium|Vitamin B12|Net Protein|Potassium|Phosphorus|Magnesium|Cholesterol (Total)
+F162,Eri (Emperor Fish),Fish,100,g,Non-Vegetarian,Vitamin B12|Net Protein|Selenium|Phosphorus|Magnesium|Zinc|Cholesterol (Total)
+F163,Pearl Spot (Small),Fish,100,g,Non-Vegetarian,Potassium|Vitamin B12|Net Protein|Phosphorus|Magnesium|Selenium|Cholesterol (Total)
+F164,Karuvadu (Dried Fish),Fish,100,g,Non-Vegetarian,Sodium|Calcium|Net Protein|Vitamin B12|Phosphorus|Selenium|Iron
+F165,Dried Shrimp,Fish,100,g,Non-Vegetarian,Sodium|Calcium|Vitamin B12|Net Protein|Selenium|Iron|Cholesterol (Total)
+F166,Sambharam (Buttermilk),Dairy,100,ml,Vegetarian,Calcium|Potassium|Sodium|Vitamin B12|Magnesium|Iodine|Phosphorus
+F167,Goat Milk,Dairy,100,ml,Vegetarian,Calcium|Magnesium|Potassium|Vitamin D|Vitamin B12|Net Protein|Phosphorus|Saturated Fat
+F168,Buffalo Milk,Dairy,100,ml,Vegetarian,Calcium|Vitamin D|Vitamin B12|Saturated Fat|Net Protein|Phosphorus|Cholesterol (Total)
+F169,Skimmed Milk,Dairy,100,ml,Vegetarian,Calcium|Vitamin B12|Net Protein|Potassium|Phosphorus|Magnesium
+F170,Greek Yogurt,Dairy,100,g,Vegetarian,Calcium|Vitamin B12|Net Protein|Potassium|Phosphorus|Magnesium|Saturated Fat
+F171,Almond Milk,Vegan,100,ml,Vegetarian,Calcium|Vitamin E|Potassium|Magnesium|Manganese|Sodium
+F172,Soy Milk,Vegan,100,ml,Vegetarian,Calcium|Magnesium|Net Protein|Potassium|Phosphorus|Vitamin B2 (Riboflavin)|Iron
+F173,Palu (Coconut Milk),Vegan,100,ml,Vegetarian,Magnesium|Potassium|Saturated Fat|Manganese|Copper|Selenium
+F174,Peanut Butter,Nut,100,g,Vegetarian,Magnesium|Vitamin B3 (Niacin)|Net Protein|Copper|Manganese|Folate (Vitamin B9)|Dietary Fiber
+F175,Tahini (Sesame Paste),Seed,100,g,Vegetarian,Iron|Calcium|Zinc|Net Protein|Copper|Manganese|Magnesium|Dietary Fiber
+F176,Pistachio Butter,Nut,100,g,Vegetarian,Potassium|Copper|Net Protein|Magnesium|Vitamin B6|Manganese|Dietary Fiber
+F177,Brazil Nut,Nut,100,g,Vegetarian,Selenium|Magnesium|Copper|Phosphorus|Manganese|Net Protein|Dietary Fiber
+F178,Pecan,Nut,100,g,Vegetarian,Magnesium|Zinc|Vitamin E|Manganese|Copper|Dietary Fiber
+F179,Macadamia,Nut,100,g,Vegetarian,Vitamin B1 (Thiamine)|Saturated Fat|Manganese|Copper|Magnesium|Dietary Fiber
+F180,Hazelnut,Nut,100,g,Vegetarian,Magnesium|Copper|Vitamin E|Manganese|Net Protein|Dietary Fiber
+F181,Kasakas (Poppy Seeds),Seed,100,g,Vegetarian,Iron|Calcium|Magnesium|Manganese|Phosphorus|Copper|Dietary Fiber
+F182,Sunflower Oil,Oil,100,ml,Vegetarian,Vitamin E|Saturated Fat|Omega-3 Fatty Acids|Vitamin K
+F183,Olive Oil,Oil,100,ml,Vegetarian,Vitamin E|Vitamin K|Saturated Fat
+F184,Palm Oil,Oil,100,ml,Vegetarian,Vitamin A|Vitamin E|Saturated Fat|Vitamin K
+F185,Fish Oil,Supplement,10,ml,Non-Vegetarian,Vitamin D|Vitamin A|Omega-3 Fatty Acids|Cholesterol (Total)|Saturated Fat|Vitamin E
+F186,Cod Liver Oil,Supplement,10,ml,Non-Vegetarian,Vitamin D|Vitamin A|Omega-3 Fatty Acids|Cholesterol (Total)|Saturated Fat|Vitamin E
+F187,Brewer's Yeast,Veggie,100,g,Vegetarian,Folate (Vitamin B9)|Vitamin B6|Vitamin B1 (Thiamine)|Vitamin B2 (Riboflavin)|Vitamin B7 (Biotin)|Vitamin B3 (Niacin)|Net Protein
+F188,Spirulina,Veggie,100,g,Vegetarian,Iron|Selenium|Net Protein|Vitamin B2 (Riboflavin)|Copper|Manganese|Vitamin B12
+F189,Nutritional Yeast,Veggie,100,g,Vegetarian,Vitamin B12|Folate (Vitamin B9)|Vitamin B6|Vitamin B1 (Thiamine)|Vitamin B2 (Riboflavin)|Vitamin B7 (Biotin)|Net Protein
+F190,Dark Cocoa Powder,Veggie,100,g,Vegetarian,Iron|Magnesium|Zinc|Copper|Manganese|Dietary Fiber|Potassium
+F191,Green Tea,Drink,1,cup,Vegetarian,Glucose/Glycemic Impact|Manganese|Potassium|Magnesium
+F192,Black Tea,Drink,1,cup,Vegetarian,Glucose/Glycemic Impact|Manganese|Potassium|Magnesium|Fluoride
+F193,Coffee,Drink,1,cup,Vegetarian,Magnesium|Vitamin B3 (Niacin)|Glucose/Glycemic Impact|Potassium|Manganese
+F194,Bone Broth,Meat,1,cup,Non-Vegetarian,Calcium|Magnesium|Potassium|Net Protein|Sodium|Phosphorus
+F195,Gelatin,Meat,100,g,Non-Vegetarian,Net Protein|Sodium|Copper|Selenium|Calcium|Magnesium
+F196,Honey,Sweet,1,tbsp,Vegetarian,Glucose/Glycemic Impact|Potassium|Total Carbohydrates
+F197,Sarkara (Jaggery),Sweet,100,g,Vegetarian,Iron|Magnesium|Potassium|Total Carbohydrates
+F198,Stevia,Sweet,1,tsp,Vegetarian,Glucose/Glycemic Impact
+F199,Erythritol,Sweet,1,tsp,Vegetarian,Glucose/Glycemic Impact
+F200,Eethapazham (Dates),Fruit,100,g,Vegetarian,Iron|Magnesium|Potassium|Total Carbohydrates|Dietary Fiber|Vitamin B6

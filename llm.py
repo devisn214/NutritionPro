@@ -93,7 +93,7 @@ Clinical Reason: {reason}
             genes = "None reported"
 
         return f"""
-You are a Clinical Dietitian specialized in realistic Indian meal planning.
+You are a Clinical Dietitian specialized in realistic Kerala style meal planning.
 
 {diet_rule}
 
@@ -102,8 +102,8 @@ ALLOWED MAIN FOODS:
 
 STRICT RULES:
 1. Use mainly the allowed foods listed above.
-2. You may use common Indian supporting ingredients: onion, tomato, garlic, ginger, spices, oil, salt.
-3. Breakfast should be light Indian breakfast.
+2. You may use common Kerala supporting ingredients: onion, tomato, garlic, ginger, spices, oil, salt.
+3. Breakfast should be light Kerala breakfast with more protein .
 4. Lunch should be the main meal.
 5. Dinner should be lighter than lunch.
 6. Use variety across meals.
@@ -138,5 +138,5 @@ Dinner:
 1) Dish Name (Main Ingredients): short health reason
 
 Keep total output under 260 words.
-Use practical Indian dishes only.
+Use practical Kerala dishes only.
 """

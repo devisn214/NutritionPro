@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 import os
 import json
 import uuid
-from datetime import datetime
+from datetime import datetime,timezone
 import pandas as pd
 
 from pdf_working.pdf_service import process_pdf
@@ -43,6 +43,26 @@ def months_difference(old_date_str):
 def load_biomarker_units():
     df = pd.read_csv("data/biomarkers.csv")
     return dict(zip(df["name"], df["unit"]))
+
+def load_gene_variants():
+    df = pd.read_csv("data/genenutrient.csv")
+
+    variant_map = {}
+
+    for _, row in df.iterrows():
+        gene = str(row["gene_symbol"]).strip().upper()
+        variant = str(row["variant"]).strip()
+
+        if variant.lower() == "normal":
+            continue
+
+        if gene not in variant_map:
+            variant_map[gene] = []
+
+        if variant not in variant_map[gene]:
+            variant_map[gene].append(variant)
+
+    return variant_map
 
 
 def update_biomarker(biomarkers, name, value, unit=""):
@@ -87,7 +107,8 @@ def new_user():
         "new_user.html",
         genes=load_genes(),
         biomarkers=load_biomarkers(),
-        biomarker_units=load_biomarker_units()
+        biomarker_units=load_biomarker_units(),
+        gene_variants=load_gene_variants()
     )
 
 
@@ -272,7 +293,8 @@ def update_profile(user_id):
         user=user,
         genes=load_genes(),
         biomarkers=load_biomarkers(),
-        biomarker_units=load_biomarker_units()
+        biomarker_units=load_biomarker_units(),
+        gene_variants=load_gene_variants()
     )
 
 

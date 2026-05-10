@@ -4,14 +4,14 @@ import re
 BIOMARKER_SYNONYMS = {
     # --- IRON & ANEMIA ---
     "Serum Ferritin": ["serum ferritin", "ferritin"],
-    "Serum Iron": ["serum iron", "iron, serum"], 
+    "Serum Iron": ["IRON, SERUM","serum iron", "iron, serum"], 
     "Transferrin Saturation (TSAT)": ["transferrin saturation", "tsat", "iron saturation"],
     "Hemoglobin": ["hemoglobin"], 
 
     # --- BLOOD SUGAR & METABOLIC ---
     "HbA1c": ["hba1c","glycosylated hemoglobin","glycosylated haemoglobin","hb a1c"],
     "Fasting Glucose": ["fasting glucose",  "fasting blood sugar", "glucose fasting", "glucose, fluoride plasma","FBS-FASTING BLOOD SUGAR(GLUCOSE)"],
-    "Uric Acid": ["Uric acid", "uric acid, serum"],
+    "Uric Acid": ["uric acid, serum","uric acid"],
 
     # --- LIPIDS (CHOLESTEROL) ---
     "Total Cholesterol": ["cholesterol, total", "total cholesterol", "cholestrol-total"], 
@@ -45,9 +45,9 @@ BIOMARKER_SYNONYMS = {
     "Serum Selenium": ["serum selenium", "selenium"],
 
     # --- VITAMINS ---
-    "25-Hydroxy Vitamin D": ["25- HYDROXYVITAMIN D", "25 hydroxy Vitamin D Total" ],
-    "Serum Vitamin B12": ["serum vitamin b12", "cobalamin"],
-    "Serum Folate": ["serum folate", "folate", "vitamin b9"],
+    "25-Hydroxy Vitamin D": [ "25 hydroxy Vitamin D Total","25-hydroxy vitamin d"],
+    "Serum Vitamin B12": ["serum vitamin b12", "cobalamin","VITAMIN B12"],
+    "Serum Folate": ["serum folate", "vitamin b9"],
     "Serum Retinol": ["serum retinol", "vitamin a"],
     "Plasma Vitamin C": ["plasma vitamin c", "vitamin c"],
     "Serum Alpha-Tocopherol": ["serum alpha-tocopherol", "vitamin e"],
@@ -62,8 +62,8 @@ BIOMARKER_SYNONYMS = {
 
     # --- THYROID & HORMONES ---
     "Thyroid Stimulating Hormone (TSH)": ["tsh", "thyroid stimulating hormone", "tsh (ultrasensitive)", "thyrotropin", "tsh-thyroid stimulating hormone"], 
-    "Total T3": ["t3", "triiodothyronine", "total t3", "T3-total"], 
-    "Total T4": ["t4", "thyroxine", "total t4", "T4-total"], 
+    "Total T3": [ "triiodothyronine", "total t3", "T3-total","T3"], 
+    "Total T4": [ "thyroxine", "total t4", "T4-total","T4"], 
     "PSA Total": ["prostate specific antigen", "psa total"],
     # --- MISC ---
     "Omega-3 Index": ["omega-3 index"],

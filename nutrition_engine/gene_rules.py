@@ -7,13 +7,16 @@ DATA_DIR = os.path.join(PROJECT_ROOT, "data")
 
 
 def process_genes(user_gene_results):
+
     df = pd.read_csv(os.path.join(DATA_DIR, "genenutrient.csv"))
+    df_nutrients = pd.read_csv(os.path.join(DATA_DIR, "nutrients.csv"))
 
     recommendations = []
 
     for g in user_gene_results:
-        gene = g.get("name", "").upper()
-        variant = g.get("variant", "Normal")
+
+        gene = str(g.get("name", "")).upper().strip()
+        variant = str(g.get("variant", "Normal")).strip()
 
         match = df[
             (df["gene_symbol"].str.upper() == gene) &
@@ -25,8 +28,8 @@ def process_genes(user_gene_results):
 
         row = match.iloc[0]
 
-        # derive direction from action
-        action = str(row["action"]).lower()
+        # ===== direction =====
+        action = str(row.get("action", "")).lower()
 
         if "decrease" in action:
             direction = "decrease"
@@ -35,14 +38,26 @@ def process_genes(user_gene_results):
         else:
             direction = "maintain"
 
+        # ===== SAFE nutrient name lookup (FIX) =====
+        n_id = row.get("affected_nutrient", "")
+
+        n_name_row = df_nutrients[
+            df_nutrients["nutrient_id"] == n_id
+        ]
+
+        if not n_name_row.empty:
+            nutrient_name = n_name_row.iloc[0]["name"]
+        else:
+            nutrient_name = n_id  # fallback (never crash)
+
         recommendations.append({
             "gene": gene,
             "variant": variant,
-            "nutrient_id": row["affected_nutrient"], 
-            "nutrient_name": row["nutrient_name"], 
-            "impact": row["impact"],
+            "nutrient_id": n_id,
+            "nutrient_name": nutrient_name,
+            "impact": row.get("impact", ""),
             "direction": direction,
-            "reason": row["variant_effect"]
-            })
+            "reason": row.get("variant_effect", "")
+        })
 
     return recommendations
