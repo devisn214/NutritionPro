@@ -33,8 +33,8 @@ VID031,MTRR,Methionine Synthase Reductase,rs1801394,N012,45,Folate recycling,Rec
 VID032,TCN2,Transcobalamin II,rs1801198,N012,45,Vitamin B12 transport,Transport,Reduced B12 transport to cells,Medium,Increase B12,increase
 VID033,FUT2,Fucosyltransferase 2,rs601338,N012,45,Vitamin B12 absorption modulation,Absorption,Non-secretor: Lower B12 absorption,Medium,Increase Vitamin B12,increase
 VID034,FUT2,Fucosyltransferase 2,Normal,N012,45,Vitamin B12 absorption modulation,Absorption,Typical B12 absorption,Low,Maintain Vitamin B12,maintain
-VID035,BCMO1,Beta-Carotene Oxygenase 1,rs7501331,N014,45,Conversion of beta-carotene to retinol,Conversion,Reduced Beta-Carotene conversion to Vitamin A,Medium,Use preformed Vitamin A,maintain
-VID036,BCMO1,Beta-Carotene Oxygenase 1,rs12934922,N014,45,Conversion of beta-carotene to retinol,Conversion,Impaired provitamin A conversion,Medium,Use preformed Vitamin A,maintain
+VID035,BCMO1,Beta-Carotene Oxygenase 1,rs7501331,N014,45,Conversion of beta-carotene to retinol,Conversion,Reduced Beta-Carotene conversion to Vitamin A,Medium,Use preformed Vitamin A,increase
+VID036,BCMO1,Beta-Carotene Oxygenase 1,rs12934922,N014,45,Conversion of beta-carotene to retinol,Conversion,Impaired provitamin A conversion,Medium,Use preformed Vitamin A,increase
 VID037,RBP4,Retinol Binding Protein 4,Normal,N014,45,Vitamin A transport,Transport,Standard nutrient interaction,Low,Maintain standard intake,maintain
 VID038,SLC23A1,Vitamin C Transporter 1,rs33972313,N015,45,Ascorbic acid uptake,Absorption,Reduced Vitamin C transport,Medium,Increase Vitamin C,increase
 VID039,SLC23A2,Vitamin C Transporter 2,Normal,N015,45,Cellular vitamin C transport,Transport,Standard nutrient interaction,Low,Maintain standard intake,maintain
@@ -57,10 +57,12 @@ VID055,LDLR,LDL Receptor,rs688,N024 N025,45,LDL clearance,Uptake,Reduced LDL cle
 VID056,NR1H3,Liver X Receptor Alpha,Normal,N024,45,Cholesterol homeostasis,Regulation,Standard nutrient interaction,Low,Maintain standard intake,maintain
 VID057,ABCA1,ATP Binding Cassette A1,Normal,N024,45,HDL formation,Transport,Standard nutrient interaction,Low,Maintain standard intake,maintain
 VID058,UGT1A1,UDP Glucuronosyltransferase,rs8175347,N030,45,Detoxification enzyme,General,Gilbert Syndrome / Reduced bilirubin clearance,Medium,Monitor detoxification,monitor
-VID059,CRP,C-Reactive Protein,rs1130864,N053,45,Inflammatory status marker,General,Higher baseline inflammation,Medium,Increase Anti-inflammatory intake,increase
-VID060,IL6,Interleukin 6,rs1800795,N053,45,Inflammatory cytokine,General,Increased inflammatory response,Medium,Increase Anti-inflammatory intake,increase
 VID061,ALB,Albumin,Normal,N027,45,Plasma protein carrier,General,Standard nutrient interaction,Low,Maintain standard intake,maintain
 VID062,MTOR,Mechanistic Target of Rapamycin,rs2295080,N027,45,Protein synthesis signaling,General,Increased MTOR activation,Medium,Moderate Protein intake,moderate
-VID063,FTO,Fat Mass and Obesity,rs9939609,N028 N029,45,Satiety and fat storage,Metabolic,Increased risk of obesity/overeating,Strong,Increase Fiber/Control Carbs,decrease
+VID063,FTO,Fat Mass and Obesity,rs9939609,N028 N029 N025,45,Satiety and fat storage,Metabolic,Increased risk of obesity/overeating,Strong,Increase Fiber/Control Carbs,decrease
 VID064,MC4R,Melanocortin 4 Receptor,rs17782313,N028 N030,45,Appetite regulation,Metabolic,Predisposition to snacking/hunger,Medium,Manage Glycemic Load,decrease
 VID065,AMY1,Salivary Amylase,Low_Copy,N028 N030,45,Starch digestion efficiency,Metabolism,Poor tolerance for refined starch,Medium,Reduce Complex Carbs,decrease
+VID066,FADS1,Fatty Acid Desaturase 1,rs174537,N026 N033,45,Omega-3 and PUFA conversion,Metabolism,Reduced conversion of ALA to EPA/DHA,Medium,Increase Omega-3 EPA/DHA,increase
+VID067,SLC30A10,Manganese Transporter,Normal,N031,45,Manganese transport and excretion,Transport,Standard nutrient interaction,Low,Maintain standard intake,maintain
+VID068,CD36,Fatty Acid Transceptor,rs1761667,N032 N025,45,Fat taste perception and absorption,Transport,Higher preference/absorption of fats,Medium,Monitor MUFA/Saturated Fat,monitor
+VID069,TCF7L2,Transcription Factor 7 Like 2,rs7903146,N030 N034,45,Insulin secretion and fiber response,Metabolic,Increased sensitivity to refined carbs,Strong,Increase Soluble Fiber,increase

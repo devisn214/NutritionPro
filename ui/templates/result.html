@@ -1,194 +1,368 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Personalized Nutrition Report</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body class="results-page">
 
-
-<!-- ===== CONTENT ===== -->
+<!-- ===================================================== -->
+<!-- CONTENT -->
+<!-- ===================================================== -->
 <div id="content">
+
 <div class="container card">
 
+    <!-- ================================================= -->
     <!-- HEADER -->
+    <!-- ================================================= -->
     <div class="header">
+
         <h2>🍽 Personalized Nutrition Plan</h2>
+
         <p class="subtext">
-            AI-powered insights based on biomarkers, genetics & food knowledge
+            AI-powered insights based on biomarkers,
+            genetics & food knowledge
         </p>
+
     </div>
 
+    <!-- ================================================= -->
     <!-- SUMMARY -->
+    <!-- ================================================= -->
     <div class="summary-pills">
-        <div class="pill pill-main">{{ result.plan.calories }} kcal</div>
-        <div class="pill">Protein: {{ result.plan.macros.protein_g }}g</div>
-        <div class="pill">Carbs: {{ result.plan.macros.carbs_g }}g</div>
-        <div class="pill">Fat: {{ result.plan.macros.fats_g }}g</div>
+
+        <div class="pill pill-main">
+            {{ result.plan.calories }} kcal
+        </div>
+
+        <div class="pill">
+            Protein: {{ result.plan.macros.protein_g }}g
+        </div>
+
+        <div class="pill">
+            Carbs: {{ result.plan.macros.carbs_g }}g
+        </div>
+
+        <div class="pill">
+            Fat: {{ result.plan.macros.fats_g }}g
+        </div>
+
     </div>
 
+    <!-- ================================================= -->
     <!-- BIOMARKERS -->
+    <!-- ================================================= -->
     {% if result.plan.biomarker_recommendations %}
+
     <div class="section-box">
+
         <h3>Biomarker Analysis</h3>
 
         {% for rec in result.plan.biomarker_recommendations %}
+
         <div class="insight-card
-            {% if rec.status == 'low' %}risk-low
-            {% elif rec.status == 'high' %}risk-high
-            {% else %}risk-normal{% endif %}
+            {% if rec.status == 'low' %}
+                risk-low
+            {% elif rec.status == 'high' %}
+                risk-high
+            {% else %}
+                risk-normal
+            {% endif %}
         ">
 
             <div class="insight-header">
-                <strong>{{ rec.biomarker }}</strong>
-                <span class="status-badge">{{ rec.status }}</span>
+
+                <strong>
+                    {{ rec.biomarker or rec.name }}
+                </strong>
+
+                <span class="status-badge">
+                    {{ rec.status }}
+                </span>
+
             </div>
 
+            {% if rec.current_value %}
             <p class="subtext">
-                Current: {{ rec.current_value }} |
-                Normal: {{ rec.low }} – {{ rec.high }}
-            </p>
 
-            <button class="toggle-btn" onclick="toggleExplain(this)">
+                Current:
+                {{ rec.current_value }}
+
+                |
+
+                Normal:
+                {{ rec.low }} – {{ rec.high }}
+
+            </p>
+            {% endif %}
+
+            <button class="toggle-btn"
+                    onclick="toggleExplain(this)">
+
                 Explain AI reasoning ▼
+
             </button>
 
             <div class="explain-box hidden">
-                Your <b>{{ rec.biomarker }}</b> is {{ rec.status }},
-                so your body needs <b>{{ rec.direction }} {{ rec.target_nutrient }}</b>.
+
+                {% if rec.target_nutrient %}
+                Your
+                <b>{{ rec.biomarker }}</b>
+                is
+                <b>{{ rec.status }}</b>.
+
+                Recommended:
+                <b>{{ rec.direction }}</b>
+                intake of
+                <b>{{ rec.target_nutrient }}</b>.
+                {% else %}
+
+                Recommended:
+                <b>{{ rec.direction }}</b>
+                nutrient support.
+
+                {% endif %}
+
             </div>
 
         </div>
+
         {% endfor %}
+
     </div>
+
     {% endif %}
 
-    <!-- GENES -->
+    <!-- ================================================= -->
+    <!-- GENETIC INSIGHTS -->
+    <!-- ================================================= -->
     {% if result.plan.gene_recommendations %}
+
     <div class="section-box">
+
         <h3>Genetic Insights</h3>
 
         {% for rec in result.plan.gene_recommendations %}
+
+        <!-- SKIP NORMAL -->
+        {% if rec.variant|lower != "normal" %}
+
         <div class="insight-card">
 
             <div class="insight-header">
-                <strong>{{ rec.gene }}</strong>
-                <span class="gene-variant">{{ rec.variant }}</span>
+
+                <strong>
+                    {{ rec.gene }}
+                </strong>
+
+                <span class="gene-variant">
+                    {{ rec.variant }}
+                </span>
+
             </div>
 
-            <p class="subtext">Influences: {{ rec.name }}</p>
+            <p class="subtext">
 
-            <button class="toggle-btn" onclick="toggleExplain(this)">
+                Nutrient Influence:
+                <b>{{ rec.nutrient_name }}</b>
+
+            </p>
+
+            <button class="toggle-btn"
+                    onclick="toggleExplain(this)">
+
                 Explain AI reasoning ▼
+
             </button>
 
             <div class="explain-box hidden">
-                {{ rec.reason }}<br><br>
-                Recommended: {{ rec.direction }} intake of this nutrient.
+
+                {{ rec.reason }}
+
+                <br><br>
+
+                Recommended:
+                <b>{{ rec.direction }}</b>
+                intake of
+                <b>{{ rec.nutrient_name }}</b>.
+
             </div>
 
         </div>
+
+        {% endif %}
         {% endfor %}
+
     </div>
+
     {% endif %}
 
-    
-
+    <!-- ================================================= -->
     <!-- FOOD TABLE -->
-    {% if rag_context %}
+    <!-- ================================================= -->
+    {% if result.plan.rag_context %}
+
     <div class="section-box">
+
         <h3>Recommended Foods</h3>
 
         <table class="food-table">
+
             <thead>
+
                 <tr>
                     <th>Food</th>
                     <th>Nutrients</th>
                     <th>Why it helps</th>
-                    <th>Score</th>
                 </tr>
+
             </thead>
 
             <tbody>
-                {% for item in rag_context %}
+
+                {% for item in result.plan.rag_context %}
+
                 <tr>
-                    <td><b>{{ item.food }}</b></td>
+
+                    <!-- FOOD -->
                     <td>
-                        {% for n in item.nutrients[:2] %}
-                            {{ n.name }}{% if not loop.last %}, {% endif %}
-                        {% endfor %}
+                        <b>{{ item.food }}</b>
                     </td>
-                    <td>{{ item.reason }}</td>
-                    <td>{{ item.score }}</td>
+
+                    <!-- NUTRIENTS -->
+                    <td>
+
+                        {% if item.nutrients %}
+
+                            {% for n in item.nutrients %}
+
+                                {{ n.name }}
+
+                                <!-- {% if n.amount %}
+                                    ({{ n.amount }})
+                                {% endif %} -->
+
+                                {% if not loop.last %}
+                                    ,
+                                {% endif %}
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            General nutrition support
+
+                        {% endif %}
+
+                    </td>
+
+                    <!-- REASON -->
+                    <td>
+
+                        {{ item.reason }}
+
+                    </td>
+
                 </tr>
+
                 {% endfor %}
+
             </tbody>
+
         </table>
+
     </div>
+
     {% endif %}
 
-    <!-- AI PLAN -->
+    <!-- ================================================= -->
+    <!-- AI MEAL PLAN -->
+    <!-- ================================================= -->
     {% if result.plan.llm_recommendation %}
+
     <div class="section-box">
+
         <h3>AI Meal Plan</h3>
+
         <div class="ai-box">
-            {{ result.plan.llm_recommendation }}
+
+            {{ result.plan.llm_recommendation
+               | replace('\n', '<br>')
+               | safe }}
+
         </div>
+
     </div>
+
     {% endif %}
 
-    <!-- SCORE -->
-    <div class="section-box">
-        <h3>Personalized Fit Score</h3>
-
-        {% set conf = result.plan.confidence %}
-
-        <div class="score-wrap">
-            <svg class="score-circle-svg">
-                <circle cx="70" cy="70" r="60"></circle>
-                <circle cx="70" cy="70" r="60" id="progressCircle"></circle>
-            </svg>
-
-            <div class="score-text">{{ conf }}%</div>
-        </div>
-
-        <p class="subtext">
-            AI confidence based on biological + nutrition evidence
-        </p>
-    </div>
-
+    <!-- ================================================= -->
     <!-- NAV -->
+    <!-- ================================================= -->
     <div class="nav">
-        <a href="/" class="back-link">← Back to Dashboard</a>
+
+        <a href="/"
+           class="back-link">
+
+            ← Back to Dashboard
+
+        </a>
+
     </div>
 
 </div>
 </div>
-<!-- SAFE SCRIPT (FIXED JINJA ISSUE) -->
+
+<!-- ===================================================== -->
+<!-- SCRIPT -->
+<!-- ===================================================== -->
 <script>
 
 function toggleExplain(btn){
+
     const box = btn.nextElementSibling;
+
     box.classList.toggle("hidden");
 }
 
-// SAFE injection using JSON parsing
-const score = JSON.parse('{{ result.plan.confidence | tojson | safe }}');
+// ===============================================
+// SAFE SCORE PARSE
+// ===============================================
+const score = JSON.parse(
+    '{{ result.plan.confidence | tojson | safe }}'
+);
 
-const circle = document.getElementById("progressCircle");
+const circle = document.getElementById(
+    "progressCircle"
+);
 
 if(circle){
+
     const radius = circle.r.baseVal.value;
-    const circumference = 2 * Math.PI * radius;
 
-    circle.style.strokeDasharray = circumference;
-    circle.style.strokeDashoffset = circumference;
+    const circumference =
+        2 * Math.PI * radius;
 
-    const offset = circumference - (score / 100) * circumference;
+    circle.style.strokeDasharray =
+        circumference;
+
+    circle.style.strokeDashoffset =
+        circumference;
+
+    const offset =
+        circumference -
+        (score / 100) * circumference;
 
     setTimeout(() => {
-        circle.style.strokeDashoffset = offset;
+
+        circle.style.strokeDashoffset =
+            offset;
+
     }, 300);
 }
 

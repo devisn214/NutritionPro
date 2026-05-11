@@ -37,15 +37,15 @@ def get_biomarker_interactions(biomarkers):
 
     # LDL HIGH + HDL LOW
     if status.get("ldl cholesterol") == "high" and status.get("hdl cholesterol") == "low":
-        result["increase"].update(["N026", "N029", "N003"])
-        result["decrease"].update(["N024", "N025"])
+        result["increase"].update(["N026", "N029", "N003", "N034"])
+        result["decrease"].update([ "N025"])
         result["notes"].append(
             "LDL high + HDL low: use omega-3, magnesium, fiber. Avoid saturated fat."
         )
 
     # LDL HIGH + HDL HIGH
     if status.get("ldl cholesterol") == "high" and status.get("hdl cholesterol") == "high":
-        result["increase"].update(["N026", "N029"])
+        result["increase"].update(["N026", "N029","N034"])
         result["decrease"].update(["N025"])
         result["notes"].append(
             "HDL is protective, but LDL remains high. Reduce saturated fat."
@@ -64,7 +64,7 @@ def get_biomarker_interactions(biomarkers):
 
     # HbA1c HIGH + Fasting Glucose HIGH
     if status.get("hba1c") == "high" and status.get("fasting glucose") == "high":
-        result["increase"].update(["N029", "N003"])
+        result["increase"].update(["N029", "N003","N034"])
         result["decrease"].update(["N028", "N030"])
         result["notes"].append(
             "Chronic and fasting glucose high: strong low-glycemic strategy."
@@ -72,7 +72,7 @@ def get_biomarker_interactions(biomarkers):
 
     # HbA1c HIGH + Fasting Glucose NORMAL
     if status.get("hba1c") == "high" and status.get("fasting glucose") == "normal":
-        result["increase"].update(["N029"])
+        result["increase"].update(["N029","N034"])
         result["decrease"].update(["N028", "N030"])
         result["notes"].append(
             "Possible post-meal glucose spikes. Reduce refined carbs."
@@ -80,7 +80,7 @@ def get_biomarker_interactions(biomarkers):
 
     # HbA1c NORMAL + Fasting Glucose HIGH
     if status.get("hba1c") == "normal" and status.get("fasting glucose") == "high":
-        result["increase"].update(["N003", "N029"])
+        result["increase"].update(["N003", "N029","N034"])
         result["decrease"].update(["N030"])
         result["notes"].append(
             "Possible early insulin resistance or stress glucose."
@@ -141,6 +141,7 @@ def get_biomarker_interactions(biomarkers):
     # B12 HIGH + LDL HIGH
     if status.get("serum vitamin b12") == "high" and status.get("ldl cholesterol") == "high":
         result["decrease"].update(["N025"])
+        result["decrease"].update(["N034"])
         result["notes"].append(
             "If B12 from animal-heavy diet, choose leaner lower saturated-fat sources."
         )
@@ -151,7 +152,7 @@ def get_biomarker_interactions(biomarkers):
 
     # Vitamin D LOW + LDL HIGH
     if status.get("25-hydroxy vitamin d") == "low" and status.get("ldl cholesterol") == "high":
-        result["increase"].update(["N011", "N026"])
+        result["increase"].update(["N011", "N026","N034"])
         result["decrease"].update(["N025"])
         result["notes"].append(
             "Use low-saturated-fat Vitamin D sources."
@@ -159,7 +160,7 @@ def get_biomarker_interactions(biomarkers):
 
     # Vitamin D LOW + HbA1c HIGH
     if status.get("25-hydroxy vitamin d") == "low" and status.get("hba1c") == "high":
-        result["increase"].update(["N011", "N003"])
+        result["increase"].update(["N011", "N003","N034"])
         result["decrease"].update(["N028"])
         result["notes"].append(
             "Low Vitamin D + high HbA1c: improve D and glycemic control."

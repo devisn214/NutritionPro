@@ -18,6 +18,10 @@ def process_genes(user_gene_results):
         gene = str(g.get("name", "")).upper().strip()
         variant = str(g.get("variant", "Normal")).strip()
 
+        # ===== SKIP NORMAL =====
+        if variant.lower() == "normal":
+            continue
+
         match = df[
             (df["gene_symbol"].str.upper() == gene) &
             (df["variant"].str.upper() == variant.upper())
@@ -33,28 +37,36 @@ def process_genes(user_gene_results):
 
         if "decrease" in action:
             direction = "decrease"
+
         elif "increase" in action:
             direction = "increase"
+
         else:
-            direction = "maintain"
+            direction = "support"
 
-        # ===== SAFE nutrient name lookup (FIX) =====
-        n_id = row.get("affected_nutrient", "")
+        # ===== nutrient lookup =====
+        n_ids = str(row.get("affected_nutrient", "")).split()
 
-        n_name_row = df_nutrients[
-            df_nutrients["nutrient_id"] == n_id
-        ]
+        nutrient_names = []
 
-        if not n_name_row.empty:
-            nutrient_name = n_name_row.iloc[0]["name"]
-        else:
-            nutrient_name = n_id  # fallback (never crash)
+        for nid in n_ids:
+
+            n_name_row = df_nutrients[
+                df_nutrients["nutrient_id"] == nid
+            ]
+
+            if not n_name_row.empty:
+                nutrient_names.append(
+                    n_name_row.iloc[0]["name"]
+                )
+            else:
+                nutrient_names.append(nid)
 
         recommendations.append({
             "gene": gene,
             "variant": variant,
-            "nutrient_id": n_id,
-            "nutrient_name": nutrient_name,
+            "nutrient_id": " ".join(n_ids),
+            "nutrient_name": ", ".join(nutrient_names),
             "impact": row.get("impact", ""),
             "direction": direction,
             "reason": row.get("variant_effect", "")

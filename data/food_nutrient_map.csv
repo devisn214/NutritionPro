@@ -23,7 +23,7 @@ N013,F003,Methi (Fenugreek Leaves),Folate (Vitamin B9),57,mcg
 N015,F003,Methi (Fenugreek Leaves),Vitamin C,3,mg
 N029,F003,Methi (Fenugreek Leaves),Dietary Fiber,3.9,g
 N034,F003,Methi (Fenugreek Leaves),Soluble Fiber,1.2,g
-N030,F003,Methi (Fenugreek Leaves),Glucose/Glycemic Impact,5,mg/dL
+N030,F003,Methi (Fenugreek Leaves),Glycemic Load,5,mg/dL
 N005,F003,Methi (Fenugreek Leaves),Potassium,770,mg
 N003,F003,Methi (Fenugreek Leaves),Magnesium,191,mg
 N002,F003,Methi (Fenugreek Leaves),Calcium,176,mg
@@ -89,7 +89,7 @@ N015,F011,Beetroot,Vitamin C,5,mg
 N018,F011,Beetroot,Vitamin B6,0.07,mg
 N029,F011,Beetroot,Dietary Fiber,2.8,g
 N034,F011,Beetroot,Soluble Fiber,1.0,g
-N030,F011,Beetroot,Glucose/Glycemic Impact,61,mg/dL
+N030,F011,Beetroot,Glycemic Load,61,mg/dL
 N031,F011,Beetroot,Manganese,0.33,mg
 N001,F011,Beetroot,Iron,0.8,mg
 N003,F012,Cucumber,Magnesium,13,mg
@@ -104,7 +104,7 @@ N005,F013,Tomato,Potassium,237,mg
 N013,F013,Tomato,Folate (Vitamin B9),15,mcg
 N015,F013,Tomato,Vitamin C,13.7,mg
 N014,F013,Tomato,Vitamin A,42,mcg
-N030,F013,Tomato,Glucose/Glycemic Impact,15,mg/dL
+N030,F013,Tomato,Glycemic Load,15,mg/dL
 N029,F013,Tomato,Dietary Fiber,1.2,g
 N003,F014,Onion,Magnesium,10,mg
 N005,F014,Onion,Potassium,146,mg
@@ -112,7 +112,7 @@ N015,F014,Onion,Vitamin C,7.4,mg
 N018,F014,Onion,Vitamin B6,0.12,mg
 N029,F014,Onion,Dietary Fiber,1.7,g
 N034,F014,Onion,Soluble Fiber,0.7,g
-N030,F014,Onion,Glucose/Glycemic Impact,10,mg/dL
+N030,F014,Onion,Glycemic Load,10,mg/dL
 N013,F014,Onion,Folate (Vitamin B9),19,mcg
 N003,F015,Garlic,Magnesium,25,mg
 N005,F015,Garlic,Potassium,401,mg
@@ -168,7 +168,7 @@ N015,F021,Potato,Vitamin C,19.7,mg
 N018,F021,Potato,Vitamin B6,0.3,mg
 N028,F021,Potato,Total Carbohydrates,17.5,g
 N029,F021,Potato,Dietary Fiber,2.2,g
-N030,F021,Potato,Glucose/Glycemic Impact,78,mg/dL
+N030,F021,Potato,Glycemic Load,78,mg/dL
 N003,F021,Potato,Magnesium,23,mg
 N001,F021,Potato,Iron,0.8,mg
 N005,F022,Sweet Potato,Potassium,337,mg
@@ -191,7 +191,7 @@ N005,F024,Kappa (Tapioca),Potassium,271,mg
 N002,F024,Kappa (Tapioca),Calcium,16,mg
 N028,F024,Kappa (Tapioca),Total Carbohydrates,38,g
 N029,F024,Kappa (Tapioca),Dietary Fiber,1.8,g
-N030,F024,Kappa (Tapioca),Glucose/Glycemic Impact,85,mg/dL
+N030,F024,Kappa (Tapioca),Glycemic Load,85,mg/dL
 N015,F024,Kappa (Tapioca),Vitamin C,20.6,mg
 N003,F024,Kappa (Tapioca),Magnesium,21,mg
 N003,F025,Corn (Maize),Magnesium,37,mg
@@ -806,7 +806,7 @@ N024,F084,Oyster,Cholesterol (Total),71,mg
 N005,F085,Pacha Chakka (Raw Jackfruit),Potassium,448,mg
 N015,F085,Pacha Chakka (Raw Jackfruit),Vitamin C,13.7,mg
 N029,F085,Pacha Chakka (Raw Jackfruit),Dietary Fiber,1.5,g
-N030,F085,Pacha Chakka (Raw Jackfruit),Glucose/Glycemic Impact,50,mg/dL
+N030,F085,Pacha Chakka (Raw Jackfruit),Glycemic Load,50,mg/dL
 N028,F085,Pacha Chakka (Raw Jackfruit),Total Carbohydrates,23.2,g
 N003,F085,Pacha Chakka (Raw Jackfruit),Magnesium,29,mg
 N014,F085,Pacha Chakka (Raw Jackfruit),Vitamin A,5,mcg
@@ -823,7 +823,7 @@ N007,F086,Jackfruit Seeds,Phosphorus,38,mg
 N015,F087,Pavakka (Bitter Gourd),Vitamin C,84,mg
 N029,F087,Pavakka (Bitter Gourd),Dietary Fiber,2.8,g
 N034,F087,Pavakka (Bitter Gourd),Soluble Fiber,1.1,g
-N030,F087,Pavakka (Bitter Gourd),Glucose/Glycemic Impact,15,mg/dL
+N030,F087,Pavakka (Bitter Gourd),Glycemic Load,15,mg/dL
 N031,F087,Pavakka (Bitter Gourd),Manganese,0.1,mg
 N001,F087,Pavakka (Bitter Gourd),Iron,0.4,mg
 N003,F087,Pavakka (Bitter Gourd),Magnesium,17,mg
@@ -923,7 +923,7 @@ N001,F098,Vazhapindi (Plantain Stem),Iron,0.5,mg
 N018,F098,Vazhapindi (Plantain Stem),Vitamin B6,0.1,mg
 N005,F099,Raw Papaya,Potassium,182,mg
 N015,F099,Raw Papaya,Vitamin C,60.9,mg
-N030,F099,Raw Papaya,Glucose/Glycemic Impact,55,mg/dL
+N030,F099,Raw Papaya,Glycemic Load,55,mg/dL
 N029,F099,Raw Papaya,Dietary Fiber,1.7,g
 N034,F099,Raw Papaya,Soluble Fiber,0.8,g
 N003,F099,Raw Papaya,Magnesium,21,mg
@@ -932,7 +932,7 @@ N014,F099,Raw Papaya,Vitamin A,47,mcg
 N013,F099,Raw Papaya,Folate (Vitamin B9),37,mcg
 N005,F100,Shallots (Small Onions),Potassium,334,mg
 N015,F100,Shallots (Small Onions),Vitamin C,8,mg
-N030,F100,Shallots (Small Onions),Glucose/Glycemic Impact,10,mg/dL
+N030,F100,Shallots (Small Onions),Glycemic Load,10,mg/dL
 N013,F100,Shallots (Small Onions),Folate (Vitamin B9),34,mcg
 N031,F100,Shallots (Small Onions),Manganese,0.3,mg
 N008,F100,Shallots (Small Onions),Selenium,1.2,mcg
@@ -964,7 +964,7 @@ N013,F103,Ripe Mango,Folate (Vitamin B9),43,mcg
 N016,F103,Ripe Mango,Vitamin E,0.9,mg
 N017,F103,Ripe Mango,Vitamin K,4.2,mcg
 N015,F104,Raw Mango,Vitamin C,65,mg
-N030,F104,Raw Mango,Glucose/Glycemic Impact,40,mg/dL
+N030,F104,Raw Mango,Glycemic Load,40,mg/dL
 N029,F104,Raw Mango,Dietary Fiber,1.8,g
 N005,F104,Raw Mango,Potassium,150,mg
 N014,F104,Raw Mango,Vitamin A,20,mcg
@@ -1003,7 +1003,7 @@ N014,F108,Watermelon,Vitamin A,28,mcg
 N015,F108,Watermelon,Vitamin C,8.1,mg
 N003,F108,Watermelon,Magnesium,10,mg
 N028,F108,Watermelon,Total Carbohydrates,7.5,g
-N030,F108,Watermelon,Glucose/Glycemic Impact,72,mg/dL
+N030,F108,Watermelon,Glycemic Load,72,mg/dL
 N018,F108,Watermelon,Vitamin B6,0.04,mg
 N005,F109,Pineapple,Potassium,109,mg
 N013,F109,Pineapple,Folate (Vitamin B9),18,mcg
@@ -1018,7 +1018,7 @@ N005,F110,Grapes,Potassium,191,mg
 N015,F110,Grapes,Vitamin C,3.2,mg
 N017,F110,Grapes,Vitamin K,14.6,mcg
 N028,F110,Grapes,Total Carbohydrates,18,g
-N030,F110,Grapes,Glucose/Glycemic Impact,53,mg/dL
+N030,F110,Grapes,Glycemic Load,53,mg/dL
 N029,F110,Grapes,Dietary Fiber,0.9,g
 N034,F110,Grapes,Soluble Fiber,0.2,g
 N018,F110,Grapes,Vitamin B6,0.1,mg
@@ -1029,7 +1029,7 @@ N017,F111,Apple,Vitamin K,2.2,mcg
 N029,F111,Apple,Dietary Fiber,2.4,g
 N034,F111,Apple,Soluble Fiber,1.2,g
 N028,F111,Apple,Total Carbohydrates,13.8,g
-N030,F111,Apple,Glucose/Glycemic Impact,36,mg/dL
+N030,F111,Apple,Glycemic Load,36,mg/dL
 N018,F111,Apple,Vitamin B6,0.04,mg
 N001,F112,Chikoo (Sapota),Iron,0.8,mg
 N002,F112,Chikoo (Sapota),Calcium,21,mg
@@ -1062,7 +1062,7 @@ N003,F115,Karikku (Coconut Water),Magnesium,25,mg
 N005,F115,Karikku (Coconut Water),Potassium,250,mg
 N006,F115,Karikku (Coconut Water),Sodium,105,mg
 N002,F115,Karikku (Coconut Water),Calcium,24,mg
-N030,F115,Karikku (Coconut Water),Glucose/Glycemic Impact,45,mg/dL
+N030,F115,Karikku (Coconut Water),Glycemic Load,45,mg/dL
 N007,F115,Karikku (Coconut Water),Phosphorus,20,mg
 N031,F115,Karikku (Coconut Water),Manganese,0.1,mg
 N015,F116,Alfalfa Sprouts,Vitamin C,8.2,mg
@@ -1438,12 +1438,12 @@ N012,F153,Soy Milk,Vitamin B12,1.2,mcg
 N011,F153,Soy Milk,Vitamin D,1.1,mcg
 N033,F153,Soy Milk,Polyunsaturated Fat,1.2,g
 N013,F153,Soy Milk,Folate (Vitamin B9),18,mcg
-N030,F154,Honey,Glucose/Glycemic Impact,58,mg/dL
+N030,F154,Honey,Glycemic Load,58,mg/dL
 N005,F154,Honey,Potassium,52,mg
 N028,F154,Honey,Total Carbohydrates,82,g
 N001,F154,Honey,Iron,0.4,mg
 N009,F154,Honey,Copper,0.04,mg
-N030,F155,Green Tea,Glucose/Glycemic Impact,0,mg/dL
+N030,F155,Green Tea,Glycemic Load,0,mg/dL
 N031,F155,Green Tea,Manganese,0.2,mg
 N005,F155,Green Tea,Potassium,8,mg
 N003,F155,Green Tea,Magnesium,1,mg
