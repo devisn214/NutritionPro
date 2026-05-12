@@ -80,6 +80,13 @@ class PDFBiomarkerExtractor:
                 if alias_clean in ["t4", "total t4"]:
                     if re.search(r"\bft4\b|free thyroxine", clean):
                         continue
+                if alias_clean in ["ft3", "free t3"]:
+                    if re.search(r"\btotal t3\b", clean):
+                        continue
+
+                if alias_clean in ["ft4", "free t4"]:
+                    if re.search(r"\btotal t4\b", clean):
+                        continue
 
                 return std_name, alias_clean
 

@@ -62,8 +62,12 @@ BIOMARKER_SYNONYMS = {
 
     # --- THYROID & HORMONES ---
     "Thyroid Stimulating Hormone (TSH)": ["tsh", "thyroid stimulating hormone", "tsh (ultrasensitive)", "thyrotropin", "tsh-thyroid stimulating hormone"], 
+    "Free T3": ["FREE TRIIODOTHYRONINE (FT3)","free t3","ft3","free triiodothyronine"],
+
+    "Free T4": ["FREE THYROXINE (FT4)","free t4", "ft4","free thyroxine"],
     "Total T3": [ "triiodothyronine", "total t3", "T3-total","T3"], 
     "Total T4": [ "thyroxine", "total t4", "T4-total","T4"], 
+    
     "PSA Total": ["prostate specific antigen", "psa total"],
     # --- MISC ---
     "Omega-3 Index": ["omega-3 index"],

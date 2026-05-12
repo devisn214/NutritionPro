@@ -172,5 +172,17 @@ def get_biomarker_interactions(biomarkers):
         result["notes"].append(
             "High Vitamin D + calcium: avoid excess fortified sources."
         )
+        
+    if status.get("thyroid stimulating hormone (tsh)") == "high" and status.get("free t4") == "low":
+
+        result["increase"].update(["N010", "N008"])
+
+        result["notes"].append("Possible hypothyroid pattern: support iodine and selenium.")
+        
+    if status.get("free t3") == "low" and status.get("free t4") == "normal":
+
+        result["increase"].update(["N008"])
+
+        result["notes"].append("Possible poor T4 to T3 conversion: prioritize selenium.")
 
     return result

@@ -44,3 +44,5 @@ B042,Serum Pantothenic Acid,N022,ng/mL,Vitamin B5 status
 B043,Serum Biotin,N021,ng/mL,Vitamin B7 status
 B044,Undercarboxylated Osteocalcin,N017,ng/mL,Functional Vitamin K status
 B045,Serum Manganese,N031,mcg/L,Manganese status
+B046,Free T3,N008,pg/mL,Active free thyroid hormone dependent on selenium
+B047,Free T4,N010,ng/dL,Free thyroxine dependent on iodine
