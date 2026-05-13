@@ -6,9 +6,9 @@ ACTIVITY_LEVELS = {
 }
 
 MACRO_SPLIT = {
-    "protein": 0.20,
+    "protein": 0.25,
     "fat": 0.25,
-    "carbs": 0.55
+    "carbs": 0.50
 }
 
 CALORIES_PER_GRAM = {

@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 import os
 import json
 import uuid
-from datetime import datetime,timezone
+from datetime import datetime, timezone
 import pandas as pd
 
 from pdf_working.pdf_service import process_pdf
@@ -52,9 +52,6 @@ def load_gene_variants():
     for _, row in df.iterrows():
         gene = str(row["gene_symbol"]).strip().upper()
         variant = str(row["variant"]).strip()
-
-        if variant.lower() == "normal":
-            continue
 
         if gene not in variant_map:
             variant_map[gene] = []
@@ -135,7 +132,7 @@ def save_user():
 
             print("\n--- EXTRACTED BIOMARKERS ---")
             for b in pdf_biomarkers:
-             print(b)
+                print(b)
 
         except Exception as e:
             print("PDF ERROR:", e)
@@ -188,10 +185,10 @@ def save_user():
     # -------- GENES --------
     genes = []
     gene_names = form.getlist("gene_name[]")
-    gene_status = form.getlist("gene_status[]")
     gene_variants = form.getlist("gene_variant[]")
 
-    for g, s, v in zip(gene_names, gene_status, gene_variants):
+    for g, v in zip(gene_names, gene_variants):
+
         g = (g or "").strip().upper()
         v = (v or "").strip()
 
@@ -201,12 +198,13 @@ def save_user():
         if g not in valid_genes:
             return f"Invalid gene entered: {g}", 400
 
-        if s == "normal":
-            genes.append({"name": g, "variant": "Normal"})
-        else:
-            if not v:
-                return f"Variant required for gene {g}", 400
-            genes.append({"name": g, "variant": v})
+        if not v:
+            return f"Variant required for gene {g}", 400
+
+        genes.append({
+            "name": g,
+            "variant": v
+        })
 
     # -------- PROFILE --------
     user_profile = {
@@ -247,8 +245,10 @@ def save_user():
 
 @app.route("/existing-user")
 def existing_user():
+
     with open(USERS_INDEX, "r") as f:
         users = json.load(f)
+
     return render_template("existing_user.html", users=users)
 
 
@@ -259,6 +259,7 @@ def load_user():
 
 @app.route("/check-profile/<user_id>")
 def check_profile(user_id):
+
     with open(os.path.join(PROFILE_DIR, f"{user_id}.json")) as f:
         user = json.load(f)
 
@@ -311,10 +312,13 @@ def save_updated_profile(user_id):
     pdf_file = request.files.get("report_pdf")
 
     if pdf_file and pdf_file.filename != "" and allowed_file(pdf_file.filename):
-         try:
+
+        try:
+
             pdf_biomarkers = process_pdf(pdf_file)
 
             for b in pdf_biomarkers:
+
                 name = (b.get("name") or "").lower()
                 value = b.get("value")
                 unit = b.get("unit", "")
@@ -324,45 +328,70 @@ def save_updated_profile(user_id):
 
             user["last_updated"]["biomarkers"] = today
 
-         except Exception as e:
+        except Exception as e:
             print("PDF UPDATE ERROR:", e)
 
+    # ---------- HEIGHT / WEIGHT ----------
+
     if request.form.get("height"):
+
         user["height_cm"] = float(request.form["height"])
+
         user["last_updated"]["height"] = today
 
     if request.form.get("weight"):
+
         user["weight_kg"] = float(request.form["weight"])
+
         user["last_updated"]["weight"] = today
+
+    # ---------- MANUAL BIOMARKER UPDATE ----------
 
     names = request.form.getlist("biomarker_name[]")
     values = request.form.getlist("biomarker_value[]")
     units = request.form.getlist("biomarker_unit[]")
 
     biomarker_updated = False
+
     for n, v, u in zip(names, values, units):
+
         n = (n or "").strip().lower()
         v = (v or "").strip()
 
         if v:
+
             if n not in valid_biomarkers:
                 return f"Invalid biomarker entered: {n}", 400
+
             update_biomarker(user["biomarkers"], n, float(v), u)
+
             biomarker_updated = True
 
     if biomarker_updated:
         user["last_updated"]["biomarkers"] = today
 
+    # ---------- GENE UPDATE ----------
+
     gene_names = request.form.getlist("gene_name[]")
-    gene_status = request.form.getlist("gene_status[]")
     gene_variants = request.form.getlist("gene_variant[]")
 
-    for g, s, v in zip(gene_names, gene_status, gene_variants):
-        g = g.upper()
-        if s == "normal":
-            update_gene(user["genes"], g, "Normal")
-        elif v:
-            update_gene(user["genes"], g, v)
+    for g, v in zip(gene_names, gene_variants):
+
+        g = (g or "").strip().upper()
+        v = (v or "").strip()
+
+        if not g:
+            continue
+
+        if g not in valid_genes:
+            return f"Invalid gene entered: {g}", 400
+
+        if not v:
+            continue
+
+        update_gene(user["genes"], g, v)
+
+    user["last_updated"]["genes"] = today
 
     with open(path, "w") as f:
         json.dump(user, f, indent=4)
@@ -377,6 +406,7 @@ def after_save(user_id):
 
 @app.route("/generate-meal/<user_id>")
 def generate_meal(user_id):
+
     with open(os.path.join(PROFILE_DIR, f"{user_id}.json")) as f:
         user_profile = json.load(f)
 

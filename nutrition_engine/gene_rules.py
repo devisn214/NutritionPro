@@ -16,10 +16,9 @@ def process_genes(user_gene_results):
     for g in user_gene_results:
 
         gene = str(g.get("name", "")).upper().strip()
-        variant = str(g.get("variant", "Normal")).strip()
+        variant = str(g.get("variant", "")).strip()
 
-        # ===== SKIP NORMAL =====
-        if variant.lower() == "normal":
+        if not variant:
             continue
 
         match = df[

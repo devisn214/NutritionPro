@@ -4,7 +4,7 @@ import json
 
 class LLMMealEvaluator:
 
-    def __init__(self, model="phi3:mini"):
+    def __init__(self, model="llama3.1:8b-instruct-q4_K_M"):
         self.model = model
         self.url = "http://127.0.0.1:11434/api/generate"
 

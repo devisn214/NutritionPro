@@ -88,6 +88,7 @@
 <script>
 
 function addBiomarker() {
+
     const container = document.getElementById("biomarkers");
 
     const div = document.createElement("div");
@@ -103,6 +104,7 @@ function addBiomarker() {
 }
 
 function addGene() {
+
     const container = document.getElementById("genes");
 
     const uniqueId = "variantList_" + Date.now();
@@ -116,16 +118,10 @@ function addGene() {
                placeholder="Gene Symbol"
                oninput="loadVariants(this)">
 
-        <select name="gene_status[]" onchange="toggleVariant(this)">
-            <option value="normal">Normal</option>
-            <option value="variant">Variant</option>
-        </select>
-
         <input type="text"
                list="${uniqueId}"
                name="gene_variant[]"
-               placeholder="Type Variant"
-               style="display:none;">
+               placeholder="Select rsID Variant">
 
         <datalist id="${uniqueId}"></datalist>
     `;
@@ -133,24 +129,11 @@ function addGene() {
     container.appendChild(div);
 }
 
-function toggleVariant(selectBox) {
-    const row = selectBox.closest(".row");
-    const variantInput = row.querySelector("input[name='gene_variant[]']");
-
-    if (selectBox.value === "variant") {
-        variantInput.style.display = "block";
-    } else {
-        variantInput.style.display = "none";
-        variantInput.value = "";
-    }
-}
-
 function loadVariants(inputBox) {
 
     const gene = inputBox.value.trim().toUpperCase();
     const row = inputBox.closest(".row");
 
-    const statusBox = row.querySelector("select[name='gene_status[]']");
     const variantInput = row.querySelector("input[name='gene_variant[]']");
     const listId = variantInput.getAttribute("list");
     const datalist = document.getElementById(listId);
@@ -159,34 +142,15 @@ function loadVariants(inputBox) {
 
     if (geneVariants[gene]) {
 
-        let found = false;
-
         geneVariants[gene].forEach(v => {
-
-            if (v.toLowerCase() !== "normal") {
-                datalist.innerHTML += `<option value="${v}"></option>`;
-                found = true;
-            }
-
+            datalist.innerHTML += `<option value="${v}"></option>`;
         });
 
-        if (found) {
-            statusBox.value = "variant";
-            variantInput.style.display = "block";
-        } else {
-            statusBox.value = "normal";
-            variantInput.style.display = "none";
-            variantInput.value = "";
-        }
-
-    } else {
-        statusBox.value = "normal";
-        variantInput.style.display = "none";
-        variantInput.value = "";
     }
 }
 
 function autoUnit(input) {
+
     const row = input.closest(".row");
     const unitInput = row.querySelector("input[name='biomarker_unit[]']");
     const key = input.value.toLowerCase();
@@ -197,6 +161,7 @@ function autoUnit(input) {
 }
 
 function validateForm() {
+
     let valid = true;
 
     document.querySelectorAll("input").forEach(el => {
@@ -208,6 +173,7 @@ function validateForm() {
         const val = document.querySelectorAll("input[name='biomarker_value[]']")[i];
 
         if (el.value && !val.value) {
+
             el.style.borderColor = "red";
             val.style.borderColor = "red";
             valid = false;
