@@ -42,6 +42,8 @@ def generate_html_pdf(
                 []
             ),
 
+            user=user_profile,
+
             user_id=user_id,
 
             pdf_mode=True

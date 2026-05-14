@@ -40,30 +40,35 @@
 
         <label>Diet Preference</label>
         <select name="diet">
-              <option value="vegan"> Vegan</option>
+            <option value="vegan">Vegan</option>
             <option value="vegetarian">Vegetarian</option>
             <option value="non-vegetarian">Non-Vegetarian</option>
         </select>
 
         <h3>Upload Lab Report (PDF)</h3>
+
         <input type="file" name="report_pdf" accept=".pdf">
 
         <hr>
 
-        <!-- Biomarker Suggestions -->
+        <!-- BIOMARKER SUGGESTIONS -->
 
         <datalist id="biomarkerList">
+
             {% for bm in biomarkers %}
             <option value="{{ bm }}"></option>
             {% endfor %}
+
         </datalist>
 
-        <!-- RSID Suggestions -->
+        <!-- RSID SUGGESTIONS -->
 
         <datalist id="rsidList">
+
             {% for rsid in gene_variants.keys() %}
             <option value="{{ rsid }}"></option>
             {% endfor %}
+
         </datalist>
 
         <script>
@@ -98,12 +103,12 @@
         <div class="nav">
 
             <button type="submit">
-                Save Profile
+                Go to account creation page
             </button>
 
             <a href="/">
                 <button type="button" class="back-btn">
-                    Back to home
+                    Back to Home
                 </button>
             </a>
 

@@ -16,6 +16,17 @@
         <h2>🍽 Personalized Nutrition Plan</h2>
         <p class="subtext">AI-powered insights based on biomarkers, genetics & food knowledge</p>
     </div>
+    <div class="profile-summary">
+
+    <p><b>Name:</b> {{ user.name }}</p>
+
+    <p><b>Age:</b> {{ user.age }}</p>
+
+    <p><b>Diet:</b> {{ user.diet_preference }}</p>
+
+    <p><b>Calories:</b> {{ result.plan.calories }} kcal</p>
+
+</div>
 
     <div class="summary-pills">
         <div class="pill pill-main">{{ result.plan.calories }} kcal</div>
@@ -173,7 +184,7 @@
 
     <div class="nav">
 
-    <a href="/" class="back-link">← Back to Dashboard</a>
+    <a href="/dashboard/{{ user_id }}" class="back-link">← Back to Dashboard</a>
 
     <a href="/download-report/{{ user_id }}">
         <button type="button">
