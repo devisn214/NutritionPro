@@ -1,6 +1,6 @@
-
 from neo4j import GraphDatabase
 from datetime import datetime, timezone
+
 from nutrition_engine.biomarker_interaction import (
     get_biomarker_interactions
 )
@@ -73,16 +73,19 @@ class NutritionRAG:
                 if direction in [
                     "increase",
                     "maintain",
-                    "support"
+                    "support",
+                    "monitor"
                 ]:
 
                     increase_ids.add(nid)
 
                     self.last_evidence.append(
+
                         self._build_evidence(
                             "biomarker",
                             b.get("name"),
                             nid,
+                            b.get("target_nutrient", nid),
                             "low",
                             direction
                         )
@@ -93,10 +96,12 @@ class NutritionRAG:
                     decrease_ids.add(nid)
 
                     self.last_evidence.append(
+
                         self._build_evidence(
                             "biomarker",
                             b.get("name"),
                             nid,
+                            b.get("target_nutrient", nid),
                             "high",
                             "decrease"
                         )
@@ -116,6 +121,18 @@ class NutritionRAG:
                 g.get("direction", "")
             ).lower()
 
+            gene_name = str(
+                g.get("gene", "")
+            )
+
+            rsid = str(
+                g.get("rsid", "")
+            )
+
+            genotype = str(
+                g.get("genotype", "")
+            )
+
             for nid in nutrient_ids:
 
                 nid = nid.strip()
@@ -126,16 +143,19 @@ class NutritionRAG:
                 if direction in [
                     "increase",
                     "maintain",
-                    "support"
+                    "support",
+                    "monitor"
                 ]:
 
                     increase_ids.add(nid)
 
                     self.last_evidence.append(
+
                         self._build_evidence(
                             "gene",
-                            g.get("gene"),
+                            f"{gene_name} ({rsid} - {genotype})",
                             nid,
+                            g.get("nutrient_name", nid),
                             "genetic",
                             direction
                         )
@@ -146,10 +166,12 @@ class NutritionRAG:
                     decrease_ids.add(nid)
 
                     self.last_evidence.append(
+
                         self._build_evidence(
                             "gene",
-                            g.get("gene"),
+                            f"{gene_name} ({rsid} - {genotype})",
                             nid,
+                            g.get("nutrient_name", nid),
                             "sensitivity",
                             "decrease"
                         )
@@ -184,9 +206,10 @@ class NutritionRAG:
 
             self.last_evidence.append({
 
-                "timestamp": datetime.now(
-                    timezone.utc
-                ).isoformat(),
+                "timestamp":
+                    datetime.now(
+                        timezone.utc
+                    ).isoformat(),
 
                 "source": "interaction",
 
@@ -244,10 +267,7 @@ class NutritionRAG:
                 'seasoning'
             ]
 
-            AND (
-                $diet_pref = 'non-vegetarian'
-                OR f.diet_type = 'Vegetarian'
-            )
+            AND (($diet_pref = 'vegan'AND f.diet_type = 'Vegan')OR($diet_pref = 'vegetarian'AND f.diet_type IN ['Vegan','Vegetarian'])OR($diet_pref = 'non-vegetarian'))
 
             WITH f, n,
                  coalesce(toFloat(r.amount),0)
@@ -258,9 +278,7 @@ class NutritionRAG:
                  collect({
 
                     id: n.id,
-
                     name: n.name,
-
                     amount: amount
 
                  }) AS nutrient_data,
@@ -270,29 +288,24 @@ class NutritionRAG:
                     CASE
 
                         WHEN n.id IN $increase_ids
-                             AND n.id IN $decrease_ids
 
-                            THEN -log(amount + 1)
-
-                        WHEN n.id IN $increase_ids
-
-                            THEN log(amount + 1) * 2
+                            THEN log(amount + 1) * 3
 
                         WHEN n.id IN $decrease_ids
 
-                            THEN -3 * log(amount + 1)
+                            THEN -4 * log(amount + 1)
 
                         WHEN n.id = 'N025'
 
-                            THEN -4 * log(amount + 1)
+                            THEN -5 * log(amount + 1)
 
                         WHEN n.id = 'N030'
 
-                            THEN -2 * log(amount + 1)
+                            THEN -4 * log(amount + 1)
 
                         WHEN n.id = 'N006'
 
-                            THEN -2 * log(amount + 1)
+                            THEN -3 * log(amount + 1)
 
                         ELSE 0
 
@@ -331,8 +344,8 @@ class NutritionRAG:
             RETURN
 
                 f.id AS food_id,
-
                 f.name AS food,
+                f.category AS category,
 
                 nutrient_data,
 
@@ -340,7 +353,7 @@ class NutritionRAG:
 
             ORDER BY total_score DESC
 
-            LIMIT 30
+            LIMIT 60
             """
 
             result = session.run(
@@ -372,6 +385,7 @@ class NutritionRAG:
             balanced_results = []
 
             category_counter = {}
+            used_foods = set()
 
             for row in result:
 
@@ -379,6 +393,13 @@ class NutritionRAG:
 
                 if not food:
                     continue
+
+                food_lower = food.lower()
+
+                if food_lower in used_foods:
+                    continue
+
+                used_foods.add(food_lower)
 
                 nutrients = row.get(
                     "nutrient_data"
@@ -412,51 +433,77 @@ class NutritionRAG:
                     )
 
                     # Saturated Fat
+
                     if nid == "N025":
                         risk_penalty -= amt * 5
 
                     # Glycemic Load
+
                     if nid == "N030":
                         risk_penalty -= amt * 3
 
                     # Sodium
+
                     if nid == "N006":
                         risk_penalty -= amt * 2
 
                 score += risk_penalty
 
                 # =============================================
-                # DIVERSITY ENGINE
+                # FOOD CATEGORY DIVERSITY
                 # =============================================
-
-                lower_food = food.lower()
 
                 detected_category = "other"
 
-                if any(x in lower_food for x in [
+                if any(x in food_lower for x in [
                     "beef",
                     "mutton",
                     "pork",
                     "duck",
                     "goat"
                 ]):
+
                     detected_category = "red_meat"
 
-                elif any(x in lower_food for x in [
+                elif any(x in food_lower for x in [
                     "fish",
                     "eel",
                     "sardine",
-                    "tuna"
+                    "tuna",
+                    "mackerel",
+                    "salmon",
+                    "trevally"
                 ]):
+
                     detected_category = "fish"
 
-                elif any(x in lower_food for x in [
-                    "leaf",
+                elif any(x in food_lower for x in [
                     "spinach",
                     "moringa",
-                    "lettuce"
+                    "lettuce",
+                    "leaf",
+                    "mint"
                 ]):
+
                     detected_category = "leaf"
+
+                elif any(x in food_lower for x in [
+                    "seed",
+                    "almond",
+                    "walnut",
+                    "sesame"
+                ]):
+
+                    detected_category = "seed"
+
+                elif any(x in food_lower for x in [
+                    "dal",
+                    "bean",
+                    "legume",
+                    "peas"
+                ]):
+
+                    detected_category = "legume"
 
                 category_counter[
                     detected_category
@@ -468,14 +515,17 @@ class NutritionRAG:
                 if category_counter[
                     detected_category
                 ] > 3:
-                    score -= 15
+
+                    score -= 12
 
                 # =============================================
-                # HIGH HDL SAFETY
+                # HDL SAFETY
                 # =============================================
 
                 biomarker_names = [
+
                     str(b.get("name", "")).lower()
+
                     for b in biomarkers
                 ]
 
@@ -485,7 +535,7 @@ class NutritionRAG:
                         score -= 25
 
                 # =============================================
-                # FINAL
+                # FINAL RESULT
                 # =============================================
 
                 balanced_results.append({
@@ -513,25 +563,13 @@ class NutritionRAG:
         # =====================================================
 
         balanced_results = sorted(
+
             balanced_results,
+
             key=lambda x: x.get("score", 0),
+
             reverse=True
         )
-
-        # =====================================================
-        # FALLBACK
-        # =====================================================
-
-        if not balanced_results:
-
-            return self._macro_based_retrieval(
-
-                diet_preference,
-
-                reward_categories,
-
-                penalty_categories
-            )
 
         return balanced_results[:20]
 
@@ -558,7 +596,12 @@ class NutritionRAG:
 
             status[name] = val
 
+        # =====================================================
+        # CARDIOVASCULAR
+        # =====================================================
+
         if status.get("ldl cholesterol") == "high":
+
             penalty.update([
                 "oil",
                 "dairy",
@@ -621,6 +664,7 @@ class NutritionRAG:
             ])
 
         if status.get("triglycerides") == "high":
+
             penalty.update([
                 "sweet",
                 "grain",
@@ -636,6 +680,7 @@ class NutritionRAG:
             ])
 
         if status.get("hba1c") == "high":
+
             penalty.update([
                 "sweet",
                 "grain",
@@ -728,10 +773,7 @@ class NutritionRAG:
                 'Saturated Fat'
             ]
 
-            AND (
-                $diet_pref = 'non-vegetarian'
-                OR f.diet_type = 'Vegetarian'
-            )
+            AND (($diet_pref = 'vegan'AND f.diet_type = 'Vegan')OR($diet_pref = 'vegetarian'AND f.diet_type IN ['Vegan','Vegetarian'])OR($diet_pref = 'non-vegetarian'))
 
             WITH f,
 
@@ -886,14 +928,21 @@ class NutritionRAG:
             if nid in decrease_ids:
                 low.append(name)
 
+        rich = list(dict.fromkeys(rich))
+        low = list(dict.fromkeys(low))
+
         if rich and low:
-            return f"Rich in {', '.join(rich[:3])} | Lower in {', '.join(low[:3])}"
+
+            return (
+                f"Rich in {', '.join(rich[:3])} | "
+                f"Lower in {', '.join(low[:2])}"
+            )
 
         if rich:
             return f"Rich in {', '.join(rich[:3])}"
 
         if low:
-            return f"Lower in {', '.join(low[:3])}"
+            return f"Lower in {', '.join(low[:2])}"
 
         return "Balanced nutrient profile"
 
@@ -906,6 +955,7 @@ class NutritionRAG:
         source,
         name,
         n_id,
+        nutrient_name,
         status,
         action
     ):
@@ -915,8 +965,8 @@ class NutritionRAG:
             "source": source,
             "trigger": name,
             "nutrient_id": n_id,
+            "nutrient_name": nutrient_name,
             "status": status,
             "action": action,
-            "logic_path": f"{source.upper()} ({name}) → {n_id} → {action}"
+            "logic_path":f"{source.upper()} ({name}) → {nutrient_name} → {action}"
         }
-

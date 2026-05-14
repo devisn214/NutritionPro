@@ -7,6 +7,7 @@
 <body>
 
 <div class="container card">
+
     <h2>New User Registration</h2>
 
     <form method="POST" action="/save-user" enctype="multipart/form-data" onsubmit="return validateForm()">
@@ -39,50 +40,77 @@
 
         <label>Diet Preference</label>
         <select name="diet">
+              <option value="vegan"> Vegan</option>
             <option value="vegetarian">Vegetarian</option>
             <option value="non-vegetarian">Non-Vegetarian</option>
         </select>
 
-        <h3>Upload Lab Report(PDF)</h3>
+        <h3>Upload Lab Report (PDF)</h3>
         <input type="file" name="report_pdf" accept=".pdf">
 
         <hr>
 
         <!-- Biomarker Suggestions -->
+
         <datalist id="biomarkerList">
             {% for bm in biomarkers %}
             <option value="{{ bm }}"></option>
             {% endfor %}
         </datalist>
 
-        <!-- Gene Symbol Suggestions -->
-        <datalist id="geneList">
-            {% for gene in genes %}
-            <option value="{{ gene }}"></option>
+        <!-- RSID Suggestions -->
+
+        <datalist id="rsidList">
+            {% for rsid in gene_variants.keys() %}
+            <option value="{{ rsid }}"></option>
             {% endfor %}
         </datalist>
 
         <script>
+
             const biomarkerUnits = JSON.parse('{{ biomarker_units | tojson | safe }}');
             const geneVariants = JSON.parse('{{ gene_variants | tojson | safe }}');
+
         </script>
 
+        <!-- BLOOD MARKERS -->
+
         <h3>Blood Marker Tests (Optional)</h3>
+
         <div id="biomarkers"></div>
-        <button type="button" onclick="addBiomarker()">+ Add Blood Marker</button>
+
+        <button type="button" onclick="addBiomarker()">
+            + Add Blood Marker
+        </button>
 
         <hr>
 
+        <!-- GENES -->
+
         <h3>Gene Information (Optional)</h3>
+
         <div id="genes"></div>
-        <button type="button" onclick="addGene()">+ Add Gene</button>
+
+        <button type="button" onclick="addGene()">
+            + Add Gene
+        </button>
 
         <div class="nav">
-            <button type="submit">Save Profile</button>
-            <a href="/"><button type="button" class="back-btn">Back to home</button></a>
+
+            <button type="submit">
+                Save Profile
+            </button>
+
+            <a href="/">
+                <button type="button" class="back-btn">
+                    Back to home
+                </button>
+            </a>
+
         </div>
 
     </form>
+
 </div>
 
 <script>
@@ -92,12 +120,25 @@ function addBiomarker() {
     const container = document.getElementById("biomarkers");
 
     const div = document.createElement("div");
+
     div.className = "row";
 
     div.innerHTML = `
-        <input list="biomarkerList" name="biomarker_name[]" placeholder="Biomarker" oninput="autoUnit(this)">
-        <input type="number" step="0.01" name="biomarker_value[]" placeholder="Value">
-        <input type="text" name="biomarker_unit[]" placeholder="Unit">
+
+        <input list="biomarkerList"
+               name="biomarker_name[]"
+               placeholder="Biomarker"
+               oninput="autoUnit(this)">
+
+        <input type="number"
+               step="0.01"
+               name="biomarker_value[]"
+               placeholder="Value">
+
+        <input type="text"
+               name="biomarker_unit[]"
+               placeholder="Unit">
+
     `;
 
     container.appendChild(div);
@@ -107,43 +148,51 @@ function addGene() {
 
     const container = document.getElementById("genes");
 
-    const uniqueId = "variantList_" + Date.now();
+    const genotypeListId = "genotypeList_" + Date.now();
 
     const div = document.createElement("div");
+
     div.className = "row";
 
     div.innerHTML = `
-        <input list="geneList"
-               name="gene_name[]"
-               placeholder="Gene Symbol"
-               oninput="loadVariants(this)">
+
+        <input list="rsidList"
+               name="gene_rsid[]"
+               placeholder="Select rsID"
+               oninput="loadGenotypes(this)">
 
         <input type="text"
-               list="${uniqueId}"
-               name="gene_variant[]"
-               placeholder="Select rsID Variant">
+               name="gene_genotype[]"
+               list="${genotypeListId}"
+               placeholder="Select Genotype">
 
-        <datalist id="${uniqueId}"></datalist>
+        <datalist id="${genotypeListId}"></datalist>
+
     `;
 
     container.appendChild(div);
 }
 
-function loadVariants(inputBox) {
+function loadGenotypes(inputBox) {
 
-    const gene = inputBox.value.trim().toUpperCase();
+    const rsid = inputBox.value.trim();
+
     const row = inputBox.closest(".row");
 
-    const variantInput = row.querySelector("input[name='gene_variant[]']");
-    const listId = variantInput.getAttribute("list");
+    const genotypeInput = row.querySelector("input[name='gene_genotype[]']");
+
+    const listId = genotypeInput.getAttribute("list");
+
     const datalist = document.getElementById(listId);
 
     datalist.innerHTML = "";
 
-    if (geneVariants[gene]) {
+    if (geneVariants[rsid]) {
 
-        geneVariants[gene].forEach(v => {
-            datalist.innerHTML += `<option value="${v}"></option>`;
+        geneVariants[rsid]["genotypes"].forEach(g => {
+
+            datalist.innerHTML += `<option value="${g}"></option>`;
+
         });
 
     }
@@ -152,7 +201,9 @@ function loadVariants(inputBox) {
 function autoUnit(input) {
 
     const row = input.closest(".row");
+
     const unitInput = row.querySelector("input[name='biomarker_unit[]']");
+
     const key = input.value.toLowerCase();
 
     if (biomarkerUnits[key]) {
@@ -176,13 +227,28 @@ function validateForm() {
 
             el.style.borderColor = "red";
             val.style.borderColor = "red";
+
+            valid = false;
+        }
+
+    });
+
+    document.querySelectorAll("input[name='gene_rsid[]']").forEach((el, i) => {
+
+        const genotype = document.querySelectorAll("input[name='gene_genotype[]']")[i];
+
+        if (el.value && !genotype.value) {
+
+            el.style.borderColor = "red";
+            genotype.style.borderColor = "red";
+
             valid = false;
         }
 
     });
 
     if (!valid) {
-        alert("Please fill biomarker values correctly.");
+        alert("Please fill all biomarker and genotype values correctly.");
     }
 
     return valid;

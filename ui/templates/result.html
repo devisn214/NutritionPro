@@ -3,60 +3,27 @@
 
 <head>
     <title>Personalized Nutrition Report</title>
-
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body class="results-page">
 
-<!-- ===================================================== -->
-<!-- CONTENT -->
-<!-- ===================================================== -->
 <div id="content">
 
 <div class="container card">
 
-    <!-- ================================================= -->
-    <!-- HEADER -->
-    <!-- ================================================= -->
     <div class="header">
-
         <h2>🍽 Personalized Nutrition Plan</h2>
-
-        <p class="subtext">
-            AI-powered insights based on biomarkers,
-            genetics & food knowledge
-        </p>
-
+        <p class="subtext">AI-powered insights based on biomarkers, genetics & food knowledge</p>
     </div>
 
-    <!-- ================================================= -->
-    <!-- SUMMARY -->
-    <!-- ================================================= -->
     <div class="summary-pills">
-
-        <div class="pill pill-main">
-            {{ result.plan.calories }} kcal
-        </div>
-
-        <div class="pill">
-            Protein: {{ result.plan.macros.protein_g }}g
-        </div>
-
-        <div class="pill">
-            Carbs: {{ result.plan.macros.carbs_g }}g
-        </div>
-
-        <div class="pill">
-            Fat: {{ result.plan.macros.fats_g }}g
-        </div>
-
+        <div class="pill pill-main">{{ result.plan.calories }} kcal</div>
+        <div class="pill">Protein: {{ result.plan.macros.protein_g }}g</div>
+        <div class="pill">Carbs: {{ result.plan.macros.carbs_g }}g</div>
+        <div class="pill">Fat: {{ result.plan.macros.fats_g }}g</div>
     </div>
 
-    <!-- ================================================= -->
-    <!-- BIOMARKERS -->
-    <!-- ================================================= -->
     {% if result.plan.biomarker_recommendations %}
 
     <div class="section-box">
@@ -65,67 +32,25 @@
 
         {% for rec in result.plan.biomarker_recommendations %}
 
-        <div class="insight-card
-            {% if rec.status == 'low' %}
-                risk-low
-            {% elif rec.status == 'high' %}
-                risk-high
-            {% else %}
-                risk-normal
-            {% endif %}
-        ">
+        <div class="insight-card {% if rec.status == 'low' %}risk-low{% elif rec.status == 'high' %}risk-high{% else %}risk-normal{% endif %}">
 
             <div class="insight-header">
-
-                <strong>
-                    {{ rec.biomarker or rec.name }}
-                </strong>
-
-                <span class="status-badge">
-                    {{ rec.status }}
-                </span>
-
+                <strong>{{ rec.biomarker or rec.name }}</strong>
+                <span class="status-badge">{{ rec.status }}</span>
             </div>
 
             {% if rec.current_value %}
-            <p class="subtext">
-
-                Current:
-                {{ rec.current_value }}
-
-                |
-
-                Normal:
-                {{ rec.low }} – {{ rec.high }}
-
-            </p>
+            <p class="subtext">Current: {{ rec.current_value }} | Normal: {{ rec.low }} – {{ rec.high }}</p>
             {% endif %}
 
-            <button class="toggle-btn"
-                    onclick="toggleExplain(this)">
-
-                Explain AI reasoning ▼
-
-            </button>
+            <button class="toggle-btn" onclick="toggleExplain(this)">Explain AI reasoning ▼</button>
 
             <div class="explain-box hidden">
 
                 {% if rec.target_nutrient %}
-                Your
-                <b>{{ rec.biomarker }}</b>
-                is
-                <b>{{ rec.status }}</b>.
-
-                Recommended:
-                <b>{{ rec.direction }}</b>
-                intake of
-                <b>{{ rec.target_nutrient }}</b>.
+                Your <b>{{ rec.biomarker }}</b> is <b>{{ rec.status }}</b>. Recommended: <b>{{ rec.direction }}</b> intake of <b>{{ rec.target_nutrient }}</b>.
                 {% else %}
-
-                Recommended:
-                <b>{{ rec.direction }}</b>
-                nutrient support.
-
+                Recommended: <b>{{ rec.direction }}</b> nutrient support.
                 {% endif %}
 
             </div>
@@ -138,9 +63,6 @@
 
     {% endif %}
 
-    <!-- ================================================= -->
-    <!-- GENETIC INSIGHTS -->
-    <!-- ================================================= -->
     {% if result.plan.gene_recommendations %}
 
     <div class="section-box">
@@ -149,62 +71,33 @@
 
         {% for rec in result.plan.gene_recommendations %}
 
-        <!-- SKIP NORMAL -->
-        {% if rec.variant|lower != "normal" %}
-
         <div class="insight-card">
 
             <div class="insight-header">
-
-                <strong>
-                    {{ rec.gene }}
-                </strong>
-
-                <span class="gene-variant">
-                    {{ rec.variant }}
-                </span>
-
+                <strong>{{ rec.gene }}</strong>
+                <span class="gene-variant">{{ rec.rsid }}</span>
             </div>
 
-            <p class="subtext">
+            <p class="subtext">Genotype: <b>{{ rec.genotype }}</b></p>
 
-                Nutrient Influence:
-                <b>{{ rec.nutrient_name }}</b>
+            <p class="subtext">Nutrient Influence: <b>{{ rec.nutrient_name }}</b></p>
 
-            </p>
-
-            <button class="toggle-btn"
-                    onclick="toggleExplain(this)">
-
-                Explain AI reasoning ▼
-
-            </button>
+            <button class="toggle-btn" onclick="toggleExplain(this)">Explain AI reasoning ▼</button>
 
             <div class="explain-box hidden">
-
                 {{ rec.reason }}
-
                 <br><br>
-
-                Recommended:
-                <b>{{ rec.direction }}</b>
-                intake of
-                <b>{{ rec.nutrient_name }}</b>.
-
+                Recommended: <b>{{ rec.direction }}</b> intake of <b>{{ rec.nutrient_name }}</b>.
             </div>
 
         </div>
 
-        {% endif %}
         {% endfor %}
 
     </div>
 
     {% endif %}
 
-    <!-- ================================================= -->
-    <!-- FOOD TABLE -->
-    <!-- ================================================= -->
     {% if result.plan.rag_context %}
 
     <div class="section-box">
@@ -214,13 +107,11 @@
         <table class="food-table">
 
             <thead>
-
                 <tr>
                     <th>Food</th>
                     <th>Nutrients</th>
                     <th>Why it helps</th>
                 </tr>
-
             </thead>
 
             <tbody>
@@ -229,28 +120,14 @@
 
                 <tr>
 
-                    <!-- FOOD -->
-                    <td>
-                        <b>{{ item.food }}</b>
-                    </td>
+                    <td><b>{{ item.food }}</b></td>
 
-                    <!-- NUTRIENTS -->
                     <td>
 
                         {% if item.nutrients %}
 
                             {% for n in item.nutrients %}
-
-                                {{ n.name }}
-
-                                <!-- {% if n.amount %}
-                                    ({{ n.amount }})
-                                {% endif %} -->
-
-                                {% if not loop.last %}
-                                    ,
-                                {% endif %}
-
+                                {{ n.name }}{% if not loop.last %}, {% endif %}
                             {% endfor %}
 
                         {% else %}
@@ -261,12 +138,7 @@
 
                     </td>
 
-                    <!-- REASON -->
-                    <td>
-
-                        {{ item.reason }}
-
-                    </td>
+                    <td>{{ item.reason }}</td>
 
                 </tr>
 
@@ -280,21 +152,14 @@
 
     {% endif %}
 
-    <!-- ================================================= -->
-    <!-- AI MEAL PLAN -->
-    <!-- ================================================= -->
     {% if result.plan.llm_recommendation %}
 
     <div class="section-box">
 
         <h3>AI Meal Plan</h3>
 
-        <div class="ai-box">
-
-            {{ result.plan.llm_recommendation
-               | replace('\n', '<br>')
-               | safe }}
-
+        <div class="ai-box meal-plan-box">
+            {{ result.plan.llm_recommendation | replace('\n', '<br>') | safe }}
         </div>
 
     </div>
@@ -304,65 +169,61 @@
     <!-- ================================================= -->
     <!-- NAV -->
     <!-- ================================================= -->
+    {% if not pdf_mode %}
+
     <div class="nav">
 
-        <a href="/"
-           class="back-link">
+    <a href="/" class="back-link">← Back to Dashboard</a>
 
-            ← Back to Dashboard
-
-        </a>
+    <a href="/download-report/{{ user_id }}">
+        <button type="button">
+            Download Report
+        </button>
+    </a>
 
     </div>
 
+{% endif %}
+
+  
+
+
+        
+
+        </div>
+
+    </div>
+
+
+
+  
+
 </div>
 </div>
 
-<!-- ===================================================== -->
-<!-- SCRIPT -->
-<!-- ===================================================== -->
 <script>
 
-function toggleExplain(btn){
-
+function toggleExplain(btn) {
     const box = btn.nextElementSibling;
-
     box.classList.toggle("hidden");
 }
 
-// ===============================================
-// SAFE SCORE PARSE
-// ===============================================
-const score = JSON.parse(
-    '{{ result.plan.confidence | tojson | safe }}'
-);
+const score = JSON.parse('{{ result.plan.confidence | tojson | safe }}');
 
-const circle = document.getElementById(
-    "progressCircle"
-);
+const circle = document.getElementById("progressCircle");
 
-if(circle){
+if (circle) {
 
     const radius = circle.r.baseVal.value;
+    const circumference = 2 * Math.PI * radius;
 
-    const circumference =
-        2 * Math.PI * radius;
+    circle.style.strokeDasharray = circumference;
+    circle.style.strokeDashoffset = circumference;
 
-    circle.style.strokeDasharray =
-        circumference;
-
-    circle.style.strokeDashoffset =
-        circumference;
-
-    const offset =
-        circumference -
-        (score / 100) * circumference;
+    const offset = circumference - (score / 100) * circumference;
 
     setTimeout(() => {
-
-        circle.style.strokeDashoffset =
-            offset;
-
+        circle.style.strokeDashoffset = offset;
     }, 300);
 }
 

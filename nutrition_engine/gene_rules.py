@@ -15,15 +15,17 @@ def process_genes(user_gene_results):
 
     for g in user_gene_results:
 
-        gene = str(g.get("name", "")).upper().strip()
-        variant = str(g.get("variant", "")).strip()
+        gene = str(g.get("gene", "")).upper().strip()
+        rsid = str(g.get("rsid", "")).strip()
+        genotype = str(g.get("genotype", "")).strip().upper()
 
-        if not variant:
+        if not rsid or not genotype:
             continue
 
         match = df[
             (df["gene_symbol"].str.upper() == gene) &
-            (df["variant"].str.upper() == variant.upper())
+            (df["rsid"].astype(str).str.upper() == rsid.upper()) &
+            (df["genotype"].astype(str).str.upper() == genotype.upper())
         ]
 
         if match.empty:
@@ -32,6 +34,7 @@ def process_genes(user_gene_results):
         row = match.iloc[0]
 
         # ===== direction =====
+
         action = str(row.get("action", "")).lower()
 
         if "decrease" in action:
@@ -40,10 +43,17 @@ def process_genes(user_gene_results):
         elif "increase" in action:
             direction = "increase"
 
+        elif "monitor" in action:
+            direction = "monitor"
+
+        elif "moderate" in action:
+            direction = "moderate"
+
         else:
             direction = "support"
 
         # ===== nutrient lookup =====
+
         n_ids = str(row.get("affected_nutrient", "")).split()
 
         nutrient_names = []
@@ -58,17 +68,26 @@ def process_genes(user_gene_results):
                 nutrient_names.append(
                     n_name_row.iloc[0]["name"]
                 )
+
             else:
                 nutrient_names.append(nid)
 
         recommendations.append({
+
             "gene": gene,
-            "variant": variant,
+            "rsid": rsid,
+            "genotype": genotype,
+
             "nutrient_id": " ".join(n_ids),
             "nutrient_name": ", ".join(nutrient_names),
+
             "impact": row.get("impact", ""),
             "direction": direction,
-            "reason": row.get("variant_effect", "")
+
+            "reason": row.get("variant_effect", ""),
+            "description": row.get("description", ""),
+            "interaction_type": row.get("interaction_type", ""),
+            "action": row.get("action", "")
         })
 
     return recommendations

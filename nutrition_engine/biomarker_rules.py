@@ -129,5 +129,6 @@ def process_biomarkers(user_test_results, user):
             "target_nutrient": n_name,
             "recommended_foods": rec_foods
         })
+    print("Final Recommendations:", final_recommendations)
 
     return final_recommendations

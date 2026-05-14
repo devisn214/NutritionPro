@@ -64,7 +64,7 @@ class NutritionLLM:
             response = requests.post(
                 self.url,
                 json=payload,
-                timeout=120
+                timeout=(30, 300)
             )
 
             response.raise_for_status()
@@ -141,11 +141,23 @@ class NutritionLLM:
             )
         ).lower()
 
-        diet_rule = (
-            "Vegetarian only."
-            if diet == "vegetarian"
-            else "Vegetarian and non-vegetarian foods allowed."
-        )
+        if diet == "vegan":
+
+             diet_rule = ("Strict vegan diet only. ""Do not include milk, curd, paneer, cheese, butter, ghee, egg, meat, fish, or any animal-derived food.")
+
+        elif diet == "vegetarian":
+
+             diet_rule = (
+        "Vegetarian diet only. "
+        "Milk and dairy allowed. "
+        "No egg, meat, or fish."
+    )
+
+        else:
+
+            diet_rule = (
+        "Vegetarian and non-vegetarian foods allowed."
+    )
 
         biomarker_summary = []
 
@@ -215,30 +227,30 @@ STRICT RULES:
 8. No markdown tables.
 9. Generate ALL 3 meals completely.not cut off in between
 10. Ensure meals approximately match macro targets.
+11.Each meal must be a COMPLETE realistic Kerala meal.
 
 OUTPUT FORMAT:
 
 Breakfast:
-- Dish name:Simple preparation mentioning the ingredients in 1 line
+- Dish name:Simple preparation mentioning the ingredients and how this dish helps in 1 line
 
 Lunch:
-- Dish name:Simple preparation mentioning the ingredients in 1 line
+- Dish name:Simple preparation mentioning the ingredients and how this dish helps in 1 line
 
 Dinner:
-- Dish name:Simple preparation mentioning the ingredients in 1 line
+- Dish name:Simple preparation mentioning the ingredients and how this dish helps in 1 line
 Daily Total:
 Calories:
 Protein:
 Carbs:
 Fat:
 
-IMPORTANT:
-1. Maximum 2 dishes per meal.
-2. Maximum 1 sentence preparation.
-3. Keep total output under 300 words.
-4. No nutrition explanations.
-5. No calorie explanation for each dish.
-6. No long text.
+IMPORTANT:.
+1. Maximum 1 sentence preparation.
+2. Keep total output under 300 words.
+3. No nutrition explanations.
+4. No calorie explanation for each dish.
+5. No long text.
 
 
 """
