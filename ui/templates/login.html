@@ -1,17 +1,113 @@
 <!DOCTYPE html>
 <html>
 <head>
+
     <title>Login</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        .popup-error{
+
+            position:fixed;
+
+            top:20px;
+
+            right:20px;
+
+            background:#ef4444;
+
+            color:white;
+
+            padding:14px 18px;
+
+            border-radius:10px;
+
+            display:flex;
+
+            align-items:center;
+
+            gap:14px;
+
+            z-index:9999;
+
+            box-shadow:0 4px 12px rgba(0,0,0,0.2);
+
+            animation:fadeIn 0.3s ease;
+        }
+
+        .popup-error button{
+
+            background:none;
+
+            border:none;
+
+            color:white;
+
+            font-size:20px;
+
+            cursor:pointer;
+
+            font-weight:bold;
+        }
+
+        @keyframes fadeIn{
+
+            from{
+
+                opacity:0;
+
+                transform:translateY(-10px);
+            }
+
+            to{
+
+                opacity:1;
+
+                transform:translateY(0);
+            }
+        }
+
+    </style>
+
 </head>
 
 <body>
+
+<!-- ERROR POPUP -->
+
+{% if error_message %}
+
+<div id="popupError"
+     class="popup-error">
+
+    <span>
+
+        {{ error_message }}
+
+    </span>
+
+    <button type="button"
+            onclick="closePopup()">
+
+        ×
+
+    </button>
+
+</div>
+
+{% endif %}
+
+<!-- LOGIN CARD -->
 
 <div class="container card">
 
     <h2>Login</h2>
 
-    <form method="POST" action="/login">
+    <form method="POST"
+          action="/login">
 
         <label>Username</label>
 
@@ -26,16 +122,37 @@
                required>
 
         <button type="submit">
+
             Login
+
         </button>
 
     </form>
 
-    <a href="/" class="back-link">
+    <a href="/"
+       class="back-link">
+
         ← Back to Home
+
     </a>
 
 </div>
+
+<script>
+
+function closePopup(){
+
+    const popup = document.getElementById(
+        "popupError"
+    );
+
+    if(popup){
+
+        popup.style.display = "none";
+    }
+}
+
+</script>
 
 </body>
 </html>

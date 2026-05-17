@@ -1,6 +1,8 @@
 import json
+
 from .bmr import calculate_bmr
 from .constants import ACTIVITY_LEVELS
+
 from .biomarker_rules import process_biomarkers
 from .gene_rules import process_genes
 from .biomarker_interaction import get_biomarker_interactions
@@ -8,9 +10,12 @@ from .biomarker_interaction import get_biomarker_interactions
 from rag import NutritionRAG
 from llm import NutritionLLM
 
-from nutrition_engine.meal_optimizer import (optimize_meal_plan)
+from nutrition_engine.meal_optimizer import optimize_meal_plan
 
-from llm_evaluator import (LLMMealEvaluator)
+from llm_evaluator import LLMMealEvaluator
+
+from new.confidence import ConfidenceEngine
+from new.adaptive_engine import AdaptiveEngine
 
 
 def generate_nutrition_plan(user):
@@ -27,9 +32,11 @@ def generate_nutrition_plan(user):
     )
 
     if isinstance(activity, (int, float)):
+
         activity_factor = activity
 
     else:
+
         activity_factor = ACTIVITY_LEVELS.get(
             activity,
             1.2
@@ -84,12 +91,12 @@ def generate_nutrition_plan(user):
         g for g in gene_recs
 
         if str(
-            g.get("variant", "")
-        ).lower() != "normal"
+            g.get("direction", "")
+        ).strip().lower() != "normal"
     ]
 
     # =====================================================
-    # INTERACTION RULES
+    # INTERACTION ENGINE
     # =====================================================
 
     interaction = get_biomarker_interactions(
@@ -105,11 +112,15 @@ def generate_nutrition_plan(user):
 
         interaction_recommendations.append({
 
-            "name": "Interaction Rule",
+            "biomarker": "Interaction Rule",
+
+            "target_nutrient": nid,
 
             "nutrient_id": nid,
 
-            "direction": "increase"
+            "direction": "increase",
+
+            "status": "combined"
         })
 
     for nid in interaction.get(
@@ -119,21 +130,22 @@ def generate_nutrition_plan(user):
 
         interaction_recommendations.append({
 
-            "name": "Interaction Rule",
+            "biomarker": "Interaction Rule",
+
+            "target_nutrient": nid,
 
             "nutrient_id": nid,
 
-            "direction": "decrease"
+            "direction": "decrease",
+
+            "status": "combined"
         })
 
     # =====================================================
-    # BUILD FINAL RAG TARGETS
+    # BUILD RAG TARGETS
     # =====================================================
 
-    rag_biomarker_recs = (
-        biomarker_recs
-        + interaction_recommendations
-    )
+    rag_biomarker_recs = biomarker_recs + interaction_recommendations
 
     for g in gene_recs:
 
@@ -142,7 +154,7 @@ def generate_nutrition_plan(user):
         ).split()
 
         direction = str(
-            g.get("direction", "maintain")
+            g.get("direction", "support")
         ).lower()
 
         for nid in nutrient_ids:
@@ -154,16 +166,63 @@ def generate_nutrition_plan(user):
 
             rag_biomarker_recs.append({
 
-                "name": f"Gene-{g.get('gene')}",
+                "biomarker": f"Gene-{g.get('gene')}",
+
+                "target_nutrient": g.get(
+                    "nutrient_name",
+                    nid
+                ),
 
                 "nutrient_id": nid,
 
-                "direction": direction
+                "direction": direction,
+
+                "status": "genetic"
             })
 
     rag_biomarker_recs = remove_duplicate_recommendations(
         rag_biomarker_recs
     )
+
+    # =====================================================
+    # TARGET NUTRIENTS
+    # =====================================================
+
+    increase_ids = []
+    decrease_ids = []
+
+    for rec in rag_biomarker_recs:
+
+        nutrient_ids = str(
+            rec.get("nutrient_id", "")
+        ).split()
+
+        direction = str(
+            rec.get("direction", "")
+        ).lower()
+
+        for nid in nutrient_ids:
+
+            nid = nid.strip()
+
+            if not nid:
+                continue
+
+            if direction in [
+                "increase",
+                "support",
+                "maintain",
+                "monitor"
+            ]:
+
+                increase_ids.append(nid)
+
+            elif direction == "decrease":
+
+                decrease_ids.append(nid)
+
+    increase_ids = list(set(increase_ids))
+    decrease_ids = list(set(decrease_ids))
 
     # =====================================================
     # DEBUG
@@ -198,12 +257,58 @@ def generate_nutrition_plan(user):
         diet_preference=user.get(
             "diet_preference",
             "vegetarian"
-        )
+        ),
+         user_id=user.get("user_id")
     )
 
     evidence = rag.last_evidence or []
 
     rag.close()
+
+    # =====================================================
+    # ADAPTIVE + CONFIDENCE
+    # =====================================================
+
+    confidence_engine = ConfidenceEngine()
+
+    adaptive_engine = AdaptiveEngine()
+
+    for item in rag_context:
+
+        matched_nutrients = [
+
+            n.get("id")
+
+            for n in item.get(
+                "nutrients",
+                []
+            )
+        ]
+
+        adaptive_score = adaptive_engine.get_adaptive_score(
+            user_id=user.get("user_id"),
+            food_name=item.get("food", "")
+        )
+
+        semantic_score = item.get(
+            "semantic_score",
+            0
+        )
+
+        item["adaptive_score"] = adaptive_score
+
+        item["confidence_score"] = confidence_engine.calculate_food_confidence(
+
+            matched_nutrients=matched_nutrients,
+
+            increase_ids=increase_ids,
+
+            decrease_ids=decrease_ids,
+
+            semantic_score=semantic_score,
+
+            adaptive_score=adaptive_score
+        )
 
     # =====================================================
     # DEBUG
@@ -214,8 +319,11 @@ def generate_nutrition_plan(user):
     for r in rag_context[:10]:
 
         print(
+
             r.get("food"),
+
             "->",
+
             r.get("reason")
         )
 
@@ -230,7 +338,9 @@ def generate_nutrition_plan(user):
     )
 
     print("\n========== TARGET MACROS ==========")
+
     print(macros)
+
     print("===================================\n")
 
     # =====================================================
@@ -249,9 +359,47 @@ def generate_nutrition_plan(user):
 
         target_fats=macros["fats_g"]
     )
+    def calculate_actual_macros(optimized_plan):
+
+        total_calories = 0
+        total_protein = 0
+        total_carbs = 0
+        total_fats = 0
+
+        for meal_type, foods in optimized_plan.items():
+
+            for food in foods:
+
+                nutrients = food.get("nutrients", [])
+
+                for n in nutrients:
+
+                    name = str(n.get("name", "")).lower()
+
+                    amount = float(n.get("amount", 0))
+
+                    if "energy" in name or "calories" in name:
+                        total_calories += amount
+
+                    elif "protein" in name:
+                        total_protein += amount
+
+                    elif "carbohydrate" in name or "carbs" in name:
+                        total_carbs += amount
+
+                    elif "fat" in name:
+                        total_fats += amount
+
+        return {
+
+        "calories": round(total_calories),
+        "protein": round(total_protein),
+        "carbs": round(total_carbs),
+        "fat": round(total_fats)
+        }
 
     # =====================================================
-    # LLM MEAL GENERATION
+    # LLM GENERATION
     # =====================================================
 
     llm = NutritionLLM()
@@ -266,7 +414,10 @@ def generate_nutrition_plan(user):
 
         calories=calories,
 
-        macros=macros
+        macros=macros,
+        biomarker_recommendations=biomarker_recs,
+
+        gene_recommendations=gene_recs
     )
 
     # =====================================================
@@ -274,55 +425,81 @@ def generate_nutrition_plan(user):
     # =====================================================
 
     evaluator = LLMMealEvaluator(
-    model="phi3:mini"
-)
+        model="phi3:mini"
+    )
 
     llm_evaluation = evaluator.evaluate(
-    user_profile=user,
-    meal_plan=llm_recommendation,
-    calories=calories,
-    macros=macros,
-    rag_context=rag_context,
-    biomarker_recommendations=biomarker_recs,
-    gene_recommendations=gene_recs
-)
 
+        user_profile=user,
+
+        meal_plan=llm_recommendation,
+
+        calories=calories,
+
+        macros=macros,
+
+        rag_context=rag_context,
+
+        biomarker_recommendations=biomarker_recs,
+
+        gene_recommendations=gene_recs
+    )
 
     print("\n========== LLM EVALUATION ==========")
+
     print(llm_evaluation)
+
     print("====================================\n")
 
     # =====================================================
-    # CONFIDENCE
+    # GLOBAL CONFIDENCE
     # =====================================================
 
-    score = 0
+    global_confidence = confidence_engine.calculate_global_confidence(
 
-    score += min(
-        len(biomarker_recs) * 12,
-        45
+        rag_context=rag_context,
+
+        biomarker_recommendations=biomarker_recs,
+
+        gene_recommendations=gene_recs
     )
 
-    score += min(
-        len(gene_recs) * 10,
-        20
-    )
+    confidence_breakdown = {
 
-    score += min(
-        len(rag_context) * 2,
-        20
-    )
+        "biomarker_support": len(
+            biomarker_recs
+        ),
 
-    if llm_recommendation and \
-       "Service Error" not in llm_recommendation:
+        "gene_support": len(
+            gene_recs
+        ),
 
-        score += 10
+        "food_overlap": len(
+            rag_context
+        ),
 
-    score += 5
+        "semantic_support": round(
 
-    confidence = min(
-        round(score),
-        100
+            sum(
+
+                x.get(
+                    "semantic_score",
+                    0
+                )
+
+                for x in rag_context[:10]
+
+            ) / max(
+                len(rag_context[:10]),
+                1
+            ),
+
+            3
+        )
+    }
+
+    adaptive_global = adaptive_engine.global_adaptive_score(
+        rag_context
     )
 
     # =====================================================
@@ -354,10 +531,12 @@ def generate_nutrition_plan(user):
 
         "evidence": evidence,
 
-        "confidence": confidence
+        "confidence": global_confidence,
+
+        "confidence_breakdown": confidence_breakdown,
+
+        "adaptive_score": adaptive_global
     }
-
-
 
 
 def remove_duplicate_recommendations(recs):
@@ -386,7 +565,6 @@ def remove_duplicate_recommendations(recs):
             final.append(r)
 
     return final
-
 
 
 def fallback_macros(calories):

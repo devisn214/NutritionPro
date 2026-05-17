@@ -2,6 +2,7 @@ __pycache__/
 venv/
 user_data/
 reports/
+uploads/
 #git rm -r --cached user_data 
 
 

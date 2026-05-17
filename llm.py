@@ -6,35 +6,48 @@ class NutritionLLM:
     def __init__(self, model="phi3:mini"):
 
         self.model = model
+
         self.url = "http://127.0.0.1:11434/api/generate"
 
     # =========================================================
     # MAIN GENERATION
     # =========================================================
 
-    def generate_plan(
-        self,
-        user_profile,
-        rag_context,
-        optimized_plan,
-        calories,
-        macros
-    ):
+    def generate_plan(self, user_profile, rag_context, optimized_plan, calories, macros, biomarker_recommendations, gene_recommendations):
 
         print("\n================= LLM INPUT DEBUG =================")
-        print("Diet Preference:", user_profile.get("diet_preference"))
-        print("RAG Foods:", [c.get("food") for c in rag_context[:8]])
+
+        print(
+            "Diet Preference:",
+            user_profile.get("diet_preference")
+        )
+
+        print(
+            "RAG Foods:",
+            [c.get("food") for c in rag_context[:8]]
+        )
+
         print("===================================================")
 
         if not rag_context:
+
             return "Error: No suitable ingredients found."
 
         prompt = self._build_prompt(
-            user_profile,
-            rag_context,
-            optimized_plan,
-            calories,
-            macros
+
+            user=user_profile,
+
+            context=rag_context,
+
+            optimized_plan=optimized_plan,
+
+            calories=calories,
+
+            macros=macros,
+
+            biomarker_recommendations=biomarker_recommendations,
+
+            gene_recommendations=gene_recommendations
         )
 
         payload = {
@@ -47,23 +60,26 @@ class NutritionLLM:
 
             "options": {
 
-                "num_predict": 300,
+                "num_predict": 450,
 
-                "temperature": 0.1,
+                "temperature": 0.15,
 
-                "top_p": 0.8,
+                "top_p": 0.85,
 
                 "repeat_penalty": 1.1,
 
-                "num_ctx": 2048
+                "num_ctx": 4096
             }
         }
 
         try:
 
             response = requests.post(
+
                 self.url,
+
                 json=payload,
+
                 timeout=(30, 300)
             )
 
@@ -75,7 +91,9 @@ class NutritionLLM:
             ).strip()
 
             print("\n================= LLM OUTPUT =================")
+
             print(result)
+
             print("==============================================")
 
             return result
@@ -83,7 +101,9 @@ class NutritionLLM:
         except Exception as e:
 
             print("\n================= LLM ERROR =================")
+
             print(str(e))
+
             print("=============================================")
 
             return f"Service Error: Unable to generate plan ({str(e)})"
@@ -92,165 +112,362 @@ class NutritionLLM:
     # BUILD PROMPT
     # =========================================================
 
-    def _build_prompt(
-        self,
-        user,
-        context,
-        optimized_plan,
-        calories,
-        macros
-    ):
+    def _build_prompt(self, user, context, optimized_plan, calories, macros, biomarker_recommendations, gene_recommendations):
 
         context = sorted(
+
             context,
-            key=lambda x: x.get("score", 0),
+
+            key=lambda x: x.get(
+                "score",
+                0
+            ),
+
             reverse=True
         )
 
         allowed_foods = []
 
-        for c in context[:15]:
+        for c in context[:20]:
 
             food = c.get("food")
 
             if food and food not in allowed_foods:
+
                 allowed_foods.append(food)
 
         breakfast_foods = [
+
             x.get("food")
-            for x in optimized_plan.get("breakfast", [])
+
+            for x in optimized_plan.get(
+                "breakfast",
+                []
+            )
+
             if x.get("food")
         ]
 
         lunch_foods = [
+
             x.get("food")
-            for x in optimized_plan.get("lunch", [])
+
+            for x in optimized_plan.get(
+                "lunch",
+                []
+            )
+
             if x.get("food")
         ]
 
         dinner_foods = [
+
             x.get("food")
-            for x in optimized_plan.get("dinner", [])
+
+            for x in optimized_plan.get(
+                "dinner",
+                []
+            )
+
             if x.get("food")
         ]
 
         diet = str(
+
             user.get(
                 "diet_preference",
                 "vegetarian"
             )
+
         ).lower()
+
+        # =====================================================
+        # DIET RULES
+        # =====================================================
 
         if diet == "vegan":
 
-             diet_rule = ("Strict vegan diet only. ""Do not include milk, curd, paneer, cheese, butter, ghee, egg, meat, fish, or any animal-derived food.")
+            diet_rule = (
+
+                "Strict vegan diet only. "
+
+                "Do not include milk, curd, paneer, cheese, butter, ghee, egg, meat, fish, or any animal-derived food."
+            )
 
         elif diet == "vegetarian":
 
-             diet_rule = (
-        "Vegetarian diet only. "
-        "Milk and dairy allowed. "
-        "No egg, meat, or fish."
-    )
+            diet_rule = (
+
+                "Vegetarian diet only. "
+
+                "Milk and dairy allowed. "
+
+                "No egg, meat, or fish."
+            )
 
         else:
 
             diet_rule = (
-        "Vegetarian and non-vegetarian foods allowed."
-    )
+
+                "Vegetarian and non-vegetarian foods allowed."
+            )
+
+        # =====================================================
+        # BIOMARKER SUMMARY
+        # =====================================================
 
         biomarker_summary = []
 
-        for b in user.get("biomarkers", []):
+        for b in biomarker_recommendations:
+
+            biomarker_name = str(
+                b.get("biomarker", "")
+            )
 
             status = str(
                 b.get("status", "")
-            ).lower()
+            )
 
-            if status and status != "normal":
+            nutrient = str(
+                b.get("target_nutrient", "")
+            )
 
-                biomarker_summary.append(
-                    f"{b.get('name')}={status}"
-                )
+            direction = str(
+                b.get("direction", "")
+            )
+
+            biomarker_summary.append(
+
+                f"{biomarker_name} = {status} → {direction} {nutrient}"
+            )
+
+        # =====================================================
+        # GENE SUMMARY
+        # =====================================================
 
         gene_summary = []
 
-        for g in user.get("genes", []):
+        for g in gene_recommendations:
 
-            variant = str(
-                g.get("variant", "")
-            ).strip()
+            gene_name = str(
+                g.get("gene", "")
+            )
 
-            if variant and variant.lower() != "normal":
+            genotype = str(
+                g.get("genotype", "")
+            )
 
-                gene_summary.append(
-                    f"{g.get('name')} ({variant})"
-                )
+            nutrient = str(
+                g.get("nutrient_name", "")
+            )
+
+            direction = str(
+                g.get("direction", "")
+            )
+
+            gene_summary.append(
+
+                f"{gene_name} ({genotype}) → {direction} {nutrient}"
+            )
+
+        # =====================================================
+        # SEMANTIC FOODS
+        # =====================================================
+
+        semantic_foods = []
+
+        for item in context[:15]:
+
+            semantic_foods.append(
+
+                f"{item.get('food')} "
+
+                f"(semantic={item.get('semantic_score',0)}, "
+
+                f"confidence={item.get('confidence_score',0)}, "
+
+                f"adaptive={item.get('adaptive_score',0)})"
+            )
+
+        # =====================================================
+        # TARGET NUTRIENTS
+        # =====================================================
+
+        target_nutrients = []
+
+        for item in context[:10]:
+
+            for n in item.get(
+                "nutrients",
+                []
+            ):
+
+                nutrient_name = n.get("name")
+
+                if nutrient_name and nutrient_name not in target_nutrients:
+
+                    target_nutrients.append(
+                        nutrient_name
+                    )
+
+        # =====================================================
+        # FINAL PROMPT
+        # =====================================================
 
         return f"""
-You are a Kerala clinical dietitian.
+
+You are an advanced AI Kerala clinical nutrition system.
+
+Generate a highly personalized Kerala meal plan using biomarker analysis, genetic factors, semantic food retrieval, adaptive learning, confidence-aware ranking, and explainable nutritional reasoning.
+
+=====================================================
+USER PROFILE
+=====================================================
+
+Diet Preference:
+{diet}
+
+Age:
+{user.get('age')}
+
+Gender:
+{user.get('gender')}
+
+Weight:
+{user.get('weight_kg')} kg
+
+Height:
+{user.get('height_cm')} cm
+
+=====================================================
+DIET RULES
+=====================================================
 
 {diet_rule}
 
-IMPORTANT BIOMARKERS:
-{", ".join(biomarker_summary[:5])}
+=====================================================
+BIOMARKER ANALYSIS
+=====================================================
 
-GENETIC FACTORS:
-{", ".join(gene_summary[:5])}
+{chr(10).join(biomarker_summary[:10])}
 
-ALLOWED FOODS:
-{", ".join(allowed_foods[:15])}
+=====================================================
+GENETIC ANALYSIS
+=====================================================
 
-BREAKFAST FOODS:
-{", ".join(breakfast_foods[:4])}
+{chr(10).join(gene_summary[:10])}
 
-LUNCH FOODS:
-{", ".join(lunch_foods[:6])}
+=====================================================
+SEMANTICALLY RANKED FOODS
+=====================================================
 
-DINNER FOODS:
-{", ".join(dinner_foods[:4])}
+{chr(10).join(semantic_foods)}
 
-TARGETS:
-Calories: {calories} kcal
-Protein: {macros.get('protein_g', 0)} g
-Carbs: {macros.get('carbs_g', 0)} g
-Fat: {macros.get('fats_g', 0)} g
+=====================================================
+ALLOWED FOODS
+=====================================================
 
-STRICT RULES:
-1. Generate COMPLETE breakfast lunch and dinner.
+{", ".join(allowed_foods[:20])}
+
+=====================================================
+OPTIMIZED BREAKFAST FOODS
+=====================================================
+
+{", ".join(breakfast_foods[:6])}
+
+=====================================================
+OPTIMIZED LUNCH FOODS
+=====================================================
+
+{", ".join(lunch_foods[:8])}
+
+=====================================================
+OPTIMIZED DINNER FOODS
+=====================================================
+
+{", ".join(dinner_foods[:6])}
+
+=====================================================
+TOP NUTRIENT TARGETS
+=====================================================
+
+{", ".join(target_nutrients[:12])}
+
+=====================================================
+TARGET DAILY MACROS
+=====================================================
+
+Calories:
+{calories} kcal
+
+Protein:
+{macros.get('protein_g', 0)} g
+
+Carbs:
+{macros.get('carbs_g', 0)} g
+
+Fat:
+{macros.get('fats_g', 0)} g
+
+IMPORTANT:
+These macro targets are PRE-CALCULATED by the nutrition engine.
+Your generated meals and serving quantities MUST approximately match these targets.
+
+=====================================================
+STRICT CLINICAL CONSTRAINTS
+=====================================================
+
+1. Generate COMPLETE breakfast, lunch and dinner.
 2. Use realistic Kerala dishes only.
-3. Keep response concise.
-4. Use mainly recommended foods.
-5. Mention simple preparation briefly.
-6. No long explanations.
-7. No nutrition theory.
-8. No markdown tables.
-9. Generate ALL 3 meals completely.not cut off in between
-10. Ensure meals approximately match macro targets.
-11.Each meal must be a COMPLETE realistic Kerala meal.
+3. Use mainly foods from semantic retrieval.
+4. Use foods from optimized meal selections.
+5. Keep meals clinically relevant.
+6. Mention preparation in ONE short sentence.
+7. No markdown tables.
+8. No long explanations.
+9. No nutrition theory.
+10. Keep output under 350 words.
+11. Ensure all 3 meals are complete.
+12. Avoid excessive ingredient repetition.
+13. Ensure meal diversity.
+14. Meals must sound medically personalized.
+15. Include realistic serving portions in grams or cups.
+16. Do not invent unrelated dishes.
+17. Prefer foods with stronger semantic and confidence scores.
+18. STRICTLY ensure the meal quantities approximately satisfy the target macros.
+19. Keep total calories within ±2% of target calories.
+20. Keep protein within ±10g of target protein.
+21. Keep carbs within ±5g of target carbs.
+22. Keep fat within -4g of target fat.
+23. Avoid unrealistic quantities.
+24. Avoid excessive carbohydrates.
+25. Avoid excessive oils and fats.
+26. Do not generate impossible nutrition totals.
+27. Use clinically realistic portion sizes.
+28. Do NOT calculate nutrition totals yourself.
+29. Nutrition totals are already calculated separately by the backend.
+30. Your role is ONLY to generate meal descriptions and quantities matching the targets.
 
-OUTPUT FORMAT:
+=====================================================
+OUTPUT STYLE
+=====================================================
+
+Generate output in professional clinical nutrition recommendation style.
+The meal plan should sound medically personalized and AI-assisted.
+Briefly explain why each dish is suitable for the biomarkers and genes.
+
+=====================================================
+OUTPUT FORMAT
+=====================================================
 
 Breakfast:
-- Dish name:Simple preparation mentioning the ingredients and how this dish helps in 1 line
+- Dish name (portion size): short preparation and clinical benefit in two line
 
 Lunch:
-- Dish name:Simple preparation mentioning the ingredients and how this dish helps in 1 line
+- Dish name (portion size): short preparation and clinical benefit in two lines
 
 Dinner:
-- Dish name:Simple preparation mentioning the ingredients and how this dish helps in 1 line
-Daily Total:
-Calories:
-Protein:
-Carbs:
-Fat:
-
-IMPORTANT:.
-1. Maximum 1 sentence preparation.
-2. Keep total output under 300 words.
-3. No nutrition explanations.
-4. No calorie explanation for each dish.
-5. No long text.
+- Dish name (portion size): short preparation and clinical benefit in two lines
 
 
 """

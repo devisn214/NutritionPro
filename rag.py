@@ -1,26 +1,23 @@
 from neo4j import GraphDatabase
 from datetime import datetime, timezone
 
-from nutrition_engine.biomarker_interaction import (
-    get_biomarker_interactions
-)
+from nutrition_engine.biomarker_interaction import get_biomarker_interactions
+
+from new.vector_store import SemanticRetriever
+from new.adaptive_engine import AdaptiveEngine
 
 
 class NutritionRAG:
 
-    def __init__(
-        self,
-        uri="bolt://localhost:7687",
-        user="neo4j",
-        password="neo4jabc"
-    ):
+    def __init__(self, uri="bolt://localhost:7687", user="neo4j", password="neo4jabc"):
 
-        self.driver = GraphDatabase.driver(
-            uri,
-            auth=(user, password)
-        )
+        self.driver = GraphDatabase.driver(uri, auth=(user, password))
 
         self.last_evidence = []
+
+        self.vector_store = SemanticRetriever()
+
+        self.adaptive_engine = AdaptiveEngine()
 
     # =========================================================
     # CLOSE
@@ -35,19 +32,17 @@ class NutritionRAG:
     # MAIN RETRIEVAL
     # =========================================================
 
-    def retrieve_context(
-        self,
-        biomarkers,
-        genes,
-        biomarker_recs,
-        gene_recs,
-        diet_preference
-    ):
+    def retrieve_context(self, biomarkers, genes, biomarker_recs, gene_recs, diet_preference,user_id):
 
         self.last_evidence = []
 
         increase_ids = set()
+
         decrease_ids = set()
+
+        increase_names = []
+
+        decrease_names = []
 
         # =====================================================
         # BIOMARKER PROCESSING
@@ -55,13 +50,31 @@ class NutritionRAG:
 
         for b in biomarker_recs or []:
 
-            nutrient_ids = str(
-                b.get("nutrient_id", "")
-            ).upper().split()
+            nutrient_ids = str(b.get("nutrient_id", "")).upper().split()
 
-            direction = str(
-                b.get("direction", "")
-            ).lower()
+            direction = str(b.get("direction", "")).lower()
+
+            biomarker_name = str(
+
+                b.get("biomarker")
+
+                or b.get("name")
+
+                or "Unknown Biomarker"
+
+            )
+            if biomarker_name.startswith("Gene-"):
+                continue
+
+            nutrient_name = str(
+
+                b.get("target_nutrient")
+
+                or b.get("nutrient_name")
+
+                or "Unknown Nutrient"
+
+            )
 
             for nid in nutrient_ids:
 
@@ -71,6 +84,7 @@ class NutritionRAG:
                     continue
 
                 if direction in [
+
                     "increase",
                     "maintain",
                     "support",
@@ -79,14 +93,22 @@ class NutritionRAG:
 
                     increase_ids.add(nid)
 
+                    increase_names.append(nutrient_name)
+
                     self.last_evidence.append(
 
                         self._build_evidence(
+
                             "biomarker",
-                            b.get("name"),
+
+                            biomarker_name,
+
                             nid,
-                            b.get("target_nutrient", nid),
-                            "low",
+
+                            nutrient_name,
+
+                            b.get("status", "low"),
+
                             direction
                         )
                     )
@@ -95,15 +117,23 @@ class NutritionRAG:
 
                     decrease_ids.add(nid)
 
+                    decrease_names.append(nutrient_name)
+
                     self.last_evidence.append(
 
                         self._build_evidence(
+
                             "biomarker",
-                            b.get("name"),
+
+                            biomarker_name,
+
                             nid,
-                            b.get("target_nutrient", nid),
-                            "high",
-                            "decrease"
+
+                            nutrient_name,
+
+                            b.get("status", "high"),
+
+                            direction
                         )
                     )
 
@@ -113,24 +143,21 @@ class NutritionRAG:
 
         for g in gene_recs or []:
 
-            nutrient_ids = str(
-                g.get("nutrient_id", "")
-            ).upper().split()
+            nutrient_ids = str(g.get("nutrient_id", "")).upper().split()
 
-            direction = str(
-                g.get("direction", "")
-            ).lower()
+            direction = str(g.get("direction", "")).lower()
 
-            gene_name = str(
-                g.get("gene", "")
-            )
+            gene_name = str(g.get("gene", ""))
 
-            rsid = str(
-                g.get("rsid", "")
-            )
+            rsid = str(g.get("rsid", ""))
 
-            genotype = str(
-                g.get("genotype", "")
+            genotype = str(g.get("genotype", ""))
+
+            nutrient_name = str(
+
+                g.get("nutrient_name")
+
+                or "Unknown Nutrient"
             )
 
             for nid in nutrient_ids:
@@ -141,6 +168,7 @@ class NutritionRAG:
                     continue
 
                 if direction in [
+
                     "increase",
                     "maintain",
                     "support",
@@ -149,14 +177,22 @@ class NutritionRAG:
 
                     increase_ids.add(nid)
 
+                    increase_names.append(nutrient_name)
+
                     self.last_evidence.append(
 
                         self._build_evidence(
+
                             "gene",
+
                             f"{gene_name} ({rsid} - {genotype})",
+
                             nid,
-                            g.get("nutrient_name", nid),
+
+                            nutrient_name,
+
                             "genetic",
+
                             direction
                         )
                     )
@@ -165,15 +201,23 @@ class NutritionRAG:
 
                     decrease_ids.add(nid)
 
+                    decrease_names.append(nutrient_name)
+
                     self.last_evidence.append(
 
                         self._build_evidence(
+
                             "gene",
+
                             f"{gene_name} ({rsid} - {genotype})",
+
                             nid,
-                            g.get("nutrient_name", nid),
+
+                            nutrient_name,
+
                             "sensitivity",
-                            "decrease"
+
+                            direction
                         )
                     )
 
@@ -186,6 +230,7 @@ class NutritionRAG:
         )
 
         increase_ids.update(
+
             interaction_result.get(
                 "increase",
                 set()
@@ -193,6 +238,7 @@ class NutritionRAG:
         )
 
         decrease_ids.update(
+
             interaction_result.get(
                 "decrease",
                 set()
@@ -217,6 +263,8 @@ class NutritionRAG:
 
                 "nutrient_id": "",
 
+                "nutrient_name": "",
+
                 "status": "combined",
 
                 "action": note,
@@ -228,27 +276,53 @@ class NutritionRAG:
         # CONFLICT RESOLUTION
         # =====================================================
 
-        overlap = (
-            increase_ids
-            & decrease_ids
+        overlap = increase_ids & decrease_ids
+
+        increase_ids = increase_ids - overlap
+
+        decrease_ids = decrease_ids - overlap
+
+        # =====================================================
+        # SEMANTIC QUERY
+        # =====================================================
+
+        semantic_query = self.vector_store.build_query(
+
+            increase_nutrients=increase_names,
+
+            decrease_nutrients=decrease_names,
+
+            diet_preference=diet_preference,
+
+            biomarkers=[
+
+                str(x.get("name", ""))
+
+                for x in biomarkers
+            ],
+
+            genes=[
+
+                str(x.get("gene", ""))
+
+                for x in genes
+            ]
         )
 
-        increase_ids = (
-            increase_ids - overlap
-        )
+        semantic_scores = self.vector_store.retrieve_as_score_map(
 
-        decrease_ids = (
-            decrease_ids - overlap
+            semantic_query,
+
+            top_k=80
         )
 
         # =====================================================
         # CATEGORY RULES
         # =====================================================
 
-        reward_categories, penalty_categories = \
-            self._get_category_rules(
-                biomarkers
-            )
+        reward_categories, penalty_categories = self._get_category_rules(
+            biomarkers
+        )
 
         # =====================================================
         # MAIN QUERY
@@ -267,11 +341,16 @@ class NutritionRAG:
                 'seasoning'
             ]
 
-            AND (($diet_pref = 'vegan'AND f.diet_type = 'Vegan')OR($diet_pref = 'vegetarian'AND f.diet_type IN ['Vegan','Vegetarian'])OR($diet_pref = 'non-vegetarian'))
+            AND (
+                ($diet_pref = 'vegan' AND f.diet_type = 'Vegan')
+                OR
+                ($diet_pref = 'vegetarian' AND f.diet_type IN ['Vegan','Vegetarian'])
+                OR
+                ($diet_pref = 'non-vegetarian')
+            )
 
             WITH f, n,
-                 coalesce(toFloat(r.amount),0)
-                 AS amount
+                 coalesce(toFloat(r.amount),0) AS amount
 
             WITH f,
 
@@ -288,24 +367,10 @@ class NutritionRAG:
                     CASE
 
                         WHEN n.id IN $increase_ids
-
                             THEN log(amount + 1) * 3
 
                         WHEN n.id IN $decrease_ids
-
                             THEN -4 * log(amount + 1)
-
-                        WHEN n.id = 'N025'
-
-                            THEN -5 * log(amount + 1)
-
-                        WHEN n.id = 'N030'
-
-                            THEN -4 * log(amount + 1)
-
-                        WHEN n.id = 'N006'
-
-                            THEN -3 * log(amount + 1)
 
                         ELSE 0
 
@@ -337,9 +402,7 @@ class NutritionRAG:
 
             WITH f,
                  nutrient_data,
-
-                 (nutrient_score + category_score)
-                 AS total_score
+                 (nutrient_score + category_score) AS total_score
 
             RETURN
 
@@ -353,7 +416,7 @@ class NutritionRAG:
 
             ORDER BY total_score DESC
 
-            LIMIT 60
+            LIMIT 80
             """
 
             result = session.run(
@@ -385,6 +448,7 @@ class NutritionRAG:
             balanced_results = []
 
             category_counter = {}
+
             used_foods = set()
 
             for row in result:
@@ -406,73 +470,50 @@ class NutritionRAG:
                 ) or []
 
                 score = round(
+
                     float(
                         row.get(
                             "total_score",
                             0
                         )
                     ),
+
                     2
                 )
 
-                # =============================================
-                # FOOD RISK PENALTIES
-                # =============================================
+                # =================================================
+                # SEMANTIC SCORE
+                # =================================================
 
-                risk_penalty = 0
+                semantic_score = semantic_scores.get(
+                    food_lower,
+                    0
+                )
 
-                for n in nutrients:
+                score += semantic_score * 30
 
-                    nid = str(
-                        n.get("id", "")
-                    ).upper()
+                # =================================================
+                # ADAPTIVE SCORE
+                # =================================================
 
-                    amt = float(
-                        n.get("amount", 0)
-                        or 0
-                    )
+                adaptive_score = self.adaptive_engine.get_adaptive_score(
+                    user_id,food
+                )
 
-                    # Saturated Fat
+                score += adaptive_score
 
-                    if nid == "N025":
-                        risk_penalty -= amt * 5
-
-                    # Glycemic Load
-
-                    if nid == "N030":
-                        risk_penalty -= amt * 3
-
-                    # Sodium
-
-                    if nid == "N006":
-                        risk_penalty -= amt * 2
-
-                score += risk_penalty
-
-                # =============================================
+                # =================================================
                 # FOOD CATEGORY DIVERSITY
-                # =============================================
+                # =================================================
 
                 detected_category = "other"
 
                 if any(x in food_lower for x in [
-                    "beef",
-                    "mutton",
-                    "pork",
-                    "duck",
-                    "goat"
-                ]):
-
-                    detected_category = "red_meat"
-
-                elif any(x in food_lower for x in [
                     "fish",
-                    "eel",
-                    "sardine",
+                    "salmon",
                     "tuna",
                     "mackerel",
-                    "salmon",
-                    "trevally"
+                    "sardine"
                 ]):
 
                     detected_category = "fish"
@@ -480,9 +521,7 @@ class NutritionRAG:
                 elif any(x in food_lower for x in [
                     "spinach",
                     "moringa",
-                    "lettuce",
-                    "leaf",
-                    "mint"
+                    "leaf"
                 ]):
 
                     detected_category = "leaf"
@@ -490,7 +529,6 @@ class NutritionRAG:
                 elif any(x in food_lower for x in [
                     "seed",
                     "almond",
-                    "walnut",
                     "sesame"
                 ]):
 
@@ -499,8 +537,7 @@ class NutritionRAG:
                 elif any(x in food_lower for x in [
                     "dal",
                     "bean",
-                    "legume",
-                    "peas"
+                    "legume"
                 ]):
 
                     detected_category = "legume"
@@ -516,27 +553,11 @@ class NutritionRAG:
                     detected_category
                 ] > 3:
 
-                    score -= 12
+                    score -= 10
 
-                # =============================================
-                # HDL SAFETY
-                # =============================================
-
-                biomarker_names = [
-
-                    str(b.get("name", "")).lower()
-
-                    for b in biomarkers
-                ]
-
-                if "hdl cholesterol" in biomarker_names:
-
-                    if detected_category == "red_meat":
-                        score -= 25
-
-                # =============================================
+                # =================================================
                 # FINAL RESULT
-                # =============================================
+                # =================================================
 
                 balanced_results.append({
 
@@ -545,6 +566,16 @@ class NutritionRAG:
                     "food": food,
 
                     "score": round(score, 2),
+
+                    "semantic_score": round(
+                        semantic_score,
+                        4
+                    ),
+
+                    "adaptive_score": round(
+                        adaptive_score,
+                        2
+                    ),
 
                     "nutrients": nutrients,
 
@@ -555,7 +586,10 @@ class NutritionRAG:
                         increase_ids,
 
                         decrease_ids
-                    )
+                    ),
+
+                    "semantic_reason":
+                        "Retrieved using semantic embedding similarity and biomarker-gene nutritional reasoning"
                 })
 
         # =====================================================
@@ -580,6 +614,7 @@ class NutritionRAG:
     def _get_category_rules(self, biomarkers):
 
         reward = set()
+
         penalty = set()
 
         status = {}
@@ -596,17 +631,12 @@ class NutritionRAG:
 
             status[name] = val
 
-        # =====================================================
-        # CARDIOVASCULAR
-        # =====================================================
-
         if status.get("ldl cholesterol") == "high":
 
             penalty.update([
                 "oil",
                 "dairy",
-                "meat",
-                "sweet"
+                "meat"
             ])
 
             reward.update([
@@ -904,14 +934,10 @@ class NutritionRAG:
     # EXPLANATION
     # =========================================================
 
-    def _generate_reason_for_target(
-        self,
-        nutrient_data,
-        increase_ids,
-        decrease_ids
-    ):
+    def _generate_reason_for_target(self, nutrient_data, increase_ids, decrease_ids):
 
         rich = []
+
         low = []
 
         for n in nutrient_data:
@@ -929,6 +955,7 @@ class NutritionRAG:
                 low.append(name)
 
         rich = list(dict.fromkeys(rich))
+
         low = list(dict.fromkeys(low))
 
         if rich and low:
@@ -950,23 +977,27 @@ class NutritionRAG:
     # EVIDENCE
     # =========================================================
 
-    def _build_evidence(
-        self,
-        source,
-        name,
-        n_id,
-        nutrient_name,
-        status,
-        action
-    ):
+    def _build_evidence(self, source, name, n_id, nutrient_name, status, action):
 
         return {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+
+            "timestamp":
+                datetime.now(
+                    timezone.utc
+                ).isoformat(),
+
             "source": source,
+
             "trigger": name,
+
             "nutrient_id": n_id,
+
             "nutrient_name": nutrient_name,
+
             "status": status,
+
             "action": action,
-            "logic_path":f"{source.upper()} ({name}) → {nutrient_name} → {action}"
+
+            "logic_path":
+                f"{source.upper()} ({name}) → {nutrient_name} → {action}"
         }

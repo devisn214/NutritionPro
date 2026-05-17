@@ -2,52 +2,157 @@
 <html>
 <head>
     <title>Nutrition Pro – New User</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        .upload-box{
+
+            border:2px dashed #94a3b8;
+
+            border-radius:12px;
+
+            padding:20px;
+
+            margin-top:10px;
+
+            background:#f8fafc;
+        }
+
+        .upload-info{
+
+            font-size:14px;
+
+            color:#475569;
+
+            margin-top:10px;
+
+            line-height:1.6;
+        }
+
+        .section-title{
+
+            margin-top:25px;
+        }
+
+    </style>
+
 </head>
+
 <body>
 
 <div class="container card">
 
     <h2>New User Registration</h2>
 
-    <form method="POST" action="/save-user" enctype="multipart/form-data" onsubmit="return validateForm()">
+    <form method="POST"
+          action="/save-user"
+          enctype="multipart/form-data"
+          onsubmit="return validateForm()">
+
+        <!-- BASIC INFO -->
 
         <label>Name</label>
-        <input type="text" name="name" required>
+
+        <input type="text"
+               name="name"
+               required>
 
         <label>Age</label>
-        <input type="number" name="age" required min="1">
+
+        <input type="number"
+               name="age"
+               required
+               min="1">
 
         <label>Gender</label>
+
         <select name="gender">
-            <option value="female">Female</option>
-            <option value="male">Male</option>
+
+            <option value="female">
+                Female
+            </option>
+
+            <option value="male">
+                Male
+            </option>
+
         </select>
 
         <label>Height (cm)</label>
-        <input type="number" name="height" required min="80">
+
+        <input type="number"
+               name="height"
+               required
+               min="80">
 
         <label>Weight (kg)</label>
-        <input type="number" name="weight" required min="10">
+
+        <input type="number"
+               name="weight"
+               required
+               min="10">
 
         <label>Activity Level</label>
+
         <select name="activity_level" required>
-            <option value="sedentary">Sedentary</option>
-            <option value="light">Lightly Active</option>
-            <option value="moderate">Moderately Active</option>
-            <option value="active">Highly Active</option>
+
+            <option value="sedentary">
+                Sedentary
+            </option>
+
+            <option value="light">
+                Lightly Active
+            </option>
+
+            <option value="moderate">
+                Moderately Active
+            </option>
+
+            <option value="active">
+                Highly Active
+            </option>
+
         </select>
 
         <label>Diet Preference</label>
+
         <select name="diet">
-            <option value="vegan">Vegan</option>
-            <option value="vegetarian">Vegetarian</option>
-            <option value="non-vegetarian">Non-Vegetarian</option>
+
+            <option value="vegan">
+                Vegan
+            </option>
+
+            <option value="vegetarian">
+                Vegetarian
+            </option>
+
+            <option value="non-vegetarian">
+                Non-Vegetarian
+            </option>
+
         </select>
 
-        <h3>Upload Lab Report (PDF)</h3>
+        <!-- PDF REPORT -->
 
-        <input type="file" name="report_pdf" accept=".pdf">
+        <h3 class="section-title">
+            Upload Your Latest Blood Test / Biomarker Report(Optional)
+        </h3>
+
+        <div class="upload-box">
+
+            <input type="file"
+                   name="report_pdf"
+                   accept=".pdf">
+
+            <div class="upload-info">
+
+                Upload blood test / biomarker report PDF.<br>
+
+            </div>
+
+        </div>
 
         <hr>
 
@@ -56,60 +161,77 @@
         <datalist id="biomarkerList">
 
             {% for bm in biomarkers %}
+
             <option value="{{ bm }}"></option>
-            {% endfor %}
 
-        </datalist>
-
-        <!-- RSID SUGGESTIONS -->
-
-        <datalist id="rsidList">
-
-            {% for rsid in gene_variants.keys() %}
-            <option value="{{ rsid }}"></option>
             {% endfor %}
 
         </datalist>
 
         <script>
 
-            const biomarkerUnits = JSON.parse('{{ biomarker_units | tojson | safe }}');
-            const geneVariants = JSON.parse('{{ gene_variants | tojson | safe }}');
+            const biomarkerUnits = JSON.parse(
+                '{{ biomarker_units | tojson | safe }}'
+            );
 
         </script>
 
         <!-- BLOOD MARKERS -->
 
-        <h3>Blood Marker Tests (Optional)</h3>
+        <h3 class="section-title">
+            Blood Marker Report Value Manual Input (Optional)
+        </h3>
 
         <div id="biomarkers"></div>
 
-        <button type="button" onclick="addBiomarker()">
-            + Add Blood Marker
+        <button type="button"
+                onclick="addBiomarker()">
+
+            + Add New Blood Marker
+
         </button>
+        <hr>
+           <!-- GENOME FILE -->
+
+        <h3 class="section-title">
+            Upload Genomic Raw test report file
+        </h3>
+
+        <div class="upload-box">
+
+            <input type="file"
+                   name="genome_file"
+                   accept=".txt,.csv">
+
+            <div class="upload-info">
+
+                Upload your genomic raw data file.<br><br>
+
+            </div>
+
+        </div>
 
         <hr>
 
-        <!-- GENES -->
-
-        <h3>Gene Information (Optional)</h3>
-
-        <div id="genes"></div>
-
-        <button type="button" onclick="addGene()">
-            + Add Gene
-        </button>
+        <!-- NAV -->
 
         <div class="nav">
 
             <button type="submit">
+
                 Go to account creation page
+
             </button>
 
             <a href="/">
-                <button type="button" class="back-btn">
+
+                <button type="button"
+                        class="back-btn">
+
                     Back to Home
+
                 </button>
+
             </a>
 
         </div>
@@ -122,7 +244,9 @@
 
 function addBiomarker() {
 
-    const container = document.getElementById("biomarkers");
+    const container = document.getElementById(
+        "biomarkers"
+    );
 
     const div = document.createElement("div");
 
@@ -149,69 +273,20 @@ function addBiomarker() {
     container.appendChild(div);
 }
 
-function addGene() {
-
-    const container = document.getElementById("genes");
-
-    const genotypeListId = "genotypeList_" + Date.now();
-
-    const div = document.createElement("div");
-
-    div.className = "row";
-
-    div.innerHTML = `
-
-        <input list="rsidList"
-               name="gene_rsid[]"
-               placeholder="Select rsID"
-               oninput="loadGenotypes(this)">
-
-        <input type="text"
-               name="gene_genotype[]"
-               list="${genotypeListId}"
-               placeholder="Select Genotype">
-
-        <datalist id="${genotypeListId}"></datalist>
-
-    `;
-
-    container.appendChild(div);
-}
-
-function loadGenotypes(inputBox) {
-
-    const rsid = inputBox.value.trim();
-
-    const row = inputBox.closest(".row");
-
-    const genotypeInput = row.querySelector("input[name='gene_genotype[]']");
-
-    const listId = genotypeInput.getAttribute("list");
-
-    const datalist = document.getElementById(listId);
-
-    datalist.innerHTML = "";
-
-    if (geneVariants[rsid]) {
-
-        geneVariants[rsid]["genotypes"].forEach(g => {
-
-            datalist.innerHTML += `<option value="${g}"></option>`;
-
-        });
-
-    }
-}
-
 function autoUnit(input) {
 
     const row = input.closest(".row");
 
-    const unitInput = row.querySelector("input[name='biomarker_unit[]']");
+    const unitInput = row.querySelector(
+
+        "input[name='biomarker_unit[]']"
+
+    );
 
     const key = input.value.toLowerCase();
 
     if (biomarkerUnits[key]) {
+
         unitInput.value = biomarkerUnits[key];
     }
 }
@@ -221,16 +296,26 @@ function validateForm() {
     let valid = true;
 
     document.querySelectorAll("input").forEach(el => {
+
         el.style.borderColor = "#ccc";
     });
 
-    document.querySelectorAll("input[name='biomarker_name[]']").forEach((el, i) => {
+    document.querySelectorAll(
 
-        const val = document.querySelectorAll("input[name='biomarker_value[]']")[i];
+        "input[name='biomarker_name[]']"
+
+    ).forEach((el, i) => {
+
+        const val = document.querySelectorAll(
+
+            "input[name='biomarker_value[]']"
+
+        )[i];
 
         if (el.value && !val.value) {
 
             el.style.borderColor = "red";
+
             val.style.borderColor = "red";
 
             valid = false;
@@ -238,22 +323,13 @@ function validateForm() {
 
     });
 
-    document.querySelectorAll("input[name='gene_rsid[]']").forEach((el, i) => {
-
-        const genotype = document.querySelectorAll("input[name='gene_genotype[]']")[i];
-
-        if (el.value && !genotype.value) {
-
-            el.style.borderColor = "red";
-            genotype.style.borderColor = "red";
-
-            valid = false;
-        }
-
-    });
-
     if (!valid) {
-        alert("Please fill all biomarker and genotype values correctly.");
+
+        alert(
+
+            "Please fill all biomarker values correctly."
+
+        );
     }
 
     return valid;

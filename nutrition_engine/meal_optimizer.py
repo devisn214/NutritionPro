@@ -1,27 +1,9 @@
-from .derived_macro_estimator import (
-    estimate_food_macros
-)
-
+from .derived_macro_estimator import estimate_food_macros
 import random
 
 
-# =========================================================
-# MEAL SPLIT
-# =========================================================
+MEAL_SPLIT = {"breakfast": 0.30, "lunch": 0.40, "dinner": 0.30}
 
-MEAL_SPLIT = {
-
-    "breakfast": 0.30,
-
-    "lunch": 0.40,
-
-    "dinner": 0.30
-}
-
-
-# =========================================================
-# BUILD FOOD OBJECTS
-# =========================================================
 
 def build_food_objects(rag_foods):
 
@@ -31,94 +13,72 @@ def build_food_objects(rag_foods):
 
         food_id = food["food_id"]
 
-        est = estimate_food_macros(
-            food_id
-        )
+        est = estimate_food_macros(food_id)
+
+        est["food"] = food.get("food", "")
+
+        est["confidence_score"] = food.get("confidence_score", 0)
 
         foods.append(est)
 
     return foods
 
 
-# =========================================================
-# CALCULATE TOTALS
-# =========================================================
-
 def calculate_totals(food_list):
 
-    protein = sum(
-        x["protein_g"]
-        for x in food_list
-    )
+    protein = sum(x.get("protein_g", 0) for x in food_list)
 
-    carbs = sum(
-        x["carbs_g"]
-        for x in food_list
-    )
+    carbs = sum(x.get("carbs_g", 0) for x in food_list)
 
-    fats = sum(
-        x["fat_g"]
-        for x in food_list
-    )
+    fats = sum(x.get("fat_g", 0) for x in food_list)
 
-    calories = sum(
-        x["calories"]
-        for x in food_list
-    )
+    calories = sum(x.get("calories", 0) for x in food_list)
 
     return {
-
         "protein_g": round(protein, 1),
-
         "carbs_g": round(carbs, 1),
-
         "fat_g": round(fats, 1),
-
         "calories": round(calories, 1)
     }
 
 
-# =========================================================
-# MAIN OPTIMIZER
-# =========================================================
+def optimize_meal_plan(rag_foods, target_calories, target_protein, target_carbs, target_fats, adaptive_engine=None, user_id=None):
 
-def optimize_meal_plan(
-    rag_foods,
-    target_calories,
-    target_protein,
-    target_carbs,
-    target_fats
-):
+    foods = build_food_objects(rag_foods)
 
-    foods = build_food_objects(
-        rag_foods
-    )
+    recent_foods = set()
 
-    # -----------------------------------------------------
-    # SORTING
-    # -----------------------------------------------------
+    if adaptive_engine and user_id:
 
-    protein_foods = sorted(
+        recent = adaptive_engine.get_recent_foods(user_id, limit=15)
+
+        recent_foods = set(x.lower() for x in recent)
+
+    for food in foods:
+
+        food_name = str(food.get("food", "")).lower()
+
+        if food_name in recent_foods:
+
+            food["reuse_penalty"] = -40
+
+        else:
+
+            food["reuse_penalty"] = 0
+
+    foods = sorted(
         foods,
-        key=lambda x: x["protein_g"],
+        key=lambda x: (
+            x.get("protein_g", 0) * 2
+            -
+            x.get("fat_g", 0)
+            +
+            x.get("confidence_score", 0)
+            +
+            x.get("reuse_penalty", 0)
+        ),
         reverse=True
     )
-
-    carb_foods = sorted(
-        foods,
-        key=lambda x: x["carbs_g"],
-        reverse=True
-    )
-
-    fat_foods = sorted(
-        foods,
-        key=lambda x: x["fat_g"],
-        reverse=True
-    )
-
-    # -----------------------------------------------------
-    # BUILD MEALS
-    # -----------------------------------------------------
 
     breakfast = []
 
@@ -126,65 +86,100 @@ def optimize_meal_plan(
 
     dinner = []
 
-    # breakfast
-    breakfast.extend(
-        carb_foods[:2]
-    )
+    used_foods = set()
 
-    breakfast.extend(
-        protein_foods[:1]
-    )
+    current = {
+        "calories": 0,
+        "protein_g": 0,
+        "carbs_g": 0,
+        "fat_g": 0
+    }
 
-    # lunch
-    lunch.extend(
-        protein_foods[1:4]
-    )
+    def can_add(food):
 
-    lunch.extend(
-        carb_foods[2:4]
-    )
+        next_cal = current["calories"] + food.get("calories", 0)
 
-    # dinner
-    dinner.extend(
-        protein_foods[4:6]
-    )
+        next_protein = current["protein_g"] + food.get("protein_g", 0)
 
-    dinner.extend(
-        fat_foods[:2]
-    )
+        next_carbs = current["carbs_g"] + food.get("carbs_g", 0)
 
-    # -----------------------------------------------------
-    # TOTALS
-    # -----------------------------------------------------
+        next_fat = current["fat_g"] + food.get("fat_g", 0)
 
-    all_foods = (
-        breakfast
-        + lunch
-        + dinner
-    )
+        if next_cal > target_calories * 1.05:
+            return False
 
-    totals = calculate_totals(
-        all_foods
-    )
+        if next_carbs > target_carbs * 1.10:
+            return False
+
+        if next_fat > target_fats * 1.10:
+            return False
+
+        return True
+
+    def add_food(meal, food):
+
+        meal.append(food)
+
+        current["calories"] += food.get("calories", 0)
+
+        current["protein_g"] += food.get("protein_g", 0)
+
+        current["carbs_g"] += food.get("carbs_g", 0)
+
+        current["fat_g"] += food.get("fat_g", 0)
+
+        used_foods.add(food.get("food", "").lower())
+
+    for food in foods:
+
+        food_name = food.get("food", "").lower()
+
+        if food_name in used_foods:
+            continue
+
+        if not can_add(food):
+            continue
+
+        if len(breakfast) < 3:
+
+            add_food(breakfast, food)
+
+            continue
+
+        if len(lunch) < 4:
+
+            add_food(lunch, food)
+
+            continue
+
+        if len(dinner) < 3:
+
+            add_food(dinner, food)
+
+            continue
+
+        if current["calories"] >= target_calories * 0.95 and current["protein_g"] >= target_protein * 0.90:
+            break
+
+    all_foods = breakfast + lunch + dinner
+
+    totals = calculate_totals(all_foods)
+
+    if adaptive_engine and user_id:
+
+        for food in all_foods:
+
+            adaptive_engine.store_recent_food(user_id, food.get("food", ""))
 
     return {
-
         "breakfast": breakfast,
-
         "lunch": lunch,
-
         "dinner": dinner,
-
         "totals": totals,
-
         "targets": {
-
             "protein_g": target_protein,
-
             "carbs_g": target_carbs,
-
             "fat_g": target_fats,
-
             "calories": target_calories
         }
     }

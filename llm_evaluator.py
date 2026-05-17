@@ -75,7 +75,7 @@ Evaluate:
 4. Meal diversity
 5. Safety
 
-Return short evaluation only.
+Return short evaluation only.But the response should be complete.No point should be cut off in the middle
 """
 
         payload = {
@@ -84,7 +84,7 @@ Return short evaluation only.
             "stream": False,
             "options": {
                 "temperature": 0.1,
-                "num_predict": 200
+                "num_predict": 250
             }
         }
 

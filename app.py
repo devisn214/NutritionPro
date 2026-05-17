@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, request, redirect, url_for, send_file, session
 import os
 from html_report import generate_html_pdf
@@ -9,49 +10,107 @@ import pandas as pd
 from pdf_working.pdf_service import process_pdf
 from nutrition_engine.engine import generate_nutrition_plan
 from nutrition_engine.data_loader import load_genes, load_biomarkers
+from pdf_working.genome_parser import GenomeParser
 
 app = Flask(__name__, template_folder="ui/templates", static_folder="ui/static")
+
 app.secret_key = "nutritionpro123"
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 USER_DATA_DIR = os.path.join(BASE_DIR, "user_data")
-PROFILE_DIR = os.path.join(USER_DATA_DIR, "profiles")
-USERS_INDEX = os.path.join(USER_DATA_DIR, "users_index.json")
 
+PROFILE_DIR = os.path.join(USER_DATA_DIR, "profiles")
+PROFILE_RESULTS_DIR = os.path.join(USER_DATA_DIR, "results")
+
+USERS_INDEX = os.path.join(USER_DATA_DIR, "users_index.json")
+UPLOAD_FOLDER = "uploads"
+
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(PROFILE_DIR, exist_ok=True)
+os.makedirs(PROFILE_RESULTS_DIR, exist_ok=True)
 
 if not os.path.exists(USERS_INDEX):
+
     with open(USERS_INDEX, "w") as f:
         json.dump([], f, indent=4)
 
-# ------------------ FILE VALIDATION ------------------
+# =========================================================
+# FILE VALIDATION
+# =========================================================
 
-ALLOWED_EXTENSIONS = {"pdf"}
+ALLOWED_EXTENSIONS = {
+    "pdf",
+    "txt",
+    "csv"
+}
+
 
 def json_converter(obj):
+
     try:
         return int(obj)
+
     except:
+
         try:
             return float(obj)
+
         except:
             return str(obj)
 
-def allowed_file(filename):
-    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# ------------------ HELPERS ------------------
+def allowed_file(filename):
+
+    return (
+        "." in filename
+        and
+        filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+    )
+
+
+# =========================================================
+# GENOME FILE VALIDATION
+# =========================================================
+
+
+def allowed_genome_file(filename):
+
+    allowed = {"txt", "csv"}
+
+    return (
+        "." in filename
+        and
+        filename.rsplit(".", 1)[1].lower() in allowed
+    )
+
+
+# =========================================================
+# HELPERS
+# =========================================================
+
 
 def months_difference(old_date_str):
+
     old_date = datetime.strptime(old_date_str, "%Y-%m-%d")
+
     today = datetime.today()
 
-    return ((today.year - old_date.year) * 12 + (today.month - old_date.month))
+    return (
+        (today.year - old_date.year) * 12
+        +
+        (today.month - old_date.month)
+    )
+
+
 
 def load_biomarker_units():
+
     df = pd.read_csv("data/biomarkers.csv")
+
     return dict(zip(df["name"], df["unit"]))
+
+
 
 def load_rsid_genotypes():
 
@@ -62,76 +121,102 @@ def load_rsid_genotypes():
     for _, row in df.iterrows():
 
         rsid = str(row["rsid"]).strip()
+
         genotype = str(row["genotype"]).strip()
+
         gene = str(row["gene_symbol"]).strip().upper()
 
         if rsid not in rsid_map:
+
             rsid_map[rsid] = {
                 "gene": gene,
                 "genotypes": []
             }
 
         if genotype not in rsid_map[rsid]["genotypes"]:
+
             rsid_map[rsid]["genotypes"].append(genotype)
 
     return rsid_map
+
+
 
 def update_biomarker(biomarkers, name, value, unit=""):
 
     for b in biomarkers:
 
         if b["name"] == name:
+
             b["value"] = value
             b["unit"] = unit
             return
 
     biomarkers.append({
+
         "name": name,
         "value": value,
         "unit": unit
     })
+
+
 
 def update_gene(genes, gene, rsid, genotype):
 
     for g in genes:
 
         if g["rsid"] == rsid:
+
             g["gene"] = gene
             g["genotype"] = genotype
             return
 
     genes.append({
+
         "gene": gene,
         "rsid": rsid,
         "genotype": genotype
     })
 
+
+
 def get_valid_sets():
 
     valid_genes = set(g.upper() for g in load_genes())
+
     valid_biomarkers = set(b.lower() for b in load_biomarkers())
 
     return valid_genes, valid_biomarkers
 
-# ------------------ ROUTES ------------------
+
+# =========================================================
+# HOME
+# =========================================================
 
 @app.route("/")
 def home():
+
     return render_template("home.html")
 
-# ------------------ LOGIN ------------------
+
+# =========================================================
+# LOGIN
+# =========================================================
 
 @app.route("/login")
 def login_page():
+
     return render_template("login.html")
+
 
 @app.route("/login", methods=["POST"])
 def login():
 
     username = request.form["username"].strip()
+
     password = request.form["password"].strip()
 
     with open(USERS_INDEX, "r") as f:
+
         users = json.load(f)
 
     for user_id in users:
@@ -142,6 +227,7 @@ def login():
             continue
 
         with open(profile_path) as pf:
+
             user = json.load(pf)
 
         if user.get("username") == username and user.get("password") == password:
@@ -150,7 +236,8 @@ def login():
 
             return redirect(url_for("dashboard", user_id=user_id))
 
-    return "Invalid username or password", 401
+    return render_template("login.html",error_message="Invalid username or password")
+
 
 @app.route("/logout")
 def logout():
@@ -159,61 +246,108 @@ def logout():
 
     return redirect(url_for("home"))
 
-# ------------------ DASHBOARD ------------------
+
+# =========================================================
+# DASHBOARD
+# =========================================================
 
 @app.route("/dashboard/<user_id>")
 def dashboard(user_id):
 
     profile_path = os.path.join(PROFILE_DIR, f"{user_id}.json")
 
+    if not os.path.exists(profile_path):
+
+       
+     return render_template("login.html",error_message="User not found")
+
     with open(profile_path) as f:
+
         user = json.load(f)
 
     return render_template("dashboard.html", user=user)
 
-# ------------------ CREATE ACCOUNT ------------------
+
+# =========================================================
+# CREATE ACCOUNT
+# =========================================================
 
 @app.route("/create-account/<user_id>")
 def create_account(user_id):
+
     return render_template("create_account.html", user_id=user_id)
+
 
 @app.route("/create-account/<user_id>", methods=["POST"])
 def save_account(user_id):
 
     username = request.form["username"].strip()
+
     password = request.form["password"].strip()
+
     confirm_password = request.form["confirm_password"].strip()
 
     if password != confirm_password:
-        return "Passwords do not match", 400
+
+         return render_template("create_account.html",user_id=user_id,error_message="Passwords do not match")
+
+    with open(USERS_INDEX, "r") as f:
+
+        users = json.load(f)
+
+    for uid in users:
+
+        profile_path_check = os.path.join(PROFILE_DIR, f"{uid}.json")
+
+        if not os.path.exists(profile_path_check):
+            continue
+
+        with open(profile_path_check) as pf:
+
+            existing_user = json.load(pf)
+
+        if existing_user.get("username") == username and uid != user_id:
+
+           return render_template("create_account.html",user_id=user_id,error_message="Username already exists")
 
     profile_path = os.path.join(PROFILE_DIR, f"{user_id}.json")
 
     with open(profile_path) as f:
+
         user = json.load(f)
 
     user["username"] = username
     user["password"] = password
 
     with open(profile_path, "w") as f:
+
         json.dump(user, f, indent=4, default=json_converter)
 
     session["user_id"] = user_id
 
     return redirect(url_for("dashboard", user_id=user_id))
 
-# ------------------ NEW USER ------------------
+
+# =========================================================
+# NEW USER
+# =========================================================
 
 @app.route("/new-user")
 def new_user():
 
     return render_template(
+
         "new_user.html",
+
         genes=load_genes(),
+
         biomarkers=load_biomarkers(),
+
         biomarker_units=load_biomarker_units(),
+
         gene_variants=load_rsid_genotypes()
     )
+
 
 @app.route("/save-user", methods=["POST"])
 def save_user():
@@ -228,15 +362,19 @@ def save_user():
 
     valid_genes, valid_biomarkers = get_valid_sets()
 
-    # ---------------- PDF PROCESSING ----------------
+    genome_parser = GenomeParser(
+        "data/genenutrient.csv"
+    )
+
+    # =====================================================
+    # PDF PROCESSING
+    # =====================================================
 
     pdf_file = request.files.get("report_pdf")
 
     pdf_biomarkers = []
-    unknown_biomarkers = []
 
-    print("\n--- PDF DEBUG ---")
-    print("File received:", pdf_file)
+    unknown_biomarkers = []
 
     if pdf_file and pdf_file.filename != "" and allowed_file(pdf_file.filename):
 
@@ -244,18 +382,13 @@ def save_user():
 
             pdf_biomarkers = process_pdf(pdf_file)
 
-            print("\n--- EXTRACTED BIOMARKERS ---")
-
-            for b in pdf_biomarkers:
-                print(b)
-
         except Exception as e:
+
             print("PDF ERROR:", e)
 
-    else:
-        print("No valid PDF uploaded")
-
-    # ---------------- MANUAL BIOMARKERS ----------------
+    # =====================================================
+    # MANUAL BIOMARKERS
+    # =====================================================
 
     biomarkers = []
 
@@ -272,20 +405,26 @@ def save_user():
             continue
 
         if n not in valid_biomarkers:
+
             return f"Invalid biomarker entered: {n}", 400
 
         biomarkers.append({
+
             "name": n,
             "value": float(v),
             "unit": (u or "").strip()
         })
 
-    # ---------------- PDF OVERRIDE ----------------
+    # =====================================================
+    # PDF OVERRIDE
+    # =====================================================
 
     for b in pdf_biomarkers:
 
         name = (b.get("name") or "").lower()
+
         value = b.get("value")
+
         unit = b.get("unit", "")
 
         if not name or value is None:
@@ -294,6 +433,7 @@ def save_user():
         if name not in valid_biomarkers:
 
             unknown_biomarkers.append({
+
                 "name": name,
                 "value": value
             })
@@ -302,53 +442,137 @@ def save_user():
 
         update_biomarker(biomarkers, name, float(value), unit)
 
-    # ---------------- GENES ----------------
+    # =====================================================
+    # GENES
+    # =====================================================
 
     genes = []
 
     gene_rsids = form.getlist("gene_rsid[]")
     gene_genotypes = form.getlist("gene_genotype[]")
 
-    df_gene = pd.read_csv("data/genenutrient.csv")
+    df_gene = pd.read_csv(
+        "data/genenutrient.csv"
+    )
 
-    for rsid, genotype in zip(gene_rsids, gene_genotypes):
+    for rsid, genotype in zip(
+        gene_rsids,
+        gene_genotypes
+    ):
 
         rsid = (rsid or "").strip()
-        genotype = (genotype or "").strip().upper()
+
+        genotype = (
+            genotype or ""
+        ).strip().upper()
 
         if not rsid:
             continue
 
         if not genotype:
-            return f"Genotype required for {rsid}", 400
+            continue
 
-        match = df_gene[df_gene["rsid"].astype(str).str.strip() == rsid]
+        match = df_gene[
+
+            df_gene["rsid"]
+            .astype(str)
+            .str.strip()
+            == rsid
+
+        ]
 
         if match.empty:
-            return f"Invalid rsid entered: {rsid}", 400
+            continue
 
         gene_symbol = match.iloc[0]["gene_symbol"]
 
         genes.append({
+
             "gene": gene_symbol,
             "rsid": rsid,
             "genotype": genotype
         })
 
-    # ---------------- PROFILE ----------------
+    # =====================================================
+    # GENOME FILE PROCESSING
+    # =====================================================
+
+    genome_file = request.files.get(
+        "genome_file"
+    )
+
+    if (
+        genome_file
+        and
+        genome_file.filename != ""
+        and
+        allowed_genome_file(
+            genome_file.filename
+        )
+    ):
+
+        try:
+
+            genome_path = os.path.join(
+
+                UPLOAD_FOLDER,
+
+                genome_file.filename
+            )
+
+            genome_file.save(genome_path)
+
+            extracted_variants = (
+
+                genome_parser.extract_variants(
+                    genome_path
+                )
+
+            )
+
+            for g in extracted_variants:
+
+                update_gene(
+
+                    genes,
+
+                    g["gene"],
+
+                    g["rsid"],
+
+                    g["genotype"]
+                )
+
+        except Exception as e:
+
+            print("GENOME PARSE ERROR:", e)
+
+    # =====================================================
+    # PROFILE
+    # =====================================================
 
     user_profile = {
+
         "user_id": user_id,
+
         "name": form["name"],
+
         "age": int(form["age"]),
+
         "gender": form["gender"],
+
         "height_cm": float(form["height"]),
+
         "weight_kg": float(form["weight"]),
+
         "activity_level": form["activity_level"],
+
         "diet_preference": form["diet"],
+
         "created_at": today,
 
         "last_updated": {
+
             "weight": today,
             "height": today,
             "biomarkers": today,
@@ -356,22 +580,28 @@ def save_user():
         },
 
         "biomarkers": biomarkers,
+
         "genes": genes,
+
         "unknown_biomarkers": unknown_biomarkers
     }
 
     profile_path = os.path.join(PROFILE_DIR, f"{user_id}.json")
 
     with open(profile_path, "w") as f:
+
         json.dump(user_profile, f, indent=4)
 
     with open(USERS_INDEX, "r") as f:
+
         users = json.load(f)
 
     if user_id not in users:
+
         users.append(user_id)
 
     with open(USERS_INDEX, "w") as f:
+
         json.dump(users, f, indent=4)
 
     return redirect(url_for("create_account", user_id=user_id))
@@ -518,35 +748,47 @@ def save_updated_profile(user_id):
         user["last_updated"]["biomarkers"] = today
 
     # ---------------- GENE UPDATE ----------------
+    genome_parser = GenomeParser( "data/genenutrient.csv")
 
-    gene_rsids = request.form.getlist("gene_rsid[]")
-    gene_genotypes = request.form.getlist("gene_genotype[]")
+    genome_file = request.files.get("genome_file")
 
-    df_gene = pd.read_csv("data/genenutrient.csv")
+    if (genome_file and genome_file.filename != "" and allowed_genome_file(genome_file.filename)):
 
-    for rsid, genotype in zip(gene_rsids, gene_genotypes):
+        try:
 
-        rsid = (rsid or "").strip()
-        genotype = (genotype or "").strip().upper()
+            genome_path = os.path.join(UPLOAD_FOLDER,genome_file.filename)
 
-        if not rsid or not genotype:
-            continue
+            genome_file.save(genome_path)
 
-        match = df_gene[df_gene["rsid"].astype(str).str.strip() == rsid]
+            extracted_variants = (genome_parser.extract_variants(genome_path))
 
-        if match.empty:
-            continue
+            for g in extracted_variants:
 
-        gene_symbol = match.iloc[0]["gene_symbol"]
+                update_gene(
 
-        update_gene(user["genes"], gene_symbol, rsid, genotype)
+                    user["genes"],
 
-    user["last_updated"]["genes"] = today
+                    g["gene"],
+
+                    g["rsid"],
+
+                    g["genotype"]
+                )
+
+            user["last_updated"]["genes"] = today
+
+        except Exception as e:
+
+            print("GENOME UPDATE ERROR:", e)
 
     with open(path, "w") as f:
+
         json.dump(user, f, indent=4, default=json_converter)
 
     return redirect(url_for("dashboard", user_id=user_id))
+
+    
+
 
 # ------------------ DOWNLOAD REPORT ------------------
 
@@ -555,7 +797,7 @@ def download_report(user_id):
 
     profile_path = os.path.join(PROFILE_DIR, f"{user_id}.json")
 
-    plan_path = os.path.join(PROFILE_DIR, f"{user_id}_latest_plan.json")
+    plan_path = os.path.join(PROFILE_RESULTS_DIR, f"{user_id}_latest_plan.json")
 
     if not os.path.exists(profile_path):
         return "User profile not found", 404
@@ -580,27 +822,49 @@ def generate_meal(user_id):
 
     path = os.path.join(PROFILE_DIR, f"{user_id}.json")
 
+    if not os.path.exists(path):
+
+        return "User profile not found", 404
+
     with open(path) as f:
+
         user_profile = json.load(f)
 
     plan = generate_nutrition_plan(user_profile)
 
-    latest_plan_path = os.path.join(PROFILE_DIR, f"{user_id}_latest_plan.json")
+    latest_plan_path = os.path.join(
+        PROFILE_RESULTS_DIR,
+        f"{user_id}_latest_plan.json"
+    )
 
     with open(latest_plan_path, "w") as f:
+
         json.dump(plan, f, indent=4, default=json_converter)
 
     return render_template(
+
         "result.html",
-    result={"plan": plan},
-    rag_context=plan.get("rag_context", []),
-    evidence=plan.get("evidence", []),
-    unknown_biomarkers=user_profile.get("unknown_biomarkers", []),
-    user_id=user_id,
-    user=user_profile
+
+        result={"plan": plan},
+
+        rag_context=plan.get("rag_context", []),
+
+        evidence=plan.get("evidence", []),
+
+        unknown_biomarkers=user_profile.get("unknown_biomarkers", []),
+
+        user_id=user_id,
+
+        user=user_profile,
+
+        pdf_mode=False
     )
 
-# ------------------ MAIN ------------------
+
+# =========================================================
+# MAIN
+# =========================================================
 
 if __name__ == "__main__":
+
     app.run(debug=True)

@@ -15,6 +15,8 @@ def process_pdf(file):
         text = extract_pdf_text(file)
 
         results = extractor.extract(text)
+        
+        print(f"Extracted {len(results)} biomarkers from text extraction.")
 
         if results:
             return results
@@ -32,6 +34,8 @@ def process_pdf(file):
 
         if table_text and table_text.strip():
             results = extractor.extract(table_text)
+
+            print(f"Extracted {len(results)} biomarkers from table extraction.")
 
             if results:
                 return results

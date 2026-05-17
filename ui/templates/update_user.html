@@ -1,9 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
+
     <title>Update Profile</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        .upload-box{
+
+            border:2px dashed #94a3b8;
+
+            border-radius:12px;
+
+            padding:20px;
+
+            margin-top:10px;
+
+            background:#f8fafc;
+        }
+
+        .upload-info{
+
+            font-size:14px;
+
+            color:#475569;
+
+            margin-top:10px;
+
+            line-height:1.6;
+        }
+
+    </style>
+
 </head>
+
 <body>
 
 <div class="container card">
@@ -15,13 +48,19 @@
           enctype="multipart/form-data"
           onsubmit="return validateForm()">
 
+        <!-- HEIGHT -->
+
         <label>Height (cm)</label>
+
         <input type="number"
                name="height"
                value="{{ user.height_cm }}"
                required>
 
+        <!-- WEIGHT -->
+
         <label>Weight (kg)</label>
+
         <input type="number"
                name="weight"
                value="{{ user.weight_kg }}"
@@ -29,40 +68,72 @@
 
         <hr>
 
-        <label>Upload Blood Report (PDF)</label>
+        <!-- BLOOD REPORT -->
 
-        <input type="file"
-               name="report_pdf"
-               accept=".pdf">
+        <h3>Upload Blood Report (PDF)</h3>
+
+        <div class="upload-box">
+
+            <input type="file"
+                   name="report_pdf"
+                   accept=".pdf">
+
+            <div class="upload-info">
+
+                Upload updated lab reports for automatic biomarker extraction.
+
+            </div>
+
+        </div>
+
+        <hr>
+
+        <!-- GENOME FILE -->
+
+        <h3>Upload Genomic Raw Data File</h3>
+
+        <div class="upload-box">
+
+            <input type="file"
+                   name="genome_file"
+                   accept=".txt,.csv">
+
+            <div class="upload-info">
+
+                Upload genomic raw data file for automatic:
+                <br><br>
+
+                • rsID extraction<br>
+                • genotype extraction<br>
+                • nutrient-gene interaction mapping
+
+            </div>
+
+        </div>
+
+        <hr>
 
         <!-- BIOMARKER LIST -->
 
         <datalist id="biomarkerList">
 
             {% for bm in biomarkers %}
+
                 <option value="{{ bm }}"></option>
-            {% endfor %}
 
-        </datalist>
-
-        <!-- RSID LIST -->
-
-        <datalist id="rsidList">
-
-            {% for rsid in gene_variants.keys() %}
-                <option value="{{ rsid }}"></option>
             {% endfor %}
 
         </datalist>
 
         <script>
 
-            const biomarkerUnits = JSON.parse('{{ biomarker_units | tojson | safe }}');
-            const geneVariants = JSON.parse('{{ gene_variants | tojson | safe }}');
+            const biomarkerUnits = JSON.parse(
+                '{{ biomarker_units | tojson | safe }}'
+            );
 
         </script>
 
-        <!-- BLOOD MARKERS -->
+        <!-- BIOMARKERS -->
 
         <h3>Blood Markers</h3>
 
@@ -92,68 +163,67 @@
 
         </div>
 
-        <button type="button" onclick="addBiomarker()">
+        <button type="button"
+                onclick="addBiomarker()">
+
             + Add Blood Marker
+
         </button>
 
         <hr>
 
-        <!-- GENES -->
+        <!-- EXISTING GENES -->
 
-        <h3>Genes</h3>
+        {% if user.genes and user.genes|length > 0 %}
 
-        <div id="genes">
+        <h3>Previously Extracted Genetic Variants</h3>
+
+        <div class="upload-box">
 
             {% for g in user.genes %}
 
-            <div class="row">
+                <p>
 
-                <input list="rsidList"
-                       name="gene_rsid[]"
-                       value="{{ g.rsid }}"
-                       oninput="loadGenotypes(this)">
+                    <strong>{{ g.gene }}</strong>
+                    |
+                    {{ g.rsid }}
+                    |
+                    {{ g.genotype }}
 
-                {% set genotype_id = "geno_" ~ loop.index %}
-
-                <input type="text"
-                       name="gene_genotype[]"
-                       list="{{ genotype_id }}"
-                       value="{{ g.genotype }}"
-                       placeholder="Select Genotype">
-
-                <datalist id="{{ genotype_id }}">
-
-                    {% if gene_variants[g.rsid] %}
-
-                        {% for geno in gene_variants[g.rsid]["genotypes"] %}
-                            <option value="{{ geno }}"></option>
-                        {% endfor %}
-
-                    {% endif %}
-
-                </datalist>
-
-            </div>
+                </p>
 
             {% endfor %}
 
         </div>
 
-        <button type="button" onclick="addGene()">
-            + Add Gene
-        </button>
+        <hr>
+
+        {% endif %}
+
+        <!-- NAV -->
 
         <div class="nav">
 
-        <button type="submit"> Save Updates</button>
+            <button type="submit">
 
-        <a href="/dashboard/{{ user.user_id }}">
-        <button type="button" class="back-btn">Back to Dashboard</button>
-        </a>
+                Save Updates
+
+            </button>
+
+            <a href="/dashboard/{{ user.user_id }}">
+
+                <button type="button"
+                        class="back-btn">
+
+                    Back to Dashboard
+
+                </button>
+
+            </a>
 
         </div>
 
-         </form>
+    </form>
 
 </div>
 
@@ -161,11 +231,17 @@
 
 function addBiomarker() {
 
-    const container = document.getElementById("biomarkers");
+    const container = document.getElementById(
+        "biomarkers"
+    );
 
-    container.insertAdjacentHTML("beforeend",
+    container.insertAdjacentHTML(
 
-        `<div class="row">
+        "beforeend",
+
+        `
+
+        <div class="row">
 
             <input list="biomarkerList"
                    name="biomarker_name[]"
@@ -178,74 +254,26 @@ function addBiomarker() {
             <input type="text"
                    name="biomarker_unit[]">
 
-        </div>`
+        </div>
 
+        `
     );
-}
-
-function addGene() {
-
-    const container = document.getElementById("genes");
-
-    const genotypeListId = "genotypeList_" + Date.now();
-
-    container.insertAdjacentHTML("beforeend",
-
-        `<div class="row">
-
-            <input list="rsidList"
-                   name="gene_rsid[]"
-                   placeholder="Select rsID"
-                   oninput="loadGenotypes(this)">
-
-            <input type="text"
-                   name="gene_genotype[]"
-                   list="${genotypeListId}"
-                   placeholder="Select Genotype">
-
-            <datalist id="${genotypeListId}"></datalist>
-
-        </div>`
-
-    );
-}
-
-function loadGenotypes(inputBox) {
-
-    const rsid = inputBox.value.trim();
-
-    const row = inputBox.closest(".row");
-
-    const genotypeInput = row.querySelector("input[name='gene_genotype[]']");
-
-    const listId = genotypeInput.getAttribute("list");
-
-    const datalist = document.getElementById(listId);
-
-    if (!datalist) return;
-
-    datalist.innerHTML = "";
-
-    if (geneVariants[rsid]) {
-
-        geneVariants[rsid]["genotypes"].forEach(g => {
-
-            datalist.innerHTML += `<option value="${g}"></option>`;
-
-        });
-
-    }
 }
 
 function autoUnit(input) {
 
     const row = input.closest(".row");
 
-    const unitInput = row.querySelector("input[name='biomarker_unit[]']");
+    const unitInput = row.querySelector(
+
+        "input[name='biomarker_unit[]']"
+
+    );
 
     const key = input.value.toLowerCase();
 
     if (biomarkerUnits[key]) {
+
         unitInput.value = biomarkerUnits[key];
     }
 }
@@ -255,16 +283,26 @@ function validateForm() {
     let valid = true;
 
     document.querySelectorAll("input").forEach(el => {
+
         el.style.borderColor = "#ccc";
     });
 
-    document.querySelectorAll("input[name='biomarker_name[]']").forEach((el, i) => {
+    document.querySelectorAll(
 
-        const val = document.querySelectorAll("input[name='biomarker_value[]']")[i];
+        "input[name='biomarker_name[]']"
+
+    ).forEach((el, i) => {
+
+        const val = document.querySelectorAll(
+
+            "input[name='biomarker_value[]']"
+
+        )[i];
 
         if (el.value && !val.value) {
 
             el.style.borderColor = "red";
+
             val.style.borderColor = "red";
 
             valid = false;
@@ -272,22 +310,13 @@ function validateForm() {
 
     });
 
-    document.querySelectorAll("input[name='gene_rsid[]']").forEach((el, i) => {
-
-        const genotype = document.querySelectorAll("input[name='gene_genotype[]']")[i];
-
-        if (el.value && !genotype.value) {
-
-            el.style.borderColor = "red";
-            genotype.style.borderColor = "red";
-
-            valid = false;
-        }
-
-    });
-
     if (!valid) {
-        alert("Invalid biomarker or genotype values.");
+
+        alert(
+
+            "Please fill all biomarker values correctly."
+
+        );
     }
 
     return valid;

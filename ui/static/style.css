@@ -468,3 +468,30 @@ hr{
 .hidden{
     display:none;
 }
+.explain-box{
+    background:#eef6ff;
+    padding:12px;
+    border-radius:10px;
+    margin-top:10px;
+    line-height:1.6;
+}
+
+.status-badge{
+    background:#0f4ea8;
+    color:white;
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:13px;
+}
+
+.risk-low{
+    border-left:6px solid #f59e0b;
+}
+
+.risk-high{
+    border-left:6px solid #ef4444;
+}
+
+.risk-normal{
+    border-left:6px solid #10b981;
+}

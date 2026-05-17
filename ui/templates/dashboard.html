@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+
     <title>Dashboard</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -13,6 +15,7 @@
             width:100%;
             height:100%;
             background:linear-gradient(135deg,#97ceeb,#62b9e8,#1497ef);
+            font-family:Arial, sans-serif;
         }
 
         .hidden{
@@ -84,6 +87,65 @@
             100%{content:"";}
         }
 
+        .dashboard-header{
+            text-align:center;
+            margin-bottom:25px;
+        }
+
+        .dashboard-header h2{
+            margin-bottom:10px;
+            color:#08306b;
+        }
+
+        .dashboard-header p{
+            color:#1d4ed8;
+            font-size:16px;
+        }
+
+        .dashboard-summary{
+            background:#eef6ff;
+            border-radius:12px;
+            padding:18px;
+            margin-bottom:25px;
+            border:1px solid #bfdbfe;
+        }
+
+        .dashboard-summary p{
+            margin:8px 0;
+            color:#0f172a;
+        }
+
+        .nav{
+            display:flex;
+            flex-direction:column;
+            gap:15px;
+        }
+
+        .nav button{
+            width:100%;
+            padding:14px;
+            border:none;
+            border-radius:10px;
+            background:linear-gradient(135deg, #4fa8ff, #0077cc);;
+            color:white;
+            font-size:16px;
+            font-weight:600;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        .nav button:hover{
+            background:#084cb0;
+        }
+
+        .logout-btn{
+            background:linear-gradient(135deg, #4fa8ff, #0077cc);
+        }
+
+        .logout-btn:hover{
+            background:#030663 !important;
+        }
+
     </style>
 
 </head>
@@ -92,20 +154,69 @@
 
 <div class="container card" id="mainCard">
 
-    <h2 style="text-transform: capitalize;">
-        Welcome {{ user.name }}
-    </h2>
+    <div class="dashboard-header">
 
-    <p>
-        What would you like to do today?
-    </p>
+        <h2 style="text-transform:capitalize;">
+
+            Welcome {{ user.name }}
+
+        </h2>
+
+        <p>
+
+            AI-powered precision nutrition dashboard
+
+        </p>
+
+    </div>
+
+    <div class="dashboard-summary">
+
+        <p>
+
+            <b>Age:</b>
+            {{ user.age }}
+
+        </p>
+
+        <p>
+
+            <b>Diet Preference:</b>
+            {{ user.diet_preference }}
+
+        </p>
+
+        <p>
+
+            <b>Activity Level:</b>
+            {{ user.activity_level }}
+
+        </p>
+
+        <!--<p>
+
+            <b>Biomarkers Added:</b>
+            {{ user.biomarkers|length }}
+
+        </p>
+
+        <p>
+
+            <b>Genes Added:</b>
+            {{ user.genes|length }}
+
+        </p>-->
+
+    </div>
 
     <div class="nav">
 
         <form id="mealForm" action="/generate-meal/{{ user.user_id }}" method="get">
 
             <button type="submit">
-                Generate 3 Meals for Today
+
+                Generate AI Meal Plan
+
             </button>
 
         </form>
@@ -113,23 +224,31 @@
         <a href="/update-profile/{{ user.user_id }}">
 
             <button type="button">
+
                 Update Profile
+
             </button>
 
         </a>
 
+    
+
         <a href="/download-report/{{ user.user_id }}">
 
             <button type="button">
-                Download Last Report
+
+                Download Latest Report
+
             </button>
 
         </a>
 
         <a href="/logout">
 
-            <button type="button">
+            <button type="button" class="logout-btn">
+
                 Logout
+
             </button>
 
         </a>
@@ -137,6 +256,10 @@
     </div>
 
 </div>
+
+<!-- ================================================= -->
+<!-- LOADER -->
+<!-- ================================================= -->
 
 <div id="loaderScreen" class="hidden">
 
@@ -145,11 +268,15 @@
         <div class="spinner"></div>
 
         <div class="loading-text">
+
             AI generating meal plan<span class="dot"></span>
+
         </div>
 
         <div class="subtext">
-            Analyzing your profile, genes, biomarkers and calories
+
+            Performing biomarker analysis, genetic reasoning, semantic retrieval, confidence scoring and meal optimization
+
         </div>
 
     </div>
@@ -158,9 +285,16 @@
 
 <script>
 
-document.getElementById("mealForm").addEventListener("submit", function(e){
+document.getElementById("mealForm").addEventListener("submit",
+ function(e){
 
     e.preventDefault();
+
+    const generateBtn = document.querySelector("#mealForm button");
+
+    generateBtn.disabled = true;
+
+    generateBtn.innerHTML = "Generating Plan...";
 
     document.getElementById("mainCard").style.display = "none";
 
@@ -172,13 +306,13 @@ document.getElementById("mealForm").addEventListener("submit", function(e){
 
     setTimeout(() => {
 
-        document.getElementById("mealForm").submit();
+        window.location.href = this.action;
 
     }, 300);
 
 });
 
 </script>
-
 </body>
+
 </html>
