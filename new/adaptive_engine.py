@@ -1,5 +1,6 @@
 import os
 import json
+from datetime import datetime
 
 
 class AdaptiveEngine:
@@ -13,27 +14,41 @@ class AdaptiveEngine:
             with open(self.memory_path, "w") as f:
                 json.dump({}, f, indent=4)
 
-    # =========================================================
-    # LOAD MEMORY
-    # =========================================================
-
     def load_memory(self):
 
-        with open(self.memory_path, "r") as f:
-            return json.load(f)
+        if not os.path.exists(self.memory_path):
 
-    # =========================================================
-    # SAVE MEMORY
-    # =========================================================
+            with open(self.memory_path, "w") as f:
+                json.dump({}, f, indent=4)
+
+        try:
+
+            with open(self.memory_path, "r") as f:
+
+                content = f.read().strip()
+
+                if not content:
+                    return {}
+
+                return json.loads(content)
+
+        except Exception as e:
+
+             print("ADAPTIVE MEMORY LOAD ERROR:", e)
+
+             return {}
 
     def save_memory(self, data):
 
-        with open(self.memory_path, "w") as f:
+        try:
+
+         with open(self.memory_path, "w") as f:
+
             json.dump(data, f, indent=4)
 
-    # =========================================================
-    # CREATE USER
-    # =========================================================
+        except Exception as e:
+
+            print("ADAPTIVE MEMORY SAVE ERROR:", e)
 
     def ensure_user(self, data, user_id):
 
@@ -44,12 +59,29 @@ class AdaptiveEngine:
 
             data[user_id] = {
                 "foods": {},
-                "total_feedback": 0
+                "total_feedback": 0,
+                "recent_foods": []
             }
 
-    # =========================================================
-    # UPDATE FEEDBACK
-    # =========================================================
+    def apply_decay(self, score, last_updated):
+
+        try:
+
+            old_time = float(last_updated)
+
+        except:
+
+            return score
+
+        current_time = datetime.now().timestamp()
+
+        gap_seconds = current_time - old_time
+
+        days_gap = gap_seconds / 86400
+
+        decay_factor = max(0.75, 1 - (days_gap * 0.01))
+
+        return score * decay_factor
 
     def update_feedback(self, user_id, food_name, feedback):
 
@@ -62,49 +94,75 @@ class AdaptiveEngine:
 
         food_key = str(food_name).strip().lower()
 
+        if not food_key:
+            return
+
         if food_key not in data[user_id]["foods"]:
 
             data[user_id]["foods"][food_key] = {
                 "score": 0,
                 "likes": 0,
                 "dislikes": 0,
-                "history": []
+                "history": [],
+                "last_updated": datetime.now().timestamp()
             }
 
         food_data = data[user_id]["foods"][food_key]
+
+        current_score = float(food_data.get("score", 0))
+
+        current_score = self.apply_decay(
+            current_score,
+            food_data.get("last_updated", datetime.now().timestamp())
+        )
 
         learning_rate = 2
 
         if feedback > 0:
 
-            food_data["score"] += learning_rate
+            current_score += learning_rate
+
             food_data["likes"] += 1
 
         elif feedback < 0:
 
-            food_data["score"] -= learning_rate
+            current_score -= learning_rate
+
             food_data["dislikes"] += 1
 
         else:
 
-            food_data["score"] += 0.2
+            current_score += 0.2
 
-        food_data["score"] = max(
-            -20,
-            min(20, food_data["score"])
-        )
+        current_score = max(-20, min(20, current_score))
+
+        food_data["score"] = round(current_score, 2)
+
+        food_data["last_updated"] = datetime.now().timestamp()
 
         food_data["history"].append({
-            "feedback": feedback
+            "feedback": feedback,
+            "timestamp": datetime.now().isoformat()
         })
+
+        food_data["history"] = food_data["history"][-50:]
 
         data[user_id]["total_feedback"] += 1
 
         self.save_memory(data)
 
-    # =========================================================
-    # GET SCORE
-    # =========================================================
+    def update_meal_feedback(self, user_id, foods, feedback):
+
+        if not foods:
+            return
+
+        for food in foods:
+
+            self.update_feedback(
+                user_id,
+                food,
+                feedback
+            )
 
     def get_score(self, user_id, food_name):
 
@@ -123,13 +181,16 @@ class AdaptiveEngine:
 
         food_data = data[user_id]["foods"][food_key]
 
-        return float(
+        score = float(
             food_data.get("score", 0)
         )
 
-    # =========================================================
-    # GET ADAPTIVE SCORE
-    # =========================================================
+        score = self.apply_decay(
+            score,
+            food_data.get("last_updated", datetime.now().timestamp())
+        )
+
+        return round(score, 2)
 
     def get_adaptive_score(self, user_id, food_name):
 
@@ -138,9 +199,44 @@ class AdaptiveEngine:
             food_name
         )
 
-    # =========================================================
-    # GLOBAL ADAPTIVE SCORE
-    # =========================================================
+    def store_recent_food(self, user_id, food_name):
+
+        if not user_id:
+            return
+
+        data = self.load_memory()
+
+        self.ensure_user(data, user_id)
+
+        recent = data[user_id].get(
+            "recent_foods",
+            []
+        )
+
+        recent.append(food_name)
+
+        recent = recent[-30:]
+
+        data[user_id]["recent_foods"] = recent
+
+        self.save_memory(data)
+
+    def get_recent_foods(self, user_id, limit=15):
+
+        if not user_id:
+            return []
+
+        data = self.load_memory()
+
+        if user_id not in data:
+            return []
+
+        recent = data[user_id].get(
+            "recent_foods",
+            []
+        )
+
+        return recent[-limit:]
 
     def global_adaptive_score(self, rag_context):
 
@@ -149,23 +245,25 @@ class AdaptiveEngine:
 
         total = 0
 
+        count = 0
+
         for item in rag_context:
 
-            total += float(
+            score = float(
                 item.get(
                     "adaptive_score",
                     0
                 )
             )
 
-        return round(
-            total / len(rag_context),
-            2
-        )
+            total += score
 
-    # =========================================================
-    # GET USER PREFERENCES
-    # =========================================================
+            count += 1
+
+        if count == 0:
+            return 0
+
+        return round(total / count, 2)
 
     def get_top_preferences(self, user_id, limit=10):
 
@@ -180,19 +278,12 @@ class AdaptiveEngine:
         foods = data[user_id]["foods"]
 
         ranked = sorted(
-
             foods.items(),
-
             key=lambda x: x[1].get("score", 0),
-
             reverse=True
         )
 
         return ranked[:limit]
-
-    # =========================================================
-    # GET USER AVOID FOODS
-    # =========================================================
 
     def get_avoid_foods(self, user_id, limit=10):
 
@@ -207,17 +298,11 @@ class AdaptiveEngine:
         foods = data[user_id]["foods"]
 
         ranked = sorted(
-
             foods.items(),
-
             key=lambda x: x[1].get("score", 0)
         )
 
         return ranked[:limit]
-
-    # =========================================================
-    # RESET USER
-    # =========================================================
 
     def reset_user(self, user_id):
 
@@ -228,10 +313,6 @@ class AdaptiveEngine:
             del data[user_id]
 
             self.save_memory(data)
-
-    # =========================================================
-    # DEBUG
-    # =========================================================
 
     def print_user_memory(self, user_id):
 
@@ -248,12 +329,10 @@ class AdaptiveEngine:
         for food, info in data[user_id]["foods"].items():
 
             print(
-
                 f"{food} | "
                 f"score={info['score']} | "
                 f"likes={info['likes']} | "
                 f"dislikes={info['dislikes']}"
-
             )
 
         print("==========================================")

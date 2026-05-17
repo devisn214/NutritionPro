@@ -15,10 +15,6 @@
 
 <div class="container card">
 
-    <!-- ================================================= -->
-    <!-- HEADER -->
-    <!-- ================================================= -->
-
     <div class="header">
 
         <h2>🍽 Personalized Nutrition Plan</h2>
@@ -28,10 +24,6 @@
         </p>
 
     </div>
-
-    <!-- ================================================= -->
-    <!-- PROFILE -->
-    <!-- ================================================= -->
 
     <div class="profile-summary">
 
@@ -44,10 +36,6 @@
         <p><b>Calories:</b> {{ result.plan.calories }} kcal</p>
 
     </div>
-
-    <!-- ================================================= -->
-    <!-- MACROS -->
-    <!-- ================================================= -->
 
     <div class="summary-pills">
 
@@ -68,14 +56,6 @@
         </div>
 
     </div>
-
-    
-
-    
-
-    <!-- ================================================= -->
-    <!-- BIOMARKERS -->
-    <!-- ================================================= -->
 
     {% if result.plan.biomarker_recommendations %}
 
@@ -151,10 +131,6 @@
 
     {% endif %}
 
-    <!-- ================================================= -->
-    <!-- GENETIC -->
-    <!-- ================================================= -->
-
     {% if result.plan.gene_recommendations %}
 
     <div class="section-box">
@@ -219,15 +195,11 @@
 
     {% endif %}
 
-    <!-- ================================================= -->
-    <!-- FOOD RECOMMENDATIONS -->
-    <!-- ================================================= -->
-
     {% if result.plan.rag_context %}
 
     <div class="section-box">
 
-        <h3> Food that helps:</h3>
+        <h3>Food that helps:</h3>
 
         <table class="food-table">
 
@@ -243,7 +215,7 @@
 
                     <th>Confidence</th>
 
-              
+                    <th>Feedback</th>
 
                 </tr>
 
@@ -253,12 +225,10 @@
 
                 {% for item in result.plan.rag_context %}
 
-                <tr>
+                <tr class="food-row">
 
-                    <td>
-
+                    <td class="food-name">
                         <b>{{ item.food }}</b>
-
                     </td>
 
                     <td>
@@ -291,6 +261,27 @@
 
                     </td>
 
+                    <td>
+
+                    <button
+        class="feedback-btn like-btn"
+        onclick="sendFoodFeedback(this,'{{ item.food }}',1)">
+
+        👍
+
+                    </button>
+
+                    <button
+        class="feedback-btn dislike-btn"
+        onclick="sendFoodFeedback(this,'{{ item.food }}',-1)">
+
+        👎
+
+                   </button>
+
+                  <div class="feedback-status"></div>
+
+                  </td>
 
                 </tr>
 
@@ -304,10 +295,6 @@
 
     {% endif %}
 
-    <!-- ================================================= -->
-    <!-- EXPLAINABILITY -->
-    <!-- ================================================= -->
-
     {% if result.plan.evidence %}
 
     <div class="section-box">
@@ -316,53 +303,51 @@
 
         {% for ev in result.plan.evidence %}
 
-        <div class="insight-card risk-normal">
+            {% if ev.source == "biomarker" %}
 
-            <div class="insight-header">
+            <div class="insight-card risk-normal">
 
-                <strong>
-                    {{ ev.source | upper }}
-                </strong>
+                <div class="insight-header">
 
-                <span class="status-badge">
-                    {{ ev.action }}
-                </span>
+                    <strong>
+                        {{ ev.source | upper }}
+                    </strong>
+
+                    <span class="status-badge">
+                        {{ ev.action }}
+                    </span>
+
+                </div>
+
+                <p class="subtext">
+
+                    Biomarker checked:
+                    {{ ev.trigger }}
+
+                </p>
+
+                <p class="subtext">
+
+                    Nutrient involved:
+                    {{ ev.nutrient_name }}
+
+                </p>
+
+                <div class="explain-box">
+
+                    {{ ev.logic_path }}
+
+                </div>
 
             </div>
 
-            <p class="subtext">
-
-                Biomarker/Gene checked:
-                {{ ev.trigger }}
-
-            </p>
-
-            <p class="subtext">
-
-                Nutrient involved:
-                {{ ev.nutrient_name }}
-
-            </p>
-
-        
-
-            <div class="explain-box">
-
-                {{ ev.logic_path }}
-
-            </div>
-
-        </div>
+            {% endif %}
 
         {% endfor %}
 
     </div>
 
     {% endif %}
-
-    <!-- ================================================= -->
-    <!-- GLOBAL CONFIDENCE -->
-    <!-- ================================================= -->
 
     <div class="section-box">
 
@@ -385,13 +370,6 @@
         </div>
 
     </div>
-    
-
-
-
-    <!-- ================================================= -->
-    <!-- AI MEAL PLAN -->
-    <!-- ================================================= -->
 
     {% if result.plan.llm_recommendation %}
 
@@ -405,40 +383,65 @@
 
         </div>
 
+        <div class="meal-feedback-section">
+
+        <h4>Meal Feedback</h4>
+
+        <p>Did you like today's generated meal plan?</p>
+
+        <button
+        class="meal-feedback-btn like-btn"
+        onclick="sendMealFeedback(this,1)">
+
+        👍 Like Meals
+
+        </button>
+
+        <button
+        class="meal-feedback-btn dislike-btn"
+        onclick="sendMealFeedback(this,-1)">
+
+        👎 Dislike Meals
+
+        </button>
+
+        <div id="meal-feedback-status"></div>
+
+        </div>
+
     </div>
 
     {% endif %}
 
+    <div class="section-box">
 
-    <h3>Estimated Nutrition From Suggested Foods</h3>
+        <h3>Estimated Nutrition From Suggested Foods</h3>
 
-<div class="nutrition-box">
+        <div class="nutrition-box">
 
-    <p>
-        <strong>Calories:</strong>
-        {{ result.plan.optimized_plan.totals.calories }} kcal
-    </p>
+            <p>
+                <strong>Calories:</strong>
+                {{ result.plan.optimized_plan.totals.calories }} kcal
+            </p>
 
-    <p>
-        <strong>Protein:</strong>
-        {{ result.plan.optimized_plan.totals.protein_g }} g
-    </p>
+            <p>
+                <strong>Protein:</strong>
+                {{ result.plan.optimized_plan.totals.protein_g }} g
+            </p>
 
-    <p>
-        <strong>Carbs:</strong>
-        {{ result.plan.optimized_plan.totals.carbs_g }} g
-    </p>
+            <p>
+                <strong>Carbs:</strong>
+                {{ result.plan.optimized_plan.totals.carbs_g }} g
+            </p>
 
-    <p>
-        <strong>Fat:</strong>
-        {{ result.plan.optimized_plan.totals.fat_g }} g
-    </p>
+            <p>
+                <strong>Fat:</strong>
+                {{ result.plan.optimized_plan.totals.fat_g }} g
+            </p>
 
-</div>
+        </div>
 
-    <!-- ================================================= -->
-    <!-- LLM EVALUATION -->
-    <!-- ================================================= -->
+    </div>
 
     {% if result.plan.llm_evaluation %}
 
@@ -455,10 +458,6 @@
     </div>
 
     {% endif %}
-
-    <!-- ================================================= -->
-    <!-- NAVIGATION -->
-    <!-- ================================================= -->
 
     {% if not pdf_mode %}
 
@@ -495,6 +494,186 @@ function toggleExplain(btn){
     const box = btn.nextElementSibling;
 
     box.classList.toggle("hidden");
+
+}
+
+function sendFoodFeedback(button, food, feedback){
+
+    fetch("/food-feedback",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/x-www-form-urlencoded"
+        },
+
+        body:
+            "user_id={{ user_id }}" +
+            "&food=" + encodeURIComponent(food) +
+            "&feedback=" + feedback
+    })
+
+    .then(r=>r.json())
+
+    .then(data=>{
+
+        const td = button.parentElement;
+
+        const status = td.querySelector(".feedback-status");
+
+        td.querySelectorAll("button").forEach(btn=>{
+
+            btn.disabled = true;
+
+            btn.style.opacity = "0.6";
+
+        });
+
+        if(feedback > 0){
+
+            button.style.background = "#16a34a";
+
+            button.style.color = "white";
+
+            status.innerHTML = "✓ Liked";
+
+        }
+
+        else{
+
+            button.style.background = "#dc2626";
+
+            button.style.color = "white";
+
+            status.innerHTML = "✓ Disliked";
+
+        }
+
+        status.style.marginTop = "6px";
+
+        status.style.fontSize = "13px";
+
+        status.style.fontWeight = "600";
+
+    })
+
+    .catch(error=>{
+
+        console.log(error);
+
+        alert("Feedback failed");
+
+    });
+
+}
+
+
+
+function sendMealFeedback(button, feedback){
+
+    let foods = [];
+
+    document.querySelectorAll(".food-row").forEach(row=>{
+
+        const food = row.querySelector(".food-name b");
+
+        if(food){
+
+            foods.push(food.innerText);
+
+        }
+
+    });
+
+    let formData = new URLSearchParams();
+
+    formData.append("user_id","{{ user_id }}");
+
+    formData.append("feedback",feedback);
+
+    foods.forEach(food=>{
+
+        formData.append("foods[]",food);
+
+    });
+
+    fetch("/meal-feedback",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/x-www-form-urlencoded"
+        },
+
+        body:formData.toString()
+
+    })
+
+    .then(r=>r.json())
+
+    .then(data=>{
+
+        document.querySelectorAll(".meal-feedback-btn").forEach(btn=>{
+
+            btn.disabled = true;
+
+            btn.style.opacity = "0.6";
+
+        });
+
+        if(feedback > 0){
+
+            button.style.background = "#16a34a";
+
+            button.style.color = "white";
+
+            document.getElementById("meal-feedback-status").innerHTML = "✓ Meal plan liked";
+
+        }
+
+        else{
+
+            button.style.background = "#dc2626";
+
+            button.style.color = "white";
+
+            document.getElementById("meal-feedback-status").innerHTML = "✓ Meal plan disliked";
+
+        }
+
+    })
+
+    .catch(error=>{
+
+        console.log(error);
+
+        alert("Meal feedback failed");
+
+    });
+
+}
+
+function showToast(message){
+
+    const toast = document.createElement("div");
+
+    toast.className = "toast-popup";
+
+    toast.innerText = message;
+
+    document.body.appendChild(toast);
+
+    setTimeout(()=>{
+
+        toast.classList.add("show");
+
+    },100);
+
+    setTimeout(()=>{
+
+        toast.remove();
+
+    },2500);
 
 }
 

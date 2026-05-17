@@ -403,7 +403,7 @@ def generate_nutrition_plan(user):
     # =====================================================
 
     llm = NutritionLLM()
-
+    top_foods = rag_context[:15]
     llm_recommendation = llm.generate_plan(
 
         user_profile=user,

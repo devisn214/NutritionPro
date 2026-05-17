@@ -6,7 +6,7 @@ import json
 import uuid
 from datetime import datetime
 import pandas as pd
-
+from new.adaptive_engine import AdaptiveEngine
 from pdf_working.pdf_service import process_pdf
 from nutrition_engine.engine import generate_nutrition_plan
 from nutrition_engine.data_loader import load_genes, load_biomarkers
@@ -245,7 +245,38 @@ def logout():
     session.clear()
 
     return redirect(url_for("home"))
+#---------feedback route for adaptive engine-----------------------
 
+@app.route("/food-feedback", methods=["POST"])
+def food_feedback():
+
+    user_id = request.form.get("user_id")
+
+    food_name = request.form.get("food")
+
+    feedback = int(request.form.get("feedback"))
+
+    adaptive_engine = AdaptiveEngine()
+
+    adaptive_engine.update_feedback(user_id, food_name, feedback)
+
+    return {"status": "success"}
+
+#meal feedback route for adaptive engine
+@app.route("/meal-feedback", methods=["POST"])
+def meal_feedback():
+
+    user_id = request.form.get("user_id")
+
+    foods = request.form.getlist("foods[]")
+
+    feedback = int(request.form.get("feedback"))
+
+    adaptive_engine = AdaptiveEngine()
+
+    adaptive_engine.update_meal_feedback(user_id, foods, feedback)
+
+    return {"status": "success"}
 
 # =========================================================
 # DASHBOARD

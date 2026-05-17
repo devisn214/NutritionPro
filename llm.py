@@ -60,7 +60,7 @@ class NutritionLLM:
 
             "options": {
 
-                "num_predict": 450,
+                "num_predict": 500,
 
                 "temperature": 0.15,
 

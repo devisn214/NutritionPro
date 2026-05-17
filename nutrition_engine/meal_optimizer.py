@@ -69,7 +69,9 @@ def optimize_meal_plan(rag_foods, target_calories, target_protein, target_carbs,
     foods = sorted(
         foods,
         key=lambda x: (
-            x.get("protein_g", 0) * 2
+            x.get("protein_g", 0) 
+            +
+            x.get("carbs_g", 0)
             -
             x.get("fat_g", 0)
             +
@@ -112,6 +114,9 @@ def optimize_meal_plan(rag_foods, target_calories, target_protein, target_carbs,
             return False
 
         if next_fat > target_fats * 1.10:
+            return False
+        
+        if next_protein > target_protein * 1.2:
             return False
 
         return True
