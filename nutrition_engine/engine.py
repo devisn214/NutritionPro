@@ -357,47 +357,13 @@ def generate_nutrition_plan(user):
 
         target_carbs=macros["carbs_g"],
 
-        target_fats=macros["fats_g"]
+        target_fats=macros["fats_g"],
+        
+        adaptive_engine=adaptive_engine,
+
+        user_id=user.get("user_id")
     )
-    def calculate_actual_macros(optimized_plan):
-
-        total_calories = 0
-        total_protein = 0
-        total_carbs = 0
-        total_fats = 0
-
-        for meal_type, foods in optimized_plan.items():
-
-            for food in foods:
-
-                nutrients = food.get("nutrients", [])
-
-                for n in nutrients:
-
-                    name = str(n.get("name", "")).lower()
-
-                    amount = float(n.get("amount", 0))
-
-                    if "energy" in name or "calories" in name:
-                        total_calories += amount
-
-                    elif "protein" in name:
-                        total_protein += amount
-
-                    elif "carbohydrate" in name or "carbs" in name:
-                        total_carbs += amount
-
-                    elif "fat" in name:
-                        total_fats += amount
-
-        return {
-
-        "calories": round(total_calories),
-        "protein": round(total_protein),
-        "carbs": round(total_carbs),
-        "fat": round(total_fats)
-        }
-
+    
     # =====================================================
     # LLM GENERATION
     # =====================================================

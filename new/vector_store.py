@@ -14,7 +14,7 @@ class SemanticRetriever:
 
         embedding_path="data/food_embeddings.json",
 
-        model_name="all-MiniLM-L6-v2"
+        model_name="pritamdeka/S-PubMedBert-MS-MARCO"
 
     ):
 

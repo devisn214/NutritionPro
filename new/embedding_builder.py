@@ -29,7 +29,7 @@ class FoodEmbeddingBuilder:
 
         self.output_path = output_path
 
-        self.model = SentenceTransformer("all-MiniLM-L6-v2")
+        self.model = SentenceTransformer("pritamdeka/S-PubMedBert-MS-MARCO")
 
     # =====================================================
     # BUILD FOOD TEXT
