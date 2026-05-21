@@ -42,6 +42,7 @@ BRKDIN_STAPLES = [
         "carbs_g": 52,
         "fat_g": 5
     },
+
     {
         "food": "Chapathi",
         "calories": 260,
@@ -49,7 +50,8 @@ BRKDIN_STAPLES = [
         "carbs_g": 46,
         "fat_g": 4
     },
-     {
+
+    {
         "food": "Appam",
         "calories": 280,
         "protein_g": 6,
@@ -86,8 +88,6 @@ LUNCH_STAPLES = [
         "fat_g": 2
     }
 ]
-
-
 
 
 def build_food_objects(rag_foods):
@@ -251,7 +251,8 @@ def optimize_meal_plan(
     target_carbs,
     target_fats,
     adaptive_engine=None,
-    user_id=None
+    user_id=None,
+    previous_confidence=0
 ):
 
     foods = build_food_objects(rag_foods)
@@ -305,6 +306,16 @@ def optimize_meal_plan(
             0
         )
 
+        confidence_boost = 0
+
+        if confidence < previous_confidence:
+
+            confidence_boost = -15
+
+        else:
+
+            confidence_boost = 10
+
         food["optimizer_score"] = (
 
             calories * 0.28 +
@@ -320,6 +331,8 @@ def optimize_meal_plan(
             semantic * 8 +
 
             adaptive +
+
+            confidence_boost +
 
             reuse_penalty
         )
@@ -502,7 +515,9 @@ def optimize_meal_plan(
             )
 
     print("\n========== FINAL OPTIMIZER OUTPUT ==========")
+
     print("User ID:", user_id)
+
     print(
         "Breakfast:",
         [x.get("food") for x in breakfast]

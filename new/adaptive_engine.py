@@ -34,17 +34,17 @@ class AdaptiveEngine:
 
         except Exception as e:
 
-             print("ADAPTIVE MEMORY LOAD ERROR:", e)
+            print("ADAPTIVE MEMORY LOAD ERROR:", e)
 
-             return {}
+            return {}
 
     def save_memory(self, data):
 
         try:
 
-         with open(self.memory_path, "w") as f:
+            with open(self.memory_path, "w") as f:
 
-            json.dump(data, f, indent=4)
+                json.dump(data, f, indent=4)
 
         except Exception as e:
 
@@ -58,9 +58,16 @@ class AdaptiveEngine:
         if user_id not in data:
 
             data[user_id] = {
+
                 "foods": {},
+
                 "total_feedback": 0,
-                "recent_foods": []
+
+                "recent_foods": [],
+
+                "best_confidence": 0,
+
+                "recommendation_attempts": 0
             }
 
     def apply_decay(self, score, last_updated):
@@ -79,7 +86,10 @@ class AdaptiveEngine:
 
         days_gap = gap_seconds / 86400
 
-        decay_factor = max(0.75, 1 - (days_gap * 0.01))
+        decay_factor = max(
+            0.75,
+            1 - (days_gap * 0.01)
+        )
 
         return score * decay_factor
 
@@ -100,20 +110,33 @@ class AdaptiveEngine:
         if food_key not in data[user_id]["foods"]:
 
             data[user_id]["foods"][food_key] = {
+
                 "score": 0,
+
                 "likes": 0,
+
                 "dislikes": 0,
+
                 "history": [],
-                "last_updated": datetime.now().timestamp()
+
+                "last_updated":
+                datetime.now().timestamp()
             }
 
         food_data = data[user_id]["foods"][food_key]
 
-        current_score = float(food_data.get("score", 0))
+        current_score = float(
+            food_data.get("score", 0)
+        )
 
         current_score = self.apply_decay(
+
             current_score,
-            food_data.get("last_updated", datetime.now().timestamp())
+
+            food_data.get(
+                "last_updated",
+                datetime.now().timestamp()
+            )
         )
 
         learning_rate = 2
@@ -134,18 +157,31 @@ class AdaptiveEngine:
 
             current_score += 0.2
 
-        current_score = max(-20, min(20, current_score))
+        current_score = max(
+            -20,
+            min(20, current_score)
+        )
 
-        food_data["score"] = round(current_score, 2)
+        food_data["score"] = round(
+            current_score,
+            2
+        )
 
-        food_data["last_updated"] = datetime.now().timestamp()
+        food_data["last_updated"] = (
+            datetime.now().timestamp()
+        )
 
         food_data["history"].append({
+
             "feedback": feedback,
-            "timestamp": datetime.now().isoformat()
+
+            "timestamp":
+            datetime.now().isoformat()
         })
 
-        food_data["history"] = food_data["history"][-50:]
+        food_data["history"] = (
+            food_data["history"][-50:]
+        )
 
         data[user_id]["total_feedback"] += 1
 
@@ -186,8 +222,13 @@ class AdaptiveEngine:
         )
 
         score = self.apply_decay(
+
             score,
-            food_data.get("last_updated", datetime.now().timestamp())
+
+            food_data.get(
+                "last_updated",
+                datetime.now().timestamp()
+            )
         )
 
         return round(score, 2)
@@ -250,6 +291,7 @@ class AdaptiveEngine:
         for item in rag_context:
 
             score = float(
+
                 item.get(
                     "adaptive_score",
                     0
@@ -278,8 +320,12 @@ class AdaptiveEngine:
         foods = data[user_id]["foods"]
 
         ranked = sorted(
+
             foods.items(),
-            key=lambda x: x[1].get("score", 0),
+
+            key=lambda x:
+            x[1].get("score", 0),
+
             reverse=True
         )
 
@@ -298,11 +344,84 @@ class AdaptiveEngine:
         foods = data[user_id]["foods"]
 
         ranked = sorted(
+
             foods.items(),
-            key=lambda x: x[1].get("score", 0)
+
+            key=lambda x:
+            x[1].get("score", 0)
         )
 
         return ranked[:limit]
+
+    def get_best_confidence(self, user_id):
+
+        if not user_id:
+            return 0
+
+        data = self.load_memory()
+
+        if user_id not in data:
+            return 0
+
+        return float(
+
+            data[user_id].get(
+                "best_confidence",
+                0
+            )
+        )
+
+    def update_best_confidence(
+        self,
+        user_id,
+        confidence_score
+    ):
+
+        if not user_id:
+            return
+
+        data = self.load_memory()
+
+        self.ensure_user(data, user_id)
+
+        current_best = float(
+
+            data[user_id].get(
+                "best_confidence",
+                0
+            )
+        )
+
+        if confidence_score > current_best:
+
+            data[user_id][
+                "best_confidence"
+            ] = confidence_score
+
+        self.save_memory(data)
+
+    def increment_attempts(self, user_id):
+
+        if not user_id:
+            return
+
+        data = self.load_memory()
+
+        self.ensure_user(data, user_id)
+
+        current = int(
+
+            data[user_id].get(
+                "recommendation_attempts",
+                0
+            )
+        )
+
+        data[user_id][
+            "recommendation_attempts"
+        ] = current + 1
+
+        self.save_memory(data)
 
     def reset_user(self, user_id):
 
@@ -329,9 +448,13 @@ class AdaptiveEngine:
         for food, info in data[user_id]["foods"].items():
 
             print(
+
                 f"{food} | "
+
                 f"score={info['score']} | "
+
                 f"likes={info['likes']} | "
+
                 f"dislikes={info['dislikes']}"
             )
 

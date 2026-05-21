@@ -18,27 +18,15 @@ class FeedbackManager:
             with open(self.feedback_path, "w") as f:
                 json.dump({}, f, indent=4)
 
-    # =====================================================
-    # LOAD FEEDBACK
-    # =====================================================
-
     def load_feedback(self):
 
         with open(self.feedback_path, "r") as f:
             return json.load(f)
 
-    # =====================================================
-    # SAVE FEEDBACK
-    # =====================================================
-
     def save_feedback_data(self, data):
 
         with open(self.feedback_path, "w") as f:
             json.dump(data, f, indent=4)
-
-    # =====================================================
-    # ENSURE USER
-    # =====================================================
 
     def ensure_user(self, data, user_id):
 
@@ -48,10 +36,6 @@ class FeedbackManager:
                 "feedback_history": [],
                 "food_feedback": {}
             }
-
-    # =====================================================
-    # SAVE FEEDBACK
-    # =====================================================
 
     def save_feedback(
 
@@ -65,7 +49,7 @@ class FeedbackManager:
 
         rating,
 
-        comment=""
+        confidence_score=0
 
     ):
 
@@ -81,7 +65,7 @@ class FeedbackManager:
 
             "rating": rating,
 
-            "comment": comment
+            "confidence_score": confidence_score
 
         }
 
@@ -123,15 +107,34 @@ class FeedbackManager:
 
                 "rating": rating,
 
-                "comment": comment
+                "confidence_score": confidence_score
 
             })
 
         self.save_feedback_data(data)
 
-    # =====================================================
-    # GET USER FEEDBACK
-    # =====================================================
+    def get_last_confidence(
+        self,
+        user_id
+    ):
+
+        data = self.load_feedback()
+
+        if user_id not in data:
+            return 0
+
+        history = data[user_id].get(
+            "feedback_history",
+            []
+        )
+
+        if not history:
+            return 0
+
+        return history[-1].get(
+            "confidence_score",
+            0
+        )
 
     def get_user_feedback(self, user_id):
 
@@ -141,10 +144,6 @@ class FeedbackManager:
             return {}
 
         return data[user_id]
-
-    # =====================================================
-    # GET FOOD SCORE
-    # =====================================================
 
     def get_food_score(
         self,
@@ -177,10 +176,6 @@ class FeedbackManager:
 
         return round(score * 10, 2)
 
-    # =====================================================
-    # GET TOP LIKED FOODS
-    # =====================================================
-
     def get_top_liked_foods(
         self,
         user_id,
@@ -206,10 +201,6 @@ class FeedbackManager:
 
         return ranked[:limit]
 
-    # =====================================================
-    # GET MOST DISLIKED FOODS
-    # =====================================================
-
     def get_most_disliked_foods(
         self,
         user_id,
@@ -232,10 +223,6 @@ class FeedbackManager:
         )
 
         return ranked[:limit]
-
-    # =====================================================
-    # RESET USER FEEDBACK
-    # =====================================================
 
     def reset_user_feedback(
         self,

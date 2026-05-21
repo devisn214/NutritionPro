@@ -3,205 +3,262 @@
 
 <head>
 
-    <title>Personalized Nutrition Report</title>
+    <title>
+        AI Personalized Nutrition Recommendation
+    </title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='style.css') }}">
 
 </head>
 
 <body class="results-page">
 
-<div id="content">
+<div class="container main-result-container">
 
-<div class="container card">
+    <!-- ========================================= -->
+    <!-- HEADER -->
+    <!-- ========================================= -->
 
-    <div class="header">
+    <div class="result-header">
 
-        <h2>🍽 Personalized Nutrition Plan</h2>
+        <div>
 
-        <p class="subtext">
-            AI-powered insights based on biomarkers, genetics, semantic retrieval and explainable nutrition intelligence
-        </p>
+            <h1>
+                Your AI Personalized Nutrition Recommendation Helper
+            </h1>
+
+            
+
+        </div>
+
+        {% if not pdf_mode %}
+
+        <div class="header-actions">
+
+            <a href="/download-report/{{ user_id }}">
+
+                <button class="secondary-btn">
+
+                    Download Report
+
+                </button>
+
+            </a>
+
+        </div>
+
+        {% endif %}
 
     </div>
 
-    <div class="profile-summary">
+    <!-- ========================================= -->
+    <!-- USER SUMMARY -->
+    <!-- ========================================= -->
 
-        <p><b>Name:</b> {{ user.name }}</p>
+    <div class="profile-grid">
 
-        <p><b>Age:</b> {{ user.age }}</p>
+        <div class="profile-card">
 
-        <p><b>Diet:</b> {{ user.diet_preference }}</p>
+            <span>Name</span>
 
-        <p><b>Calories:</b> {{ result.plan.calories }} kcal</p>
+            <strong>{{ user.name }}</strong>
+
+        </div>
+
+        <div class="profile-card">
+
+            <span>Age</span>
+
+            <strong>{{ user.age }}</strong>
+
+        </div>
+
+        <div class="profile-card">
+
+            <span>Diet Preference</span>
+
+            <strong>{{ user.diet_preference }}</strong>
+
+        </div>
+
+        <div class="profile-card">
+
+            <span>Activity Level</span>
+
+            <strong>{{ user.activity_level }}</strong>
+
+        </div>
 
     </div>
 
-    <div class="summary-pills">
-
-        <div class="pill pill-main">
-            {{ result.plan.calories }} kcal
-        </div>
-
-        <div class="pill">
-            Protein: {{ result.plan.macros.protein_g }}g
-        </div>
-
-        <div class="pill">
-            Carbs: {{ result.plan.macros.carbs_g }}g
-        </div>
-
-        <div class="pill">
-            Fat: {{ result.plan.macros.fats_g }}g
-        </div>
-
-    </div>
-
-    {% if result.plan.biomarker_recommendations %}
+    <!-- ========================================= -->
+    <!-- NUTRITION ANALYSIS -->
+    <!-- ========================================= -->
 
     <div class="section-box">
 
-        <h3>Biomarker Analysis</h3>
+        <h3>
+            Nutritional Targets vs Meal Intake
+        </h3>
 
-        {% for rec in result.plan.biomarker_recommendations %}
+        <div class="pill-card">
 
-        <div class="insight-card {% if rec.status == 'low' %}risk-low{% elif rec.status == 'high' %}risk-high{% else %}risk-normal{% endif %}">
+            <h4>
 
-            <div class="insight-header">
+                Target Requirements
 
-                <strong>
-                    {{ rec.biomarker or rec.name }}
-                </strong>
+            </h4>
 
-                <span class="status-badge">
-                    {{ rec.status }}
-                </span>
+            <div class="summary-pills">
 
-            </div>
+                <div class="pill pill-main">
 
-            {% if rec.current_value %}
+                    Calories:
+                    {{ result.plan.calories }} kcal/day
 
-            <p class="subtext">
+                </div>
 
-                Current:
-                {{ rec.current_value }}
+                <div class="pill">
 
-                {{ rec.unit }}
+                    Protein:
+                    {{ result.plan.macros.protein_g }} g
 
-                |
+                </div>
 
-                Normal:
-                {{ rec.low }} – {{ rec.high }}
+                <div class="pill">
 
-            </p>
+                    Carbohydrates:
+                    {{ result.plan.macros.carbs_g }} g
 
-            {% endif %}
+                </div>
 
-            <button class="toggle-btn" onclick="toggleExplain(this)">
-                Explain AI reasoning ▼
-            </button>
+                <div class="pill">
 
-            <div class="explain-box hidden">
+                    Fat:
+                    {{ result.plan.macros.fats_g }} g
 
-                Your
-
-                <b>{{ rec.biomarker }}</b>
-
-                is
-
-                <b>{{ rec.status }}</b>.
-
-                Recommended:
-
-                <b>{{ rec.direction }}</b>
-
-                intake of
-
-                <b>{{ rec.target_nutrient }}</b>
-
-                based on biomarker-nutrient clinical relationships.
+                </div>
 
             </div>
 
         </div>
 
-        {% endfor %}
+        <hr>
+
+        <div class="pill-card">
+
+            <h4>
+
+                Estimated Meal Intake
+
+            </h4>
+
+            <div class="summary-pills">
+
+                <div class="pill pill-main">
+
+                    Calories:
+                    {{ result.plan.optimized_plan.totals.calories }} kcal
+
+                </div>
+
+                <div class="pill">
+
+                    Protein:
+                    {{ result.plan.optimized_plan.totals.protein_g }} g
+
+                </div>
+
+                <div class="pill">
+
+                    Carbohydrates:
+                    {{ result.plan.optimized_plan.totals.carbs_g }} g
+
+                </div>
+
+                <div class="pill">
+
+                    Fat:
+                    {{ result.plan.optimized_plan.totals.fats_g }} g
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- MEAL PLAN -->
+    <!-- ========================================= -->
+
+    {% if result.plan.llm_recommendation %}
+
+    <div class="section-box">
+
+        <h3>
+            AI-Generated Daily Meal Plan
+        </h3>
+
+        <div class="ai-box meal-plan-content">
+
+            {{ result.plan.llm_recommendation
+            | replace('\n', '<br>')
+            | safe }}
+
+        </div>
+
+        <!-- ========================================= -->
+        <!-- MEAL FEEDBACK -->
+        <!-- ========================================= -->
+
+        <div class="meal-feedback-inline">
+
+            <span>
+
+                Did you like these meal recommendations?
+
+            </span>
+
+            <button
+            class="feedback-btn positive-btn"
+            onclick="sendMealFeedback(this,1)">
+
+            👍 Like
+
+            </button>
+
+            <button
+            class="feedback-btn negative-btn"
+            onclick="sendMealFeedback(this,-1)">
+
+            👎 Dislike
+
+            </button>
+
+            <div id="meal-feedback-status"></div>
+
+        </div>
 
     </div>
 
     {% endif %}
 
-    {% if result.plan.gene_recommendations %}
-
-    <div class="section-box">
-
-        <h3>Genetic Insights</h3>
-
-        {% for rec in result.plan.gene_recommendations %}
-
-        <div class="insight-card">
-
-            <div class="insight-header">
-
-                <strong>
-                    {{ rec.gene }}
-                </strong>
-
-                <span class="gene-variant">
-                    {{ rec.rsid }}
-                </span>
-
-            </div>
-
-            <p class="subtext">
-
-                Genotype:
-                <b>{{ rec.genotype }}</b>
-
-            </p>
-
-            <p class="subtext">
-
-                Nutrient Influence:
-                <b>{{ rec.nutrient_name }}</b>
-
-            </p>
-
-            <button class="toggle-btn" onclick="toggleExplain(this)">
-                Explain AI reasoning ▼
-            </button>
-
-            <div class="explain-box hidden">
-
-                {{ rec.reason }}
-
-                <br><br>
-
-                Recommended:
-
-                <b>{{ rec.direction }}</b>
-
-                intake of
-
-                <b>{{ rec.nutrient_name }}</b>.
-
-            </div>
-
-        </div>
-
-        {% endfor %}
-
-    </div>
-
-    {% endif %}
+    <!-- ========================================= -->
+    <!-- FUNCTIONAL FOODS -->
+    <!-- ========================================= -->
 
     {% if result.plan.rag_context %}
 
     <div class="section-box">
 
-        <h3>Food that helps:</h3>
+        <h3>
+            Possible Foods According to Your Biomarkers and Genomic Profile
+        </h3>
 
-        <table class="food-table">
+        <table class="food-table modern-table">
 
             <thead>
 
@@ -209,12 +266,10 @@
 
                     <th>Food</th>
 
-                    <th>Nutrients</th>
-
-                    <th>Why it helps</th>
+                    <th>Clinical Relevance</th>
 
                     <th>Confidence</th>
-                    
+
                     <th>Feedback</th>
 
                 </tr>
@@ -227,25 +282,13 @@
 
                 <tr class="food-row">
 
-                    <td class="food-name">
-                        <b>{{ item.food }}</b>
-                    </td>
-
                     <td>
 
-                        {% if item.nutrients %}
+                        <strong>
 
-                            {% for n in item.nutrients %}
+                            {{ item.food }}
 
-                                {{ n.name }}{% if not loop.last %}, {% endif %}
-
-                            {% endfor %}
-
-                        {% else %}
-
-                            General nutrition support
-
-                        {% endif %}
+                        </strong>
 
                     </td>
 
@@ -257,31 +300,33 @@
 
                     <td>
 
-                        {{ item.confidence_score }}%
+                        <span class="confidence-badge">
+
+                            {{ item.confidence_score }}%
+
+                        </span>
 
                     </td>
 
                     <td>
 
-                    <button
-        class="feedback-btn like-btn"
-        onclick="sendFoodFeedback(this,'{{ item.food }}',1)">
+                        <button
+                        class="mini-btn"
+                        onclick="sendFoodFeedback(this,'{{ item.food }}',1)">
 
-        👍
+                        👍
 
-                    </button>
+                        </button>
 
-                    <button
-        class="feedback-btn dislike-btn"
-        onclick="sendFoodFeedback(this,'{{ item.food }}',-1)">
+                        <button
+                        class="mini-btn negative-mini-btn"
+                        onclick="sendFoodFeedback(this,'{{ item.food }}',-1)">
 
-        👎
+                        👎
 
-                   </button>
+                        </button>
 
-                  <div class="feedback-status"></div>
-
-                  </td>
+                    </td>
 
                 </tr>
 
@@ -295,45 +340,68 @@
 
     {% endif %}
 
+    <!-- ========================================= -->
+    <!-- INSIGHTS -->
+    <!-- ========================================= -->
+
     {% if result.plan.evidence %}
 
     <div class="section-box">
 
-        <h3>Explainability Trace</h3>
+        <h3>
+            AI Recommendation Insights
+        </h3>
 
-        {% for ev in result.plan.evidence %}
+        <div class="insight-grid">
 
-            {% if ev.source == "biomarker" %}
+            {% for ev in result.plan.evidence %}
 
-            <div class="insight-card risk-normal">
+            <div class="insight-card risk-normal insight-modern-card">
 
-                <div class="insight-header">
+                <div class="insight-top">
 
-                    <strong>
-                        {{ ev.source | upper }}
-                    </strong>
+                    <div>
+                        <span class="status-badge">
 
-                    <span class="status-badge">
-                        {{ ev.action }}
-                    </span>
+                        {% if ev.source == "gene" %}
+
+                            Genomic Variant
+
+                        {% else %}
+
+                            Abnormal Biomarker
+
+                        {% endif %}
+
+                        </span>
+                        <br>
+                        <strong>
+
+                            {{ ev.trigger }}
+
+                        </strong>
+
+                        <p class="subtext">
+
+                            Affects {{ ev.nutrient_name }}
+
+                        </p>
+
+                    </div>
+
+                    
 
                 </div>
 
-                <p class="subtext">
+                <button
+                class="toggle-btn"
+                onclick="toggleExplain(this)">
 
-                    Biomarker checked:
-                    {{ ev.trigger }}
+                View AI Reasoning
 
-                </p>
+                </button>
 
-                <p class="subtext">
-
-                    Nutrient involved:
-                    {{ ev.nutrient_name }}
-
-                </p>
-
-                <div class="explain-box">
+                <div class="expand-content explain-box hidden">
 
                     {{ ev.logic_path }}
 
@@ -341,29 +409,90 @@
 
             </div>
 
-            {% endif %}
+            {% endfor %}
 
-        {% endfor %}
+        </div>
 
     </div>
 
     {% endif %}
 
+    <!-- ========================================= -->
+    <!-- AI EVALUATION -->
+    <!-- ========================================= -->
+
+    {% if result.plan.llm_evaluation %}
+
     <div class="section-box">
 
-        <h3>Overall AI Confidence</h3>
+        <h3>
+            AI Evaluation of Recommendation Quality based on Clinical correctness, Macro balance, Food suitability,Meal diversity and Safety
+        </h3>
 
-        <div class="insight-card risk-normal">
+        <div class="ai-box evaluation-box">
 
-            <div class="insight-header">
+            {{ result.plan.llm_evaluation.get('evaluation', '')
+            | replace('\n', '<br>')
+            | safe }}
 
-                <strong>
-                    Personalized Recommendation Reliability
-                </strong>
+        </div>
 
-                <span class="status-badge">
+    </div>
+
+    {% endif %}
+
+    <!-- ========================================= -->
+    <!-- CONFIDENCE -->
+    <!-- ========================================= -->
+
+    <div class="section-box">
+
+        <h3>
+            Recommendation Confidence of the AI System
+        </h3>
+
+        <div class="confidence-layout">
+
+            <div class="confidence-circle">
+
+                <div class="confidence-number">
+
                     {{ result.plan.confidence }}%
-                </span>
+
+                </div>
+
+                <div class="confidence-label">
+
+                    Confidence
+
+                </div>
+
+            </div>
+
+            <div class="confidence-description">
+
+                {% if result.plan.previous_confidence
+                and result.plan.previous_confidence > 0 %}
+
+                <p>
+
+                    Previous Confidence:
+
+                    <strong>
+
+                        {{ result.plan.previous_confidence }}%
+
+                    </strong>
+
+                </p>
+
+                {% endif %}
+
+                <p>
+
+                    {{ result.plan.confidence_message }}
+
+                </p>
 
             </div>
 
@@ -371,129 +500,113 @@
 
     </div>
 
-    {% if result.plan.llm_recommendation %}
-
+    <!-- ========================================= -->
+    <!-- OPTIMIZATION -->
+    <!-- ========================================= -->
+    {% if not result.plan.optimization_complete %}
     <div class="section-box">
 
-        <h3>AI Meal Plan</h3>
+        <h3>
+            Recommendation Optimization
+        </h3>
 
-        <div class="ai-box meal-plan-box">
+        
 
-            {{ result.plan.llm_recommendation | replace('\n', '<br>') | safe }}
+        <p class="subtext">
 
-        </div>
+            Would you like to see if a  more adaptively optimized recommendation is available?
 
-        <div class="meal-feedback-section">
+        </p>
 
-        <h4>Meal Feedback</h4>
+        <div class="optimization-actions">
 
-        <p>Did you like today's generated meal plan?</p>
+            <button
+            class="feedback-btn positive-btn"
+            onclick="sendConfidenceFeedback(this,1)">
 
-        <button
-        class="meal-feedback-btn like-btn"
-        onclick="sendMealFeedback(this,1)">
+            Satisfied With the Result
 
-        👍 Like Meals
+            </button>
 
-        </button>
+            <button
+            class="primary-btn"
+            onclick="generateImprovedRecommendation()">
 
-        <button
-        class="meal-feedback-btn dislike-btn"
-        onclick="sendMealFeedback(this,-1)">
+            Generate Improved Recommendation
 
-        👎 Dislike Meals
-
-        </button>
-
-        <div id="meal-feedback-status"></div>
+            </button>
 
         </div>
 
-    </div>
 
-    {% endif %}
 
-    <div class="section-box">
-
-        <h3>Estimated Nutrition From Suggested Foods</h3>
-
-        <div class="nutrition-box">
-
-            <p>
-                <strong>Calories:</strong>
-                {{ result.plan.optimized_plan.totals.calories }} kcal
-            </p>
-
-            <p>
-                <strong>Protein:</strong>
-                {{ result.plan.optimized_plan.totals.protein_g }} g
-            </p>
-
-            <p>
-                <strong>Carbs:</strong>
-                {{ result.plan.optimized_plan.totals.carbs_g }} g
-            </p>
-
-            <p>
-                <strong>Fat:</strong>
-                {{ result.plan.optimized_plan.totals.fat_g }} g
-            </p>
-
-        </div>
-
-    </div>
-
-    {% if result.plan.llm_evaluation %}
-
-    <div class="section-box">
-
-        <h3>LLM Evaluation</h3>
-
-        <div class="ai-box">
-
-            {{ result.plan.llm_evaluation.get('evaluation', '') | replace('\n', '<br>') | safe }}
-
-        </div>
-
-    </div>
-
-    {% endif %}
-
-    {% if not pdf_mode %}
+        {% endif %}
+        {% if not pdf_mode %}
 
     <div class="nav">
 
-        <a href="/dashboard/{{ user_id }}" class="back-link">
+        <a href="/dashboard/{{ user_id }}"
+        class="back-link">
 
             ← Back to Dashboard
 
         </a>
 
-        <a href="/download-report/{{ user_id }}">
-
-            <button type="button">
-
-                Download Report
-
-            </button>
-
-        </a>
-
     </div>
 
     {% endif %}
 
-</div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- NAVIGATION -->
+    <!-- ========================================= -->
+
+    
 
 </div>
 
+<!-- ========================================= -->
+<!-- IMPROVED LOADER -->
+<!-- ========================================= -->
+
+<!-- ========================================= -->
+<!-- IMPROVED LOADER -->
+<!-- ========================================= -->
+
+<div id="improvedLoader" class="hidden">
+
+    <div class="loading-box">
+
+        <div class="spinner"></div>
+
+        <div class="loading-text">
+
+            Refining AI nutritional recommendation
+            <span class="dot"></span>
+
+        </div>
+
+        <div class="subtext">
+
+            Performing adaptive optimization,
+            biomarker reasoning,
+            genomic analysis,
+            semantic retrieval
+            and confidence refinement
+
+        </div>
+
+    </div>
+
+</div>
 <script>
 
 function toggleExplain(btn){
 
-    const box = btn.nextElementSibling;
+    const content = btn.nextElementSibling;
 
-    box.classList.toggle("hidden");
+    content.classList.toggle("hidden");
 
 }
 
@@ -517,11 +630,9 @@ function sendFoodFeedback(button, food, feedback){
 
     .then(data=>{
 
-        const td = button.parentElement;
-
-        const status = td.querySelector(".feedback-status");
-
-        td.querySelectorAll("button").forEach(btn=>{
+        button.parentElement
+        .querySelectorAll("button")
+        .forEach(btn=>{
 
             btn.disabled = true;
 
@@ -529,45 +640,9 @@ function sendFoodFeedback(button, food, feedback){
 
         });
 
-        if(feedback > 0){
-
-            button.style.background = "#16a34a";
-
-            button.style.color = "white";
-
-            status.innerHTML = "✓ Liked";
-
-        }
-
-        else{
-
-            button.style.background = "#dc2626";
-
-            button.style.color = "white";
-
-            status.innerHTML = "✓ Disliked";
-
-        }
-
-        status.style.marginTop = "6px";
-
-        status.style.fontSize = "13px";
-
-        status.style.fontWeight = "600";
-
-    })
-
-    .catch(error=>{
-
-        console.log(error);
-
-        alert("Feedback failed");
-
     });
 
 }
-
-
 
 function sendMealFeedback(button, feedback){
 
@@ -575,7 +650,7 @@ function sendMealFeedback(button, feedback){
 
     document.querySelectorAll(".food-row").forEach(row=>{
 
-        const food = row.querySelector(".food-name b");
+        const food = row.querySelector("strong");
 
         if(food){
 
@@ -587,13 +662,27 @@ function sendMealFeedback(button, feedback){
 
     let formData = new URLSearchParams();
 
-    formData.append("user_id","{{ user_id }}");
+    formData.append(
+        "user_id",
+        "{{ user_id }}"
+    );
 
-    formData.append("feedback",feedback);
+    formData.append(
+        "feedback",
+        feedback
+    );
+
+    formData.append(
+        "confidence_score",
+        "{{ result.plan.confidence }}"
+    );
 
     foods.forEach(food=>{
 
-        formData.append("foods[]",food);
+        formData.append(
+            "foods[]",
+            food
+        );
 
     });
 
@@ -613,7 +702,9 @@ function sendMealFeedback(button, feedback){
 
     .then(data=>{
 
-        document.querySelectorAll(".meal-feedback-btn").forEach(btn=>{
+        document.querySelectorAll(
+            ".meal-feedback-inline button"
+        ).forEach(btn=>{
 
             btn.disabled = true;
 
@@ -623,57 +714,89 @@ function sendMealFeedback(button, feedback){
 
         if(feedback > 0){
 
-            button.style.background = "#16a34a";
-
-            button.style.color = "white";
-
-            document.getElementById("meal-feedback-status").innerHTML = "✓ Meal plan liked";
+            document.getElementById(
+                "meal-feedback-status"
+            ).innerHTML =
+            "Meal recommendation accepted";
 
         }
 
         else{
 
-            button.style.background = "#dc2626";
-
-            button.style.color = "white";
-
-            document.getElementById("meal-feedback-status").innerHTML = "✓ Meal plan disliked";
+            document.getElementById(
+                "meal-feedback-status"
+            ).innerHTML =
+            "Meal feedback saved";
 
         }
-
-    })
-
-    .catch(error=>{
-
-        console.log(error);
-
-        alert("Meal feedback failed");
 
     });
 
 }
 
-function showToast(message){
+function sendConfidenceFeedback(button, feedback){
 
-    const toast = document.createElement("div");
+    let formData = new URLSearchParams();
 
-    toast.className = "toast-popup";
+    formData.append(
+        "user_id",
+        "{{ user_id }}"
+    );
 
-    toast.innerText = message;
+    formData.append(
+        "feedback",
+        feedback
+    );
 
-    document.body.appendChild(toast);
+    formData.append(
+        "confidence_score",
+        "{{ result.plan.confidence }}"
+    );
 
-    setTimeout(()=>{
+    fetch("/confidence-feedback",{
 
-        toast.classList.add("show");
+        method:"POST",
 
-    },100);
+        headers:{
+            "Content-Type":"application/x-www-form-urlencoded"
+        },
 
-    setTimeout(()=>{
+        body:formData.toString()
 
-        toast.remove();
+    })
 
-    },2500);
+    .then(r=>r.json())
+
+    .then(data=>{
+
+        button.disabled = true;
+
+        button.style.opacity = "0.6";
+
+    });
+
+}
+
+function generateImprovedRecommendation(){
+
+    document.querySelector(
+        ".main-result-container"
+    ).style.display = "none";
+
+    const loader = document.getElementById(
+        "improvedLoader"
+    );
+
+    loader.classList.remove("hidden");
+
+    loader.classList.add("show");
+
+    setTimeout(() => {
+
+        window.location.href =
+        "/generate-improved-meal/{{ user_id }}";
+
+    }, 1200);
 
 }
 

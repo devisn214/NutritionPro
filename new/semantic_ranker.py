@@ -154,7 +154,7 @@ class SemanticRanker:
 
         ranked_results,
 
-        threshold=0.20
+        threshold=0.60
 
     ):
 

@@ -1,12 +1,14 @@
-
-from flask import Flask, render_template, request, redirect, url_for, send_file, session
+from flask import Flask, render_template, request, redirect, url_for, send_file, session, jsonify
 import os
 from html_report import generate_html_pdf
 import json
 import uuid
 from datetime import datetime
 import pandas as pd
+
 from new.adaptive_engine import AdaptiveEngine
+from new.feedback_manager import FeedbackManager
+
 from pdf_working.pdf_service import process_pdf
 from nutrition_engine.engine import generate_nutrition_plan
 from nutrition_engine.data_loader import load_genes, load_biomarkers
@@ -33,11 +35,8 @@ os.makedirs(PROFILE_RESULTS_DIR, exist_ok=True)
 if not os.path.exists(USERS_INDEX):
 
     with open(USERS_INDEX, "w") as f:
-        json.dump([], f, indent=4)
 
-# =========================================================
-# FILE VALIDATION
-# =========================================================
+        json.dump([], f, indent=4)
 
 ALLOWED_EXTENSIONS = {
     "pdf",
@@ -63,157 +62,211 @@ def json_converter(obj):
 def allowed_file(filename):
 
     return (
+
         "." in filename
+
         and
-        filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+        filename.rsplit(".", 1)[1].lower()
+
+        in ALLOWED_EXTENSIONS
     )
-
-
-# =========================================================
-# GENOME FILE VALIDATION
-# =========================================================
 
 
 def allowed_genome_file(filename):
 
-    allowed = {"txt", "csv"}
+    allowed = {
+        "txt",
+        "csv"
+    }
 
     return (
+
         "." in filename
+
         and
-        filename.rsplit(".", 1)[1].lower() in allowed
+
+        filename.rsplit(".", 1)[1].lower()
+
+        in allowed
     )
-
-
-# =========================================================
-# HELPERS
-# =========================================================
 
 
 def months_difference(old_date_str):
 
-    old_date = datetime.strptime(old_date_str, "%Y-%m-%d")
+    old_date = datetime.strptime(
+        old_date_str,
+        "%Y-%m-%d"
+    )
 
     today = datetime.today()
 
     return (
+
         (today.year - old_date.year) * 12
+
         +
+
         (today.month - old_date.month)
     )
 
 
-
 def load_biomarker_units():
 
-    df = pd.read_csv("data/biomarkers.csv")
+    df = pd.read_csv(
+        "data/biomarkers.csv"
+    )
 
-    return dict(zip(df["name"], df["unit"]))
+    return dict(
 
+        zip(
+            df["name"],
+            df["unit"]
+        )
+    )
 
 
 def load_rsid_genotypes():
 
-    df = pd.read_csv("data/genenutrient.csv")
+    df = pd.read_csv(
+        "data/genenutrient.csv"
+    )
 
     rsid_map = {}
 
     for _, row in df.iterrows():
 
-        rsid = str(row["rsid"]).strip()
+        rsid = str(
+            row["rsid"]
+        ).strip()
 
-        genotype = str(row["genotype"]).strip()
+        genotype = str(
+            row["genotype"]
+        ).strip()
 
-        gene = str(row["gene_symbol"]).strip().upper()
+        gene = str(
+            row["gene_symbol"]
+        ).strip().upper()
 
         if rsid not in rsid_map:
 
             rsid_map[rsid] = {
+
                 "gene": gene,
+
                 "genotypes": []
             }
 
         if genotype not in rsid_map[rsid]["genotypes"]:
 
-            rsid_map[rsid]["genotypes"].append(genotype)
+            rsid_map[rsid]["genotypes"].append(
+                genotype
+            )
 
     return rsid_map
 
 
-
-def update_biomarker(biomarkers, name, value, unit=""):
+def update_biomarker(
+    biomarkers,
+    name,
+    value,
+    unit=""
+):
 
     for b in biomarkers:
 
         if b["name"] == name:
 
             b["value"] = value
+
             b["unit"] = unit
+
             return
 
     biomarkers.append({
 
         "name": name,
+
         "value": value,
+
         "unit": unit
     })
 
 
-
-def update_gene(genes, gene, rsid, genotype):
+def update_gene(
+    genes,
+    gene,
+    rsid,
+    genotype
+):
 
     for g in genes:
 
         if g["rsid"] == rsid:
 
             g["gene"] = gene
+
             g["genotype"] = genotype
+
             return
 
     genes.append({
 
         "gene": gene,
+
         "rsid": rsid,
+
         "genotype": genotype
     })
 
 
-
 def get_valid_sets():
 
-    valid_genes = set(g.upper() for g in load_genes())
+    valid_genes = set(
+        g.upper()
+        for g in load_genes()
+    )
 
-    valid_biomarkers = set(b.lower() for b in load_biomarkers())
+    valid_biomarkers = set(
+        b.lower()
+        for b in load_biomarkers()
+    )
 
-    return valid_genes, valid_biomarkers
+    return (
+        valid_genes,
+        valid_biomarkers
+    )
 
-
-# =========================================================
-# HOME
-# =========================================================
 
 @app.route("/")
 def home():
 
-    return render_template("home.html")
+    return render_template(
+        "home.html"
+    )
 
-
-# =========================================================
-# LOGIN
-# =========================================================
 
 @app.route("/login")
 def login_page():
 
-    return render_template("login.html")
+    return render_template(
+        "login.html"
+    )
 
 
-@app.route("/login", methods=["POST"])
+@app.route(
+    "/login",
+    methods=["POST"]
+)
 def login():
 
-    username = request.form["username"].strip()
+    username = request.form[
+        "username"
+    ].strip()
 
-    password = request.form["password"].strip()
+    password = request.form[
+        "password"
+    ].strip()
 
     with open(USERS_INDEX, "r") as f:
 
@@ -245,6 +298,7 @@ def logout():
     session.clear()
 
     return redirect(url_for("home"))
+
 #---------feedback route for adaptive engine-----------------------
 
 @app.route("/food-feedback", methods=["POST"])
@@ -260,67 +314,182 @@ def food_feedback():
 
     adaptive_engine.update_feedback(user_id, food_name, feedback)
 
-    return {"status": "success"}
+    return jsonify({
+        "status": "success"
+    })
 
-#meal feedback route for adaptive engine
-@app.route("/meal-feedback", methods=["POST"])
+
+@app.route(
+    "/meal-feedback",
+    methods=["POST"]
+)
 def meal_feedback():
 
-    user_id = request.form.get("user_id")
+    user_id = request.form.get(
+        "user_id"
+    )
 
-    foods = request.form.getlist("foods[]")
+    foods = request.form.getlist(
+        "foods[]"
+    )
 
-    feedback = int(request.form.get("feedback"))
+    feedback = int(
+
+        request.form.get(
+            "feedback"
+        )
+    )
+
+    confidence_score = float(
+
+        request.form.get(
+            "confidence_score",
+            0
+        )
+    )
 
     adaptive_engine = AdaptiveEngine()
 
-    adaptive_engine.update_meal_feedback(user_id, foods, feedback)
+    adaptive_engine.update_meal_feedback(
 
-    return {"status": "success"}
+        user_id,
 
-# =========================================================
-# DASHBOARD
-# =========================================================
+        foods,
+
+        feedback
+    )
+
+    feedback_manager = FeedbackManager()
+
+    feedback_manager.save_feedback(
+
+        user_id=user_id,
+
+        meal_type="meal",
+
+        foods=foods,
+
+        rating=feedback,
+
+        confidence_score=confidence_score
+    )
+
+    return jsonify({
+        "status": "success"
+    })
+
+
+@app.route(
+    "/confidence-feedback",
+    methods=["POST"]
+)
+def confidence_feedback():
+
+    user_id = request.form.get(
+        "user_id"
+    )
+
+    feedback = int(
+
+        request.form.get(
+            "feedback",
+            0
+        )
+    )
+
+    confidence_score = float(
+
+        request.form.get(
+            "confidence_score",
+            0
+        )
+    )
+
+    feedback_manager = FeedbackManager()
+
+    feedback_manager.save_feedback(
+
+        user_id=user_id,
+
+        meal_type="confidence",
+
+        foods=[],
+
+        rating=feedback,
+
+        confidence_score=confidence_score
+    )
+
+    return jsonify({
+        "success": True
+    })
+
 
 @app.route("/dashboard/<user_id>")
 def dashboard(user_id):
 
-    profile_path = os.path.join(PROFILE_DIR, f"{user_id}.json")
+    profile_path = os.path.join(
+        PROFILE_DIR,
+        f"{user_id}.json"
+    )
 
     if not os.path.exists(profile_path):
 
-       
-     return render_template("login.html",error_message="User not found")
+        return render_template(
+
+            "login.html",
+
+            error_message="User not found"
+        )
 
     with open(profile_path) as f:
 
         user = json.load(f)
 
-    return render_template("dashboard.html", user=user)
+    return render_template(
+        "dashboard.html",
+        user=user
+    )
 
-
-# =========================================================
-# CREATE ACCOUNT
-# =========================================================
 
 @app.route("/create-account/<user_id>")
 def create_account(user_id):
 
-    return render_template("create_account.html", user_id=user_id)
+    return render_template(
+        "create_account.html",
+        user_id=user_id
+    )
 
 
-@app.route("/create-account/<user_id>", methods=["POST"])
+@app.route(
+    "/create-account/<user_id>",
+    methods=["POST"]
+)
 def save_account(user_id):
 
-    username = request.form["username"].strip()
+    username = request.form[
+        "username"
+    ].strip()
 
-    password = request.form["password"].strip()
+    password = request.form[
+        "password"
+    ].strip()
 
-    confirm_password = request.form["confirm_password"].strip()
+    confirm_password = request.form[
+        "confirm_password"
+    ].strip()
 
     if password != confirm_password:
 
-         return render_template("create_account.html",user_id=user_id,error_message="Passwords do not match")
+        return render_template(
+
+            "create_account.html",
+
+            user_id=user_id,
+
+            error_message=
+            "Passwords do not match"
+        )
 
     with open(USERS_INDEX, "r") as f:
 
@@ -328,7 +497,10 @@ def save_account(user_id):
 
     for uid in users:
 
-        profile_path_check = os.path.join(PROFILE_DIR, f"{uid}.json")
+        profile_path_check = os.path.join(
+            PROFILE_DIR,
+            f"{uid}.json"
+        )
 
         if not os.path.exists(profile_path_check):
             continue
@@ -337,31 +509,62 @@ def save_account(user_id):
 
             existing_user = json.load(pf)
 
-        if existing_user.get("username") == username and uid != user_id:
+        if (
 
-           return render_template("create_account.html",user_id=user_id,error_message="Username already exists")
+            existing_user.get("username")
+            == username
 
-    profile_path = os.path.join(PROFILE_DIR, f"{user_id}.json")
+            and
+
+            uid != user_id
+        ):
+
+            return render_template(
+
+                "create_account.html",
+
+                user_id=user_id,
+
+                error_message=
+                "Username already exists"
+            )
+
+    profile_path = os.path.join(
+        PROFILE_DIR,
+        f"{user_id}.json"
+    )
 
     with open(profile_path) as f:
 
         user = json.load(f)
 
     user["username"] = username
+
     user["password"] = password
 
     with open(profile_path, "w") as f:
 
-        json.dump(user, f, indent=4, default=json_converter)
+        json.dump(
+
+            user,
+
+            f,
+
+            indent=4,
+
+            default=json_converter
+        )
 
     session["user_id"] = user_id
 
-    return redirect(url_for("dashboard", user_id=user_id))
+    return redirect(
 
+        url_for(
+            "dashboard",
+            user_id=user_id
+        )
+    )
 
-# =========================================================
-# NEW USER
-# =========================================================
 
 @app.route("/new-user")
 def new_user():
@@ -374,89 +577,137 @@ def new_user():
 
         biomarkers=load_biomarkers(),
 
-        biomarker_units=load_biomarker_units(),
+        biomarker_units=
+        load_biomarker_units(),
 
-        gene_variants=load_rsid_genotypes()
+        gene_variants=
+        load_rsid_genotypes()
     )
 
 
-@app.route("/save-user", methods=["POST"])
+@app.route(
+    "/save-user",
+    methods=["POST"]
+)
 def save_user():
 
     form = request.form
 
-    username = form["name"].strip().lower().replace(" ", "_")
+    username = form[
+        "name"
+    ].strip().lower().replace(" ", "_")
 
-    user_id = f"{username}_{uuid.uuid4().hex[:8]}"
+    user_id = (
 
-    today = datetime.today().strftime("%Y-%m-%d")
+        f"{username}_"
 
-    valid_genes, valid_biomarkers = get_valid_sets()
+        f"{uuid.uuid4().hex[:8]}"
+    )
+
+    today = datetime.today().strftime(
+        "%Y-%m-%d"
+    )
+
+    valid_genes, valid_biomarkers = (
+        get_valid_sets()
+    )
 
     genome_parser = GenomeParser(
         "data/genenutrient.csv"
     )
 
-    # =====================================================
-    # PDF PROCESSING
-    # =====================================================
-
-    pdf_file = request.files.get("report_pdf")
+    pdf_file = request.files.get(
+        "report_pdf"
+    )
 
     pdf_biomarkers = []
 
     unknown_biomarkers = []
 
-    if pdf_file and pdf_file.filename != "" and allowed_file(pdf_file.filename):
+    if (
+
+        pdf_file
+
+        and
+
+        pdf_file.filename != ""
+
+        and
+
+        allowed_file(
+            pdf_file.filename
+        )
+    ):
 
         try:
 
-            pdf_biomarkers = process_pdf(pdf_file)
+            pdf_biomarkers = process_pdf(
+                pdf_file
+            )
 
         except Exception as e:
 
             print("PDF ERROR:", e)
 
-    # =====================================================
-    # MANUAL BIOMARKERS
-    # =====================================================
-
     biomarkers = []
 
-    names = form.getlist("biomarker_name[]")
-    values = form.getlist("biomarker_value[]")
-    units = form.getlist("biomarker_unit[]")
+    names = form.getlist(
+        "biomarker_name[]"
+    )
 
-    for n, v, u in zip(names, values, units):
+    values = form.getlist(
+        "biomarker_value[]"
+    )
 
-        n = (n or "").strip().lower()
-        v = (v or "").strip()
+    units = form.getlist(
+        "biomarker_unit[]"
+    )
+
+    for n, v, u in zip(
+        names,
+        values,
+        units
+    ):
+
+        n = (
+            n or ""
+        ).strip().lower()
+
+        v = (
+            v or ""
+        ).strip()
 
         if not v:
             continue
 
         if n not in valid_biomarkers:
 
-            return f"Invalid biomarker entered: {n}", 400
+            return (
+                f"Invalid biomarker entered: {n}",
+                400
+            )
 
         biomarkers.append({
 
             "name": n,
+
             "value": float(v),
+
             "unit": (u or "").strip()
         })
 
-    # =====================================================
-    # PDF OVERRIDE
-    # =====================================================
-
     for b in pdf_biomarkers:
 
-        name = (b.get("name") or "").lower()
+        name = (
+            b.get("name") or ""
+        ).lower()
 
         value = b.get("value")
 
-        unit = b.get("unit", "")
+        unit = b.get(
+            "unit",
+            ""
+        )
 
         if not name or value is None:
             continue
@@ -466,32 +717,47 @@ def save_user():
             unknown_biomarkers.append({
 
                 "name": name,
+
                 "value": value
             })
 
             continue
 
-        update_biomarker(biomarkers, name, float(value), unit)
+        update_biomarker(
 
-    # =====================================================
-    # GENES
-    # =====================================================
+            biomarkers,
+
+            name,
+
+            float(value),
+
+            unit
+        )
 
     genes = []
 
-    gene_rsids = form.getlist("gene_rsid[]")
-    gene_genotypes = form.getlist("gene_genotype[]")
+    gene_rsids = form.getlist(
+        "gene_rsid[]"
+    )
+
+    gene_genotypes = form.getlist(
+        "gene_genotype[]"
+    )
 
     df_gene = pd.read_csv(
         "data/genenutrient.csv"
     )
 
     for rsid, genotype in zip(
+
         gene_rsids,
+
         gene_genotypes
     ):
 
-        rsid = (rsid or "").strip()
+        rsid = (
+            rsid or ""
+        ).strip()
 
         genotype = (
             genotype or ""
@@ -506,37 +772,44 @@ def save_user():
         match = df_gene[
 
             df_gene["rsid"]
-            .astype(str)
-            .str.strip()
-            == rsid
 
+            .astype(str)
+
+            .str.strip()
+
+            == rsid
         ]
 
         if match.empty:
             continue
 
-        gene_symbol = match.iloc[0]["gene_symbol"]
+        gene_symbol = match.iloc[0][
+            "gene_symbol"
+        ]
 
         genes.append({
 
             "gene": gene_symbol,
+
             "rsid": rsid,
+
             "genotype": genotype
         })
-
-    # =====================================================
-    # GENOME FILE PROCESSING
-    # =====================================================
 
     genome_file = request.files.get(
         "genome_file"
     )
 
     if (
+
         genome_file
+
         and
+
         genome_file.filename != ""
+
         and
+
         allowed_genome_file(
             genome_file.filename
         )
@@ -551,14 +824,15 @@ def save_user():
                 genome_file.filename
             )
 
-            genome_file.save(genome_path)
+            genome_file.save(
+                genome_path
+            )
 
             extracted_variants = (
 
                 genome_parser.extract_variants(
                     genome_path
                 )
-
             )
 
             for g in extracted_variants:
@@ -576,11 +850,10 @@ def save_user():
 
         except Exception as e:
 
-            print("GENOME PARSE ERROR:", e)
-
-    # =====================================================
-    # PROFILE
-    # =====================================================
+            print(
+                "GENOME PARSE ERROR:",
+                e
+            )
 
     user_profile = {
 
@@ -592,21 +865,30 @@ def save_user():
 
         "gender": form["gender"],
 
-        "height_cm": float(form["height"]),
+        "height_cm": float(
+            form["height"]
+        ),
 
-        "weight_kg": float(form["weight"]),
+        "weight_kg": float(
+            form["weight"]
+        ),
 
-        "activity_level": form["activity_level"],
+        "activity_level":
+        form["activity_level"],
 
-        "diet_preference": form["diet"],
+        "diet_preference":
+        form["diet"],
 
         "created_at": today,
 
         "last_updated": {
 
             "weight": today,
+
             "height": today,
+
             "biomarkers": today,
+
             "genes": today
         },
 
@@ -614,14 +896,23 @@ def save_user():
 
         "genes": genes,
 
-        "unknown_biomarkers": unknown_biomarkers
+        "unknown_biomarkers":
+        unknown_biomarkers
     }
 
-    profile_path = os.path.join(PROFILE_DIR, f"{user_id}.json")
+    profile_path = os.path.join(
+        PROFILE_DIR,
+        f"{user_id}.json"
+    )
 
     with open(profile_path, "w") as f:
 
-        json.dump(user_profile, f, indent=4)
+        json.dump(
+            user_profile,
+            f,
+            indent=4,
+            default=json_converter
+        )
 
     with open(USERS_INDEX, "r") as f:
 
@@ -826,20 +1117,38 @@ def save_updated_profile(user_id):
 @app.route("/download-report/<user_id>")
 def download_report(user_id):
 
-    profile_path = os.path.join(PROFILE_DIR, f"{user_id}.json")
+    profile_path = os.path.join(
+        PROFILE_DIR,
+        f"{user_id}.json"
+    )
 
-    plan_path = os.path.join(PROFILE_RESULTS_DIR, f"{user_id}_latest_plan.json")
+    plan_path = os.path.join(
+
+        PROFILE_RESULTS_DIR,
+
+        f"{user_id}_latest_plan.json"
+    )
 
     if not os.path.exists(profile_path):
-        return "User profile not found", 404
+
+        return (
+            "User profile not found",
+            404
+        )
 
     if not os.path.exists(plan_path):
-        return "Generate meal plan first", 400
+
+        return (
+            "Generate meal plan first",
+            400
+        )
 
     with open(profile_path) as f:
+
         user_profile = json.load(f)
 
     with open(plan_path) as f:
+
         plan = json.load(f)
 
     pdf_path = generate_html_pdf(app, user_profile, plan, user_id)
@@ -848,10 +1157,14 @@ def download_report(user_id):
 
 # ------------------ GENERATE MEAL ------------------
 
+
 @app.route("/generate-meal/<user_id>")
 def generate_meal(user_id):
 
-    path = os.path.join(PROFILE_DIR, f"{user_id}.json")
+    path = os.path.join(
+        PROFILE_DIR,
+        f"{user_id}.json"
+    )
 
     if not os.path.exists(path):
 
@@ -861,16 +1174,97 @@ def generate_meal(user_id):
 
         user_profile = json.load(f)
 
-    plan = generate_nutrition_plan(user_profile)
-
     latest_plan_path = os.path.join(
         PROFILE_RESULTS_DIR,
         f"{user_id}_latest_plan.json"
     )
 
+    best_confidence = 0
+    previous_confidence = 0
+   
+    if os.path.exists(latest_plan_path):
+
+        try:
+
+            with open(latest_plan_path) as oldf:
+
+                old_plan = json.load(oldf)
+
+                best_confidence = float(
+
+                    old_plan.get(
+
+                        "best_confidence",
+
+                        old_plan.get(
+                            "confidence",
+                            0
+                        )
+                    )
+                )
+                previous_confidence = best_confidence
+        except:
+
+
+                 best_confidence = 0
+                 previous_confidence = 0
+
+    plan = generate_nutrition_plan(
+        user_profile
+    )
+
+    current_confidence = float(
+        plan.get(
+            "confidence",
+            0
+        )
+    )
+    if current_confidence <= best_confidence:
+
+        with open(latest_plan_path) as oldf:
+
+             old_plan = json.load(oldf)
+
+        old_plan["confidence_message"] = ("No further improvement in recommendation confidence could be achieved using the currentbiomarker,genomic and dietary constraints."
+        "The current recommendation already represents the best possible confidence level given the available data and constraints.")
+
+        old_plan["previous_confidence"] = previous_confidence
+
+        old_plan["best_confidence"] = best_confidence
+
+        old_plan["improvement_possible"] = False
+
+        old_plan["optimization_complete"] = True
+
+        plan = old_plan
+
+    else:
+
+        plan["confidence_message"] = (
+
+        "Recommendation confidence improved "
+        "through adaptive optimization."
+    )
+
+        plan["optimization_complete"] = False
+
+        plan["improvement_possible"] = True
+
+        best_confidence = current_confidence
+
+        plan["best_confidence"] = best_confidence
+
+        plan["previous_confidence"] = previous_confidence
+    improvement_possible = plan.get("improvement_possible",False)
+
     with open(latest_plan_path, "w") as f:
 
-        json.dump(plan, f, indent=4, default=json_converter)
+        json.dump(
+            plan,
+            f,
+            indent=4,
+            default=json_converter
+        )
 
     return render_template(
 
@@ -878,11 +1272,23 @@ def generate_meal(user_id):
 
         result={"plan": plan},
 
-        rag_context=plan.get("rag_context", []),
+        rag_context=plan.get(
+            "rag_context",
+            []
+        ),
 
-        evidence=plan.get("evidence", []),
+        evidence=plan.get(
+            "evidence",
+            []
+        ),
 
-        unknown_biomarkers=user_profile.get("unknown_biomarkers", []),
+        unknown_biomarkers=
+        user_profile.get(
+            "unknown_biomarkers",
+            []
+        ),
+
+        improvement_possible=improvement_possible,
 
         user_id=user_id,
 
@@ -890,8 +1296,17 @@ def generate_meal(user_id):
 
         pdf_mode=False
     )
+    
+@app.route("/generate-improved-meal/<user_id>")
+def generate_improved_meal(user_id):
 
+    return redirect(
 
+        url_for(
+            "generate_meal",
+            user_id=user_id
+        )
+    )
 # =========================================================
 # MAIN
 # =========================================================

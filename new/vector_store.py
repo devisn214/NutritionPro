@@ -91,7 +91,7 @@ class SemanticRetriever:
 
         top_k=20,
 
-        similarity_threshold=0.20
+        similarity_threshold=0.50
 
     ):
 
