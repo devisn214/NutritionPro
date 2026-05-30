@@ -13,7 +13,7 @@ from llm import NutritionLLM
 
 from nutrition_engine.meal_optimizer import optimize_meal_plan
 
-from llm_evaluator import LLMMealEvaluator
+
 
 from new.confidence import ConfidenceEngine
 from new.adaptive_engine import AdaptiveEngine
@@ -336,32 +336,11 @@ def generate_nutrition_plan(user):
         gene_recommendations=gene_recs
     )
 
-    evaluator = LLMMealEvaluator(
-       model="llama3.1:8b-instruct-q4_K_M"
-    )
+    
 
-    llm_evaluation = evaluator.evaluate(
+   
 
-        user_profile=user,
-
-        meal_plan=llm_recommendation,
-
-        calories=calories,
-
-        macros=macros,
-
-        rag_context=rag_context,
-
-        biomarker_recommendations=biomarker_recs,
-
-        gene_recommendations=gene_recs
-    )
-
-    print("\n========== LLM EVALUATION ==========")
-
-    print(llm_evaluation)
-
-    print("====================================\n")
+   
 
     global_confidence = confidence_engine.calculate_global_confidence(
 
@@ -455,7 +434,7 @@ def generate_nutrition_plan(user):
 
     "llm_recommendation": llm_recommendation,
 
-    "llm_evaluation": llm_evaluation,
+   "llm_evaluation": None,
 
     "evidence": evidence,
 

@@ -439,7 +439,7 @@
     <!-- BIOMARKER ANALYSIS -->
     <!-- ========================================= -->
 
-    {% if result.plan.biomarker_analysis %}
+    {% if result.plan.biomarker_recommendations %}
 
     <div class="section-box">
 
@@ -516,7 +516,7 @@
     <!-- GENE ANALYSIS -->
     <!-- ========================================= -->
 
-    {% if result.plan.gene_analysis %}
+    {% if result.plan.gene_recommendations%}
 
     <div class="section-box">
 
@@ -630,25 +630,36 @@
     <!-- AI EVALUATION -->
     <!-- ========================================= -->
 
-    {% if result.plan.llm_evaluation %}
+   <div class="section-box">
 
-    <div class="section-box">
+    <h3>
+        AI-Based Meal Quality Evaluation
+    </h3>
 
-        <h3>
-            AI-Based Meal Quality Evaluation
-        </h3>
+    <button
+        id="evaluateBtn"
+        class="primary-btn"
+        onclick="generateEvaluation()">
 
-        <div class="ai-box evaluation-box">
+        Generate Evaluation
 
-           {{ result.plan.llm_evaluation.get('evaluation', '')
-            | replace('\n', '<br>')
-            | safe }}
+    </button>
 
-        </div>
+    <div
+        id="evaluationLoader"
+        class="hidden">
+
+        Evaluating meal quality...
 
     </div>
 
-    {% endif %}
+    <div
+        id="evaluationContent"
+        class="ai-box hidden">
+
+    </div>
+
+</div>
 
     <!-- ========================================= -->
     <!-- NAVIGATION -->
@@ -877,6 +888,57 @@ function sendConfidenceFeedback(button, feedback){
 
     });
 
+}
+function generateEvaluation(){
+
+    const btn =
+        document.getElementById(
+            "evaluateBtn"
+        );
+
+    btn.disabled = true;
+
+    document
+        .getElementById(
+            "evaluationLoader"
+        )
+        .classList
+        .remove("hidden");
+
+    fetch(
+        "/generate-evaluation/{{ user_id }}",
+        {
+            method:"POST"
+        }
+    )
+
+    .then(r => r.json())
+
+    .then(data => {
+
+        document
+            .getElementById(
+                "evaluationLoader"
+            )
+            .classList
+            .add("hidden");
+
+        const box =
+            document.getElementById(
+                "evaluationContent"
+            );
+
+        box.classList.remove(
+            "hidden"
+        );
+
+        box.innerHTML =
+            data.evaluation
+            .replace(/\n/g,"<br>");
+
+        btn.innerText =
+            "Evaluation Complete";
+    });
 }
 
 function generateImprovedRecommendation(){

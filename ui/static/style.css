@@ -583,3 +583,12 @@ hr{
 .risk-normal{
     border-left:6px solid #10b981;
 }
+#evaluationLoader{
+    margin-top:15px;
+    font-weight:600;
+    color:#0f4c81;
+}
+
+#evaluationContent{
+    margin-top:15px;
+}

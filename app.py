@@ -1,3 +1,4 @@
+#app.py
 from flask import Flask, render_template, request, redirect, url_for, send_file, session, jsonify
 import os
 from html_report import generate_html_pdf
@@ -8,7 +9,7 @@ import pandas as pd
 
 from new.adaptive_engine import AdaptiveEngine
 from new.feedback_manager import FeedbackManager
-
+from llm_evaluator import LLMMealEvaluator
 from pdf_working.pdf_service import process_pdf
 from nutrition_engine.engine import generate_nutrition_plan
 from nutrition_engine.data_loader import load_genes, load_biomarkers
@@ -1256,7 +1257,8 @@ def generate_meal(user_id):
 
         plan["previous_confidence"] = previous_confidence
     improvement_possible = plan.get("improvement_possible",False)
-
+    
+    plan["generated_time"] = datetime.now().strftime("%d %B %Y, %I:%M %p")
     with open(latest_plan_path, "w") as f:
 
         json.dump(
@@ -1265,7 +1267,7 @@ def generate_meal(user_id):
             indent=4,
             default=json_converter
         )
-        plan["generated_time"] = datetime.now().strftime("%d %B %Y, %I:%M %p")
+     
 
     return render_template(
 
@@ -1298,16 +1300,144 @@ def generate_meal(user_id):
         pdf_mode=False
     )
     
+
 @app.route("/generate-improved-meal/<user_id>")
 def generate_improved_meal(user_id):
 
     return redirect(
-
         url_for(
             "generate_meal",
             user_id=user_id
         )
     )
+@app.route(
+    "/generate-evaluation/<user_id>",
+    methods=["POST"]
+)
+def generate_evaluation(user_id):
+
+    profile_path = os.path.join(
+        PROFILE_DIR,
+        f"{user_id}.json"
+    )
+
+    latest_plan_path = os.path.join(
+        PROFILE_RESULTS_DIR,
+        f"{user_id}_latest_plan.json"
+    )
+
+    if not os.path.exists(profile_path):
+
+        return jsonify({
+
+            "success": False,
+
+            "error":
+            "Profile not found"
+        })
+
+    if not os.path.exists(latest_plan_path):
+
+        return jsonify({
+
+            "success": False,
+
+            "error":
+            "Meal plan not found"
+        })
+
+    with open(profile_path) as f:
+
+        user_profile = json.load(f)
+
+    with open(latest_plan_path) as f:
+
+        plan = json.load(f)
+    if (plan.get("llm_evaluation") and plan["llm_evaluation"].get("evaluation")):
+
+        return jsonify({
+
+        "success": True,
+
+        "evaluation":
+        plan["llm_evaluation"]["evaluation"],
+
+        "cached": True
+    })
+
+    evaluator = LLMMealEvaluator(
+        model="llama3.1:8b-instruct-q4_K_M"
+    )
+
+    evaluation = evaluator.evaluate(
+
+        user_profile=user_profile,
+
+        meal_plan=plan.get(
+            "llm_recommendation",
+            ""
+        ),
+
+        calories=plan.get(
+            "calories",
+            0
+        ),
+
+        macros=plan.get(
+            "macros",
+            {}
+        ),
+
+        rag_context=plan.get(
+            "rag_context",
+            []
+        ),
+
+        biomarker_recommendations=plan.get(
+            "biomarker_recommendations",
+            []
+        ),
+
+        gene_recommendations=plan.get(
+            "gene_recommendations",
+            []
+        )
+    )
+
+    if "evaluation" in evaluation:
+
+        plan["llm_evaluation"] = evaluation
+
+        with open(
+            latest_plan_path,
+            "w"
+        ) as f:
+
+            json.dump(
+                plan,
+                f,
+                indent=4,
+                default=json_converter
+            )
+
+        return jsonify({
+
+            "success": True,
+
+            "evaluation":
+            evaluation["evaluation"]
+        })
+
+    return jsonify({
+
+        "success": False,
+
+        "error":
+        evaluation.get(
+            "evaluation_error",
+            "Unknown error"
+        )
+    })    
 # =========================================================
 # MAIN
 # =========================================================
