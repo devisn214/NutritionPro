@@ -20,12 +20,10 @@ BIOMARKER_UNIT_MAP = {
 
 
 def process_biomarkers(user_test_results, user):
-
     final_recommendations = []
     gender = user.get("gender", "male").lower()
 
     for test in user_test_results:
-
         biomarker_name = str(test.get("name", "")).strip().lower()
 
         b_info = df_biomarkers[
@@ -36,8 +34,8 @@ def process_biomarkers(user_test_results, user):
             continue
 
         b_id = b_info.iloc[0]['biomarker_id']
-        n_id = b_info.iloc[0]['nutrient_id']
 
+        # Indentation fixed from here downward
         thresh = df_thresholds[
             df_thresholds['biomarker_id'] == b_id
         ]
@@ -62,12 +60,22 @@ def process_biomarkers(user_test_results, user):
         input_unit = str(test.get("unit", "")).strip().lower()
 
         if not input_unit:
-            input_unit = BIOMARKER_UNIT_MAP.get(biomarker_name, "")
+            input_unit = BIOMARKER_UNIT_MAP.get(
+                biomarker_name,
+                ""
+            )
 
-        target_unit = BIOMARKER_UNIT_MAP.get(biomarker_name, input_unit)
+        target_unit = BIOMARKER_UNIT_MAP.get(
+            biomarker_name,
+            input_unit
+        )
 
         try:
-            val = convert_value(raw_val, input_unit, target_unit)
+            val = convert_value(
+                raw_val,
+                input_unit,
+                target_unit
+            )
         except:
             val = raw_val
 
@@ -78,57 +86,83 @@ def process_biomarkers(user_test_results, user):
             continue
 
         if val < low_v:
-            direction = "increase"
-            reason = "low"
+            biomarker_status = "Low"
         elif val > high_v:
-            direction = "decrease"
-            reason = "high"
+            biomarker_status = "High"
         else:
-            reason = "normal"
-            direction = None
+            biomarker_status = "Normal"
 
-        n_name_row = df_nutrients[
-            df_nutrients['nutrient_id'] == n_id
+        if biomarker_status == "Normal":
+            continue
+            
+
+        matching_rules = b_info[
+            b_info["status"].str.strip().str.lower()
+            ==
+            biomarker_status.lower()
         ]
 
-        if n_name_row.empty:
-            continue
+        for _, rule in matching_rules.iterrows():
+            if pd.isna(rule["nutrient_id"]):
+                continue
 
-        n_name = n_name_row.iloc[0]['name']
+            n_id = str(rule["nutrient_id"]).strip()
+            if not n_id:
+                continue
 
-        rec_foods = []
+            direction = str(rule.get("action", "maintain")).strip().lower()
 
-        if direction:
+            nutrient_row = df_nutrients[
+                df_nutrients["nutrient_id"] == n_id
+            ]
+
+            if nutrient_row.empty:
+                continue
+
+            nutrient_name = nutrient_row.iloc[0]["name"]
+            rec_foods = []
 
             food_map = df_food_nutrient[
-                df_food_nutrient['nutrient_id'] == n_id
+                df_food_nutrient["nutrient_id"] == n_id
             ]
 
             if not food_map.empty:
-
-                if direction == "increase":
-                    food_map = food_map.sort_values(by='amount', ascending=False)
+                if direction in ["increase", "support"]:
+                    food_map = food_map.sort_values(
+                        by="amount",
+                        ascending=False
+                    )
+                elif direction == "decrease":
+                    food_map = food_map.sort_values(
+                        by="amount",
+                        ascending=True
+                    )
                 else:
-                    food_map = food_map.sort_values(by='amount', ascending=True)
+                    food_map = food_map.sort_values(
+                        by="amount",
+                        ascending=False
+                    )
 
-                matching_food_ids = food_map['food_id'].head(10)
+                food_ids = food_map["food_id"].head(10)
 
                 rec_foods = df_foods[
-                    df_foods['food_id'].isin(matching_food_ids)
-                ]['food_name'].tolist()
+                    df_foods["food_id"].isin(food_ids)
+                ]["food_name"].tolist()
 
-        final_recommendations.append({
-            "biomarker": test['name'],
-            "current_value": val,
-            "unit": target_unit,
-            "low": low_v,
-            "high": high_v,
-            "status": reason,
-            "direction": direction,
-            "nutrient_id": n_id,
-            "target_nutrient": n_name,
-            "recommended_foods": rec_foods
-        })
+            # Space and indentation error resolved below
+            final_recommendations.append({
+                "biomarker": test["name"],
+                "current_value": val,
+                "unit": target_unit,
+                "low": low_v,
+                "high": high_v,
+                "status": biomarker_status.lower(),
+                "direction": direction,
+                "nutrient_id": n_id,
+                "target_nutrient": nutrient_name,
+                "recommended_foods": rec_foods
+            })
+
+    # Printed and returned outside the for-loop, completing the function
     print("Final Recommendations:", final_recommendations)
-
     return final_recommendations

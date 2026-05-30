@@ -6,7 +6,7 @@ from datetime import datetime
 
 from .biomarker_rules import process_biomarkers
 from .gene_rules import process_genes
-from .biomarker_interaction import get_biomarker_interactions
+
 
 from rag import NutritionRAG
 from llm import NutritionLLM
@@ -81,49 +81,9 @@ def generate_nutrition_plan(user):
         ).strip().lower() != "normal"
     ]
 
-    interaction = get_biomarker_interactions(
-        biomarkers
-    )
+    
 
-    interaction_recommendations = []
-
-    for nid in interaction.get(
-        "increase",
-        []
-    ):
-
-        interaction_recommendations.append({
-
-            "biomarker": "Interaction Rule",
-
-            "target_nutrient": nid,
-
-            "nutrient_id": nid,
-
-            "direction": "increase",
-
-            "status": "combined"
-        })
-
-    for nid in interaction.get(
-        "decrease",
-        []
-    ):
-
-        interaction_recommendations.append({
-
-            "biomarker": "Interaction Rule",
-
-            "target_nutrient": nid,
-
-            "nutrient_id": nid,
-
-            "direction": "decrease",
-
-            "status": "combined"
-        })
-
-    rag_biomarker_recs = biomarker_recs + interaction_recommendations
+    rag_biomarker_recs = biomarker_recs.copy()
 
     for g in gene_recs:
 
@@ -216,7 +176,7 @@ def generate_nutrition_plan(user):
 
         genes=genes,
 
-        biomarker_recs=rag_biomarker_recs,
+        biomarker_recs=biomarker_recs,
 
         gene_recs=gene_recs,
 
@@ -290,10 +250,21 @@ def generate_nutrition_plan(user):
 
     print("=====================================\n")
 
-    macros = fallback_macros(
-        calories
-    )
+    macros = fallback_macros(calories)
+    required_nutrients = set()
+    for b in biomarker_recs:
 
+        nutrient = b.get("nutrient_name")
+
+        if nutrient:
+            required_nutrients.add(nutrient)
+
+    for g in gene_recs:
+
+        nutrient = g.get("nutrient_name")
+
+        if nutrient:
+            required_nutrients.add(nutrient)
     print("\n========== TARGET MACROS ==========")
 
     print(macros)
@@ -302,20 +273,22 @@ def generate_nutrition_plan(user):
 
     optimized_plan = optimize_meal_plan(
 
-        rag_foods=rag_context,
+    rag_foods=rag_context,
 
-        target_calories=calories,
+    target_calories=calories,
 
-        target_protein=macros["protein_g"],
+    target_protein=macros["protein_g"],
 
-        target_carbs=macros["carbs_g"],
+    target_carbs=macros["carbs_g"],
 
-        target_fats=macros["fats_g"],
+    target_fats=macros["fats_g"],
 
-        adaptive_engine=adaptive_engine,
+    required_nutrients=required_nutrients,
 
-        user_id=user.get("user_id")
-    )
+    adaptive_engine=adaptive_engine,
+
+    user_id=user.get("user_id")
+)
 
     llm = NutritionLLM()
 
@@ -361,7 +334,17 @@ def generate_nutrition_plan(user):
         global_confidence >
         previous_confidence
     )
+    if previous_confidence == 0:
 
+        confidence_state = "initial"
+
+    elif global_confidence > previous_confidence:
+
+        confidence_state = "improved"
+
+    else:
+
+        confidence_state = "maxed"
     warning_message = ""
 
     if (
@@ -425,10 +408,6 @@ def generate_nutrition_plan(user):
 
     "gene_recommendations": gene_recs,
 
-    "interaction_notes": interaction.get(
-        "notes",
-        []
-    ),
 
     "rag_context": rag_context,
 
@@ -439,6 +418,12 @@ def generate_nutrition_plan(user):
     "evidence": evidence,
 
     "confidence": global_confidence,
+
+    "previous_confidence": previous_confidence,
+
+    "confidence_improved": confidence_improved,
+
+    "confidence_state": confidence_state,
 
     "confidence_breakdown": confidence_breakdown,
 

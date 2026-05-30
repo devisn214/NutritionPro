@@ -1,3 +1,4 @@
+from click import prompt
 import requests
 import json
 
@@ -90,7 +91,8 @@ Also return a score from 1-10, where 10 is best, based on the overall quality of
         }
 
         try:
-
+            print("\nPrompt Sent To LLM:")
+            print(prompt)
             response = requests.post(
                 self.url,
                 json=payload,
@@ -106,6 +108,8 @@ Also return a score from 1-10, where 10 is best, based on the overall quality of
                 }
 
             data = response.json()
+            print("\n========== EVALUATION RESPONSE ==========")
+            print(data.get("response", ""))
 
             return {
                 "evaluation": data.get(

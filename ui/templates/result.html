@@ -330,80 +330,29 @@
 
     {% endif %}
 
+  
     <!-- ========================================= -->
-    <!-- CONFIDENCE -->
-    <!-- ========================================= -->
+<!-- CONFIDENCE ANALYSIS -->
+<!-- ========================================= -->
 
-    <div class="section-box">
+<div class="section-box">
 
-        <h3>
-            Recommendation Confidence Analysis
-        </h3>
+    <h3>
+        Recommendation Confidence Analysis
+    </h3>
 
-        <div class="confidence-layout">
+    {% if result.plan.confidence_state == "initial" %}
 
-            <div class="confidence-circle">
+        <div class="summary-pills">
 
-                <div class="confidence-number">
-                    {{ result.plan.confidence }}%
-                </div>
+            <div class="pill pill-main">
 
-                <div class="confidence-label">
-                    Confidence
-                </div>
-
-            </div>
-
-            <div class="confidence-description">
-
-                {% if result.plan.previous_confidence and result.plan.previous_confidence > 0 %}
-
-                <p>
-                    Previous Confidence:
-                    <strong>
-                        {{ result.plan.previous_confidence }}%
-                    </strong>
-                </p>
-
-                <p class="improvement-text">
-
-                    Recommendation confidence improved from
-
-                    <strong>
-                        {{ result.plan.previous_confidence }}%
-                    </strong>
-
-                    to
-
-                    <strong>
-                        {{ result.plan.confidence }}%
-                    </strong>
-
-                </p>
-
-                {% endif %}
-
-                <p>
-                    {{ result.plan.confidence_message }}
-                </p>
+                Confidence:
+                {{ result.plan.confidence }}%
 
             </div>
 
         </div>
-
-    </div>
-
-    <!-- ========================================= -->
-    <!-- ADAPTIVE OPTIMIZATION -->
-    <!-- ========================================= -->
-
-    {% if not result.plan.optimization_complete %}
-
-    <div class="section-box">
-
-        <h3>
-            Recommendation Optimization
-        </h3>
 
         <p class="subtext">
 
@@ -417,7 +366,7 @@
             class="feedback-btn positive-btn"
             onclick="sendConfidenceFeedback(this,1)">
 
-            Satisfied With the Result
+                Satisfied With Result
 
             </button>
 
@@ -425,206 +374,308 @@
             class="primary-btn"
             onclick="generateImprovedRecommendation()">
 
-            Generate Improved Recommendation
+                Generate Improved Recommendation
 
             </button>
 
         </div>
 
-    </div>
+    {% elif result.plan.confidence_state == "improved" %}
+
+        <div class="summary-pills">
+
+            <div class="pill">
+
+                Previous Confidence:
+                {{ result.plan.previous_confidence }}%
+
+            </div>
+
+            <div class="pill pill-main">
+
+                Current Confidence:
+                {{ result.plan.confidence }}%
+
+            </div>
+
+        </div>
+
+        <p class="subtext">
+
+            Recommendation confidence improved through adaptive optimization.
+
+        </p>
+
+        <button
+        class="feedback-btn positive-btn"
+        onclick="sendConfidenceFeedback(this,1)">
+
+            Satisfied With Result
+
+        </button>
+
+    {% else %}
+
+        <div class="summary-pills">
+
+            <div class="pill pill-main">
+
+                Confidence:
+                {{ result.plan.confidence }}%
+
+            </div>
+
+        </div>
+
+        <p class="subtext">
+
+            No further improvement in recommendation confidence could be achieved using the current biomarker, genomic and dietary constraints.
+
+        </p>
+
+        <p class="subtext">
+
+            The current recommendation presents the best possible confidence level given the available data and constraints.
+
+        </p>
 
     {% endif %}
+
+</div>
 
     <!-- ========================================= -->
     <!-- BIOMARKER ANALYSIS -->
     <!-- ========================================= -->
 
-    {% if result.plan.biomarker_recommendations %}
+    {% if result.plan.biomarker_analysis %}
 
-    <div class="section-box">
+<div class="section-box">
 
-        <h3>
-            Biomarker Analysis Results
-        </h3>
+    <h3>
+        Biomarker Analysis Results
+    </h3>
 
-        <table class="food-table modern-table">
+    <ul style="list-style:none;padding:0;">
 
-            <thead>
+        {% for item in result.plan.biomarker_analysis %}
 
-                <tr>
-                    <th>Biomarker</th>
-                    <th>Value</th>
-                    <th>Status</th>
-                    <th>Reference Range</th>
-                </tr>
+        <li style="
+            margin-bottom:18px;
+            padding:15px;
+            border:1px solid #ececec;
+            border-radius:12px;
+            background:#fafafa;
+        ">
 
-            </thead>
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                margin-bottom:8px;
+            ">
 
-            <tbody>
+                <strong>
+                    {{ item.name }}
+                </strong>
 
-                {% for item in result.plan.biomarker_analysis %}
+                <span class="status-badge">
 
-                <tr>
+                    {{ item.status|title }}
 
-                    <td>{{ item.name }}</td>
-
-                    <td>
-                        {{ item.value }} {{ item.unit }}
-                    </td>
-
-                    <td>
-
-                        {% if item.status == "High" %}
-
-                        <span class="status-high">
-                            High
-                        </span>
-
-                        {% elif item.status == "Low" %}
-
-                        <span class="status-low">
-                            Low
-                        </span>
-
-                        {% else %}
-
-                        <span class="status-normal">
-                            Normal
-                        </span>
-
-                        {% endif %}
-
-                    </td>
-
-                    <td>
-                        {{ item.reference_range }}
-                    </td>
-
-                </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-    {% endif %}
-
-    <!-- ========================================= -->
-    <!-- GENE ANALYSIS -->
-    <!-- ========================================= -->
-
-    {% if result.plan.gene_recommendations%}
-
-    <div class="section-box">
-
-        <h3>
-            Genomic Variant Analysis
-        </h3>
-
-        <table class="food-table modern-table">
-
-            <thead>
-
-                <tr>
-                    <th>Gene</th>
-                    <th>Variant</th>
-                    <th>Affected Nutrient</th>
-                    <th>Recommendation</th>
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                {% for item in result.plan.gene_analysis %}
-
-                <tr>
-
-                    <td>{{ item.gene }}</td>
-                    <td>{{ item.variant }}</td>
-                    <td>{{ item.nutrient }}</td>
-                    <td>{{ item.action }}</td>
-
-                </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-    {% endif %}
-
-    <!-- ========================================= -->
-    <!-- EXPLAINABILITY -->
-    <!-- ========================================= -->
-
-    {% if result.plan.evidence %}
-
-    <div class="section-box">
-
-        <h3>
-            Explainability and Reasoning Trace
-        </h3>
-
-        <div class="insight-grid">
-
-            {% for ev in result.plan.evidence %}
-
-            <div class="insight-card risk-normal insight-modern-card">
-
-                <div class="insight-top">
-
-                    <div>
-
-                        <span class="status-badge">
-
-                        {% if ev.source == "gene" %}
-                            Genomic Variant
-                        {% else %}
-                            Abnormal Biomarker
-                        {% endif %}
-
-                        </span>
-
-                        <br>
-
-                        <strong>
-                            {{ ev.trigger }}
-                        </strong>
-
-                        <p class="subtext">
-                            Affects {{ ev.nutrient_name }}
-                        </p>
-
-                    </div>
-
-                </div>
-
-                <button
-                class="toggle-btn"
-                onclick="toggleExplain(this)">
-                View AI Reasoning
-                </button>
-
-                <div class="expand-content explain-box hidden">
-                    {{ ev.logic_path }}
-                </div>
+                </span>
 
             </div>
 
-            {% endfor %}
+            <div style="color:#666;">
+
+                Current Value:
+                <strong>
+                    {{ item.value }} {{ item.unit }}
+                </strong>
+
+            </div>
+
+            <div style="color:#666;margin-top:5px;">
+
+                Reference Range:
+                {{ item.reference_range }}
+
+            </div>
+
+            <div style="margin-top:8px;">
+
+                <strong>Affected Nutrients:</strong>
+
+                {{ item.nutrients | join(", ") }}
+
+            </div>
+
+        </li>
+
+        {% endfor %}
+
+    </ul>
+
+</div>
+
+{% endif %}
+{% if result.plan.gene_analysis %}
+
+<div class="section-box">
+
+    <h3>
+        Genomic Variant Analysis
+    </h3>
+
+    <ul style="list-style:none;padding:0;">
+
+        {% for item in result.plan.gene_analysis %}
+
+        <li style="
+            margin-bottom:18px;
+            padding:15px;
+            border:1px solid #ececec;
+            border-radius:12px;
+            background:#fafafa;
+        ">
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                margin-bottom:8px;
+            ">
+
+                <strong>
+                    {{ item.gene }}
+                </strong>
+
+                <span class="status-badge">
+
+                    {{ item.variant }}
+
+                </span>
+
+            </div>
+
+            <div style="margin-top:5px;">
+
+                <strong>Affected Nutrients:</strong>
+
+                {{ item.nutrient }}
+
+            </div>
+
+            <div style="margin-top:5px;">
+
+                <strong>Recommendation:</strong>
+
+                {{ item.action }}
+
+            </div>
+
+        </li>
+
+        {% endfor %}
+
+    </ul>
+
+</div>
+
+{% endif %}
+    <!-- ========================================= -->
+<!-- EXPLAINABILITY -->
+<!-- ========================================= -->
+
+{% if result.plan.evidence %}
+
+<div class="section-box">
+
+    <h3>
+        Explainability and Reasoning Trace
+    </h3>
+
+    <div class="insight-grid">
+
+        {% for ev in result.plan.evidence %}
+
+        <div class="insight-card risk-normal insight-modern-card">
+
+            <!-- Header -->
+
+            <div class="insight-header">
+
+                <div class="insight-title">
+
+                    <strong>
+                        {{ ev.trigger }}
+                    </strong>
+
+                </div>
+
+                <span class="status-badge">
+
+                    {% if ev.source == "gene" %}
+                        Genomic Variant
+                    {% else %}
+                        Abnormal Biomarker
+                    {% endif %}
+
+                </span>
+
+            </div>
+
+            <!-- Nutrients -->
+
+            <div class="affected-nutrients">
+
+                <span class="label">
+                    Affects:
+                </span>
+
+               
+
+    {{ ev.nutrients | join(', ') }}
+
+
+
+            </div>
+
+            <!-- Button -->
+
+            <button
+            class="toggle-btn"
+            onclick="toggleExplain(this)">
+
+                View AI Reasoning
+
+            </button>
+
+            <!-- Expandable Reasoning -->
+
+            <div class="expand-content explain-box hidden">
+
+                
+
+                   {% for reason in ev.logic_paths %}
+
+                    <div class="reason-item"> {{ reason }}</div>
+
+                    {% endfor %}
+
+              
+
+            </div>
 
         </div>
 
+        {% endfor %}
+
     </div>
 
-    {% endif %}
+</div>
+
+{% endif %}
 
     <!-- ========================================= -->
     <!-- AI EVALUATION -->

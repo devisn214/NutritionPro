@@ -20,8 +20,20 @@ class FeedbackManager:
 
     def load_feedback(self):
 
-        with open(self.feedback_path, "r") as f:
-            return json.load(f)
+        try:
+
+            with open(self.feedback_path, "r") as f:
+
+                content = f.read().strip()
+
+                if not content:
+                    return {}
+
+                return json.loads(content)
+
+        except Exception:
+
+            return {}
 
     def save_feedback_data(self, data):
 

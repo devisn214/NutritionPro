@@ -1,3 +1,5 @@
+import csv
+
 import pandas as pd
 from neo4j import GraphDatabase
 import os
@@ -224,17 +226,27 @@ class NutritionKGBuilder:
 
             self.run_query("""
 
-                MATCH (b:Biomarker {id:$b})
-                MATCH (n:Nutrient {id:$n})
+            MATCH (b:Biomarker {id:$b})
+            MATCH (n:Nutrient {id:$n})
 
-                MERGE (b)-[:INDICATES]->(n)
+            MERGE (b)-[rel:INDICATES {
 
-            """, {
+                status:$status,
+                action:$action
 
-                "b": r.biomarker_id,
-                "n": r.nutrient_id
+            }]->(n)
 
-            })
+        """, {
+
+            "b": r.biomarker_id,
+
+            "n": r.nutrient_id,
+
+            "status": str(r["status"]).lower(),
+
+            "action": str(r["action"]).lower()
+
+        })
 
     # ------------------ GENE -> NUTRIENT ------------------
 

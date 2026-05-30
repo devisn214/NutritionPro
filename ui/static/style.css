@@ -592,3 +592,93 @@ hr{
 #evaluationContent{
     margin-top:15px;
 }
+.insight-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:15px;
+}
+
+.insight-title{
+
+    font-size:18px;
+
+    font-weight:600;
+
+    color:#222;
+}
+
+.status-badge{
+
+    white-space:nowrap;
+
+    padding:6px 12px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:600;
+}
+
+.affected-nutrients{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:8px;
+
+    align-items:center;
+
+    margin-top:10px;
+
+    margin-bottom:15px;
+}
+
+.label{
+
+    font-size:13px;
+
+    font-weight:600;
+
+    color:#555;
+}
+
+.nutrient-pill{
+
+    background:#eef4ff;
+
+    color:#1f4fbf;
+
+    padding:6px 12px;
+
+    border-radius:999px;
+
+    font-size:13px;
+
+    font-weight:500;
+}
+
+.reason-item{
+
+    margin-bottom:8px;
+
+    line-height:1.5;
+}
+
+.toggle-btn{
+
+    width:100%;
+
+    margin-top:10px;
+}
+
+.insight-modern-card{
+
+    padding:20px;
+}
