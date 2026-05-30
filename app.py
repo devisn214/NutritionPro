@@ -1265,6 +1265,7 @@ def generate_meal(user_id):
             indent=4,
             default=json_converter
         )
+        plan["generated_time"] = datetime.now().strftime("%d %B %Y, %I:%M %p")
 
     return render_template(
 

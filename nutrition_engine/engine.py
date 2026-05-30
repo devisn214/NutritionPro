@@ -337,7 +337,7 @@ def generate_nutrition_plan(user):
     )
 
     evaluator = LLMMealEvaluator(
-        model="phi3:mini"
+       model="llama3.1:8b-instruct-q4_K_M"
     )
 
     llm_evaluation = evaluator.evaluate(

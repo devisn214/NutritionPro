@@ -28,7 +28,17 @@
                 Your AI Personalized Nutrition Recommendation Helper
             </h1>
 
-            
+            <p class="subtext">
+                AI-powered insights based on biomarkers, genetics,
+                semantic retrieval and explainable nutrition intelligence
+            </p>
+
+            <div class="generated-time">
+
+                Generated On:
+                {{ result.plan.generated_time }}
+
+            </div>
 
         </div>
 
@@ -59,35 +69,23 @@
     <div class="profile-grid">
 
         <div class="profile-card">
-
             <span>Name</span>
-
             <strong>{{ user.name }}</strong>
-
         </div>
 
         <div class="profile-card">
-
             <span>Age</span>
-
             <strong>{{ user.age }}</strong>
-
         </div>
 
         <div class="profile-card">
-
             <span>Diet Preference</span>
-
             <strong>{{ user.diet_preference }}</strong>
-
         </div>
 
         <div class="profile-card">
-
             <span>Activity Level</span>
-
             <strong>{{ user.activity_level }}</strong>
-
         </div>
 
     </div>
@@ -105,39 +103,29 @@
         <div class="pill-card">
 
             <h4>
-
                 Target Requirements
-
             </h4>
 
             <div class="summary-pills">
 
                 <div class="pill pill-main">
-
                     Calories:
                     {{ result.plan.calories }} kcal/day
-
                 </div>
 
                 <div class="pill">
-
                     Protein:
                     {{ result.plan.macros.protein_g }} g
-
                 </div>
 
                 <div class="pill">
-
                     Carbohydrates:
                     {{ result.plan.macros.carbs_g }} g
-
                 </div>
 
                 <div class="pill">
-
                     Fat:
                     {{ result.plan.macros.fats_g }} g
-
                 </div>
 
             </div>
@@ -149,39 +137,29 @@
         <div class="pill-card">
 
             <h4>
-
                 Estimated Meal Intake
-
             </h4>
 
             <div class="summary-pills">
 
                 <div class="pill pill-main">
-
                     Calories:
                     {{ result.plan.optimized_plan.totals.calories }} kcal
-
                 </div>
 
                 <div class="pill">
-
                     Protein:
                     {{ result.plan.optimized_plan.totals.protein_g }} g
-
                 </div>
 
                 <div class="pill">
-
                     Carbohydrates:
                     {{ result.plan.optimized_plan.totals.carbs_g }} g
-
                 </div>
 
                 <div class="pill">
-
                     Fat:
                     {{ result.plan.optimized_plan.totals.fats_g }} g
-
                 </div>
 
             </div>
@@ -191,7 +169,7 @@
     </div>
 
     <!-- ========================================= -->
-    <!-- MEAL PLAN -->
+    <!-- AI GENERATED MEAL PLAN -->
     <!-- ========================================= -->
 
     {% if result.plan.llm_recommendation %}
@@ -199,7 +177,7 @@
     <div class="section-box">
 
         <h3>
-            AI-Generated Daily Meal Plan
+            AI Generated Daily Meal Plan
         </h3>
 
         <div class="ai-box meal-plan-content">
@@ -210,16 +188,24 @@
 
         </div>
 
-        <!-- ========================================= -->
-        <!-- MEAL FEEDBACK -->
-        <!-- ========================================= -->
+    </div>
+
+    {% endif %}
+
+    <!-- ========================================= -->
+    <!-- MEAL FEEDBACK -->
+    <!-- ========================================= -->
+
+    <div class="section-box">
+
+        <h3>
+            Meal Feedback
+        </h3>
 
         <div class="meal-feedback-inline">
 
             <span>
-
                 Did you like these meal recommendations?
-
             </span>
 
             <button
@@ -244,10 +230,8 @@
 
     </div>
 
-    {% endif %}
-
     <!-- ========================================= -->
-    <!-- FUNCTIONAL FOODS -->
+    <!-- RECOMMENDED FOODS -->
     <!-- ========================================= -->
 
     {% if result.plan.rag_context %}
@@ -255,7 +239,7 @@
     <div class="section-box">
 
         <h3>
-            Possible Foods According to Your Biomarkers and Genomic Profile
+            Recommended Foods According to Your Biomarkers and Genomic Profile
         </h3>
 
         <table class="food-table modern-table">
@@ -265,11 +249,9 @@
                 <tr>
 
                     <th>Food</th>
-
-                    <th>Clinical Relevance</th>
-
+                    <th>Nutrients</th>
+                    <th>Why it Helps</th>
                     <th>Confidence</th>
-
                     <th>Feedback</th>
 
                 </tr>
@@ -283,27 +265,39 @@
                 <tr class="food-row">
 
                     <td>
-
                         <strong>
-
                             {{ item.food }}
-
                         </strong>
-
                     </td>
 
                     <td>
 
-                        {{ item.reason }}
+                        {% if item.nutrients %}
+
+                            {% for n in item.nutrients %}
+
+                                {{ n.name }}{% if not loop.last %}, {% endif %}
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            General nutrition support
+
+                        {% endif %}
 
                     </td>
+
+                    <td>
+                        {{ item.reason }}
+                    </td>
+
+                    
 
                     <td>
 
                         <span class="confidence-badge">
-
                             {{ item.confidence_score }}%
-
                         </span>
 
                     </td>
@@ -313,17 +307,13 @@
                         <button
                         class="mini-btn"
                         onclick="sendFoodFeedback(this,'{{ item.food }}',1)">
-
                         👍
-
                         </button>
 
                         <button
                         class="mini-btn negative-mini-btn"
                         onclick="sendFoodFeedback(this,'{{ item.food }}',-1)">
-
                         👎
-
                         </button>
 
                     </td>
@@ -341,114 +331,13 @@
     {% endif %}
 
     <!-- ========================================= -->
-    <!-- INSIGHTS -->
-    <!-- ========================================= -->
-
-    {% if result.plan.evidence %}
-
-    <div class="section-box">
-
-        <h3>
-            AI Recommendation Insights
-        </h3>
-
-        <div class="insight-grid">
-
-            {% for ev in result.plan.evidence %}
-
-            <div class="insight-card risk-normal insight-modern-card">
-
-                <div class="insight-top">
-
-                    <div>
-                        <span class="status-badge">
-
-                        {% if ev.source == "gene" %}
-
-                            Genomic Variant
-
-                        {% else %}
-
-                            Abnormal Biomarker
-
-                        {% endif %}
-
-                        </span>
-                        <br>
-                        <strong>
-
-                            {{ ev.trigger }}
-
-                        </strong>
-
-                        <p class="subtext">
-
-                            Affects {{ ev.nutrient_name }}
-
-                        </p>
-
-                    </div>
-
-                    
-
-                </div>
-
-                <button
-                class="toggle-btn"
-                onclick="toggleExplain(this)">
-
-                View AI Reasoning
-
-                </button>
-
-                <div class="expand-content explain-box hidden">
-
-                    {{ ev.logic_path }}
-
-                </div>
-
-            </div>
-
-            {% endfor %}
-
-        </div>
-
-    </div>
-
-    {% endif %}
-
-    <!-- ========================================= -->
-    <!-- AI EVALUATION -->
-    <!-- ========================================= -->
-
-    {% if result.plan.llm_evaluation %}
-
-    <div class="section-box">
-
-        <h3>
-            AI Evaluation of Recommendation Quality based on Clinical correctness, Macro balance, Food suitability,Meal diversity and Safety
-        </h3>
-
-        <div class="ai-box evaluation-box">
-
-            {{ result.plan.llm_evaluation.get('evaluation', '')
-            | replace('\n', '<br>')
-            | safe }}
-
-        </div>
-
-    </div>
-
-    {% endif %}
-
-    <!-- ========================================= -->
     <!-- CONFIDENCE -->
     <!-- ========================================= -->
 
     <div class="section-box">
 
         <h3>
-            Recommendation Confidence of the AI System
+            Recommendation Confidence Analysis
         </h3>
 
         <div class="confidence-layout">
@@ -456,32 +345,38 @@
             <div class="confidence-circle">
 
                 <div class="confidence-number">
-
                     {{ result.plan.confidence }}%
-
                 </div>
 
                 <div class="confidence-label">
-
                     Confidence
-
                 </div>
 
             </div>
 
             <div class="confidence-description">
 
-                {% if result.plan.previous_confidence
-                and result.plan.previous_confidence > 0 %}
+                {% if result.plan.previous_confidence and result.plan.previous_confidence > 0 %}
 
                 <p>
-
                     Previous Confidence:
+                    <strong>
+                        {{ result.plan.previous_confidence }}%
+                    </strong>
+                </p>
+
+                <p class="improvement-text">
+
+                    Recommendation confidence improved from
 
                     <strong>
-
                         {{ result.plan.previous_confidence }}%
+                    </strong>
 
+                    to
+
+                    <strong>
+                        {{ result.plan.confidence }}%
                     </strong>
 
                 </p>
@@ -489,9 +384,7 @@
                 {% endif %}
 
                 <p>
-
                     {{ result.plan.confidence_message }}
-
                 </p>
 
             </div>
@@ -501,20 +394,20 @@
     </div>
 
     <!-- ========================================= -->
-    <!-- OPTIMIZATION -->
+    <!-- ADAPTIVE OPTIMIZATION -->
     <!-- ========================================= -->
+
     {% if not result.plan.optimization_complete %}
+
     <div class="section-box">
 
         <h3>
             Recommendation Optimization
         </h3>
 
-        
-
         <p class="subtext">
 
-            Would you like to see if a  more adaptively optimized recommendation is available?
+            Would you like to see if a more adaptively optimized recommendation is available?
 
         </p>
 
@@ -538,10 +431,230 @@
 
         </div>
 
+    </div>
 
+    {% endif %}
 
-        {% endif %}
-        {% if not pdf_mode %}
+    <!-- ========================================= -->
+    <!-- BIOMARKER ANALYSIS -->
+    <!-- ========================================= -->
+
+    {% if result.plan.biomarker_analysis %}
+
+    <div class="section-box">
+
+        <h3>
+            Biomarker Analysis Results
+        </h3>
+
+        <table class="food-table modern-table">
+
+            <thead>
+
+                <tr>
+                    <th>Biomarker</th>
+                    <th>Value</th>
+                    <th>Status</th>
+                    <th>Reference Range</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for item in result.plan.biomarker_analysis %}
+
+                <tr>
+
+                    <td>{{ item.name }}</td>
+
+                    <td>
+                        {{ item.value }} {{ item.unit }}
+                    </td>
+
+                    <td>
+
+                        {% if item.status == "High" %}
+
+                        <span class="status-high">
+                            High
+                        </span>
+
+                        {% elif item.status == "Low" %}
+
+                        <span class="status-low">
+                            Low
+                        </span>
+
+                        {% else %}
+
+                        <span class="status-normal">
+                            Normal
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+                        {{ item.reference_range }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% endif %}
+
+    <!-- ========================================= -->
+    <!-- GENE ANALYSIS -->
+    <!-- ========================================= -->
+
+    {% if result.plan.gene_analysis %}
+
+    <div class="section-box">
+
+        <h3>
+            Genomic Variant Analysis
+        </h3>
+
+        <table class="food-table modern-table">
+
+            <thead>
+
+                <tr>
+                    <th>Gene</th>
+                    <th>Variant</th>
+                    <th>Affected Nutrient</th>
+                    <th>Recommendation</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for item in result.plan.gene_analysis %}
+
+                <tr>
+
+                    <td>{{ item.gene }}</td>
+                    <td>{{ item.variant }}</td>
+                    <td>{{ item.nutrient }}</td>
+                    <td>{{ item.action }}</td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% endif %}
+
+    <!-- ========================================= -->
+    <!-- EXPLAINABILITY -->
+    <!-- ========================================= -->
+
+    {% if result.plan.evidence %}
+
+    <div class="section-box">
+
+        <h3>
+            Explainability and Reasoning Trace
+        </h3>
+
+        <div class="insight-grid">
+
+            {% for ev in result.plan.evidence %}
+
+            <div class="insight-card risk-normal insight-modern-card">
+
+                <div class="insight-top">
+
+                    <div>
+
+                        <span class="status-badge">
+
+                        {% if ev.source == "gene" %}
+                            Genomic Variant
+                        {% else %}
+                            Abnormal Biomarker
+                        {% endif %}
+
+                        </span>
+
+                        <br>
+
+                        <strong>
+                            {{ ev.trigger }}
+                        </strong>
+
+                        <p class="subtext">
+                            Affects {{ ev.nutrient_name }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <button
+                class="toggle-btn"
+                onclick="toggleExplain(this)">
+                View AI Reasoning
+                </button>
+
+                <div class="expand-content explain-box hidden">
+                    {{ ev.logic_path }}
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+    <!-- ========================================= -->
+    <!-- AI EVALUATION -->
+    <!-- ========================================= -->
+
+    {% if result.plan.llm_evaluation %}
+
+    <div class="section-box">
+
+        <h3>
+            AI-Based Meal Quality Evaluation
+        </h3>
+
+        <div class="ai-box evaluation-box">
+
+           {{ result.plan.llm_evaluation.get('evaluation', '')
+            | replace('\n', '<br>')
+            | safe }}
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+    <!-- ========================================= -->
+    <!-- NAVIGATION -->
+    <!-- ========================================= -->
+
+    {% if not pdf_mode %}
 
     <div class="nav">
 
@@ -556,19 +669,7 @@
 
     {% endif %}
 
-    </div>
-
-    <!-- ========================================= -->
-    <!-- NAVIGATION -->
-    <!-- ========================================= -->
-
-    
-
 </div>
-
-<!-- ========================================= -->
-<!-- IMPROVED LOADER -->
-<!-- ========================================= -->
 
 <!-- ========================================= -->
 <!-- IMPROVED LOADER -->
@@ -600,6 +701,7 @@
     </div>
 
 </div>
+
 <script>
 
 function toggleExplain(btn){
@@ -803,5 +905,4 @@ function generateImprovedRecommendation(){
 </script>
 
 </body>
-
 </html>
