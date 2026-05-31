@@ -87,63 +87,7 @@ class SemanticRanker:
 
         return ranked[:top_k]
 
-    # =====================================================
-    # HYBRID RANKING
-    # =====================================================
-
-    def hybrid_rank(
-
-        self,
-
-        semantic_results,
-
-        semantic_weight=0.4,
-
-        symbolic_weight=0.6
-
-    ):
-
-        final_results = []
-
-        for item in semantic_results:
-
-            symbolic_score = float(
-                item.get("score", 0)
-            )
-
-            semantic_score = float(
-                item.get("semantic_score", 0)
-            )
-
-            final_score = (
-
-                symbolic_score * symbolic_weight +
-
-                semantic_score * 100 * semantic_weight
-
-            )
-
-            item["hybrid_score"] = round(
-                final_score,
-                2
-            )
-
-            final_results.append(item)
-
-        final_results = sorted(
-
-            final_results,
-
-            key=lambda x: x.get(
-                "hybrid_score",
-                0
-            ),
-
-            reverse=True
-        )
-
-        return final_results
-
+    
     # =====================================================
     # FILTER LOW RELEVANCE
     # =====================================================

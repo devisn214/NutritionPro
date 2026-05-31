@@ -242,14 +242,19 @@ class NutritionRAG:
 
                 used_foods.add(food_lower)
                 nutrients = row.get("nutrient_data") or []
-                score = round(float(row.get("total_score", 0)), 2)
-
-                # =================================================
-                # SEMANTIC SCORE
-                # =================================================
+                
+                # 1. Define your Symbolic Score (from Neo4j)
+                symbolic_score = round(float(row.get("total_score", 0)), 2)
+                
+                # 2. Define your Semantic Score (from Vector Store)
                 semantic_score = semantic_scores.get(food_lower, 0)
-                score += semantic_score * 30
 
+                
+                # =================================================
+                hybrid_score = (0.6 * symbolic_score) + (0.4 * semantic_score * 100)
+                
+                # Reassign the base score to your new Hybrid Score
+                score = hybrid_score
                 # =================================================
                 # ADAPTIVE SCORE
                 # =================================================

@@ -96,7 +96,7 @@ def estimate_food_macros(food_id):
 
         elif category == "lipid":
 
-            if "cholesterol" not in nutrient_name:
+            if "cholesterol" not in nutrient_name and "omega-3" not in nutrient_name:
 
                 fats += amount
 

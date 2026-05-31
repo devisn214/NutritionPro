@@ -1,3 +1,4 @@
+
 from .derived_macro_estimator import estimate_food_macros
 from neo4j import GraphDatabase
 import random
@@ -107,13 +108,31 @@ def add_missing_nutrient_foods(meal, target, foods, missing_nutrients, used_food
             
         attempted.add(best_food["food"].lower())
 
-        multiplier = 1.0
-        if best_food.get("calories", 0) < 80:
-            multiplier = 2.5
-        elif best_food.get("calories", 0) < 150:
-            multiplier = 2.0
-        elif best_food.get("calories", 0) < 220:
-            multiplier = 1.5
+        # =====================================================
+        # DYNAMIC SCALING: THE LIMITING FACTOR EQUATION
+        # =====================================================
+        totals = meal_totals(meal)
+        rem_cal = max(0, target["calories"] - totals["calories"])
+        rem_pro = max(0, target["protein_g"] - totals["protein_g"])
+        rem_carb = max(0, target["carbs_g"] - totals["carbs_g"])
+        rem_fat = max(0, target["fat_g"] - totals["fat_g"])
+
+        # Prevent division by zero
+        f_cal = best_food.get("calories", 0) or 0.1
+        f_pro = best_food.get("protein_g", 0) or 0.1
+        f_carb = best_food.get("carbs_g", 0) or 0.1
+        f_fat = best_food.get("fat_g", 0) or 0.1
+
+        scale_cal = rem_cal / f_cal
+        scale_pro = rem_pro / f_pro
+        scale_carb = rem_carb / f_carb
+        scale_fat = rem_fat / f_fat
+
+        # Find the most limiting factor so we don't break any macro target
+        exact_multiplier = min(scale_cal, scale_pro, scale_carb, scale_fat)
+        
+        # Bound portions to realistic human sizes (0.5x to 2.5x serving)
+        multiplier = max(0.5, min(exact_multiplier, 2.5))
 
         candidate = scale_food(best_food, multiplier)
 
@@ -168,14 +187,18 @@ def can_add_food(meal, food, target):
     next_carbs = totals["carbs_g"] + food.get("carbs_g", 0)
     next_fat = totals["fat_g"] + food.get("fat_g", 0)
 
-    if next_cal > target["calories"] * 1.15:
+    # =====================================================
+    # STRICTER PROFESSIONAL BUFFERS (THE BOUNCER)
+    # =====================================================
+    if next_cal > target["calories"] * 1.05:      # Max 5% over calories (Strict)
         return False
-    if next_protein > target["protein_g"] * 1.30:
+    if next_protein > target["protein_g"] * 1.15: # Max 15% over protein (Flexible)
         return False
-    if next_carbs > target["carbs_g"] * 1.25:
+    if next_carbs > target["carbs_g"] * 1.10:     # Max 10% over carbs (Moderate)
         return False
-    if next_fat > target["fat_g"] * 1.25:
+    if next_fat > target["fat_g"] * 1.10:         # Max 10% over fat (Moderate)
         return False
+        
     return True
 
 def add_dynamic_staple(meal, target, staples, allowed_categories, used_foods):
@@ -219,7 +242,7 @@ def optimize_meal_plan(
         food["coverage_score"] = coverage
         
         food_name = str(food.get("food", "")).lower()
-        reuse_penalty = -40 if food_name in recent_foods else 0
+        
         
         calories = food.get("calories", 0)
         protein = food.get("protein_g", 0)
@@ -228,9 +251,17 @@ def optimize_meal_plan(
         confidence = food.get("confidence_score", 0)
         semantic = food.get("semantic_score", 0)
         adaptive = food.get("adaptive_score", 0)
-        
-        confidence_boost = -15 if confidence < previous_confidence else 10
-
+        base_score = (
+            calories * 0.28 +
+            carbs * 0.32 +
+            protein * 0.22 -
+            fats * 0.05 +
+            confidence * 0.05 +
+            semantic * 8 +
+            adaptive
+        )
+        reuse_penalty = -(base_score * 0.30) if food_name in recent_foods else 0
+    
         food["optimizer_score"] = (
             calories * 0.28 +
             carbs * 0.32 +
@@ -239,7 +270,6 @@ def optimize_meal_plan(
             confidence * 0.05 +
             semantic * 8 +
             adaptive +
-            confidence_boost +
             reuse_penalty
         )
 
@@ -278,7 +308,7 @@ def optimize_meal_plan(
     dinner = []
     used_foods = set()
 
-    def fill_meal(meal, target, preferred_count=4):
+    def fill_meal(meal, target, preferred_count=6):
         attempts = 0
         used_categories = {}
         for f in meal:
@@ -297,13 +327,28 @@ def optimize_meal_plan(
                 if food_cat and used_categories.get(food_cat, 0) >= 2:
                     continue
 
-                multiplier = 1.0
-                if food.get("calories", 0) < 80:
-                    multiplier = 2.5
-                elif food.get("calories", 0) < 150:
-                    multiplier = 2.0
-                elif food.get("calories", 0) < 220:
-                    multiplier = 1.5
+                # =====================================================
+                # DYNAMIC SCALING: THE LIMITING FACTOR EQUATION
+                # =====================================================
+                totals = meal_totals(meal)
+                rem_cal = max(0, target["calories"] - totals["calories"])
+                rem_pro = max(0, target["protein_g"] - totals["protein_g"])
+                rem_carb = max(0, target["carbs_g"] - totals["carbs_g"])
+                rem_fat = max(0, target["fat_g"] - totals["fat_g"])
+
+                # Prevent division by zero
+                f_cal = food.get("calories", 0) or 0.1
+                f_pro = food.get("protein_g", 0) or 0.1
+                f_carb = food.get("carbs_g", 0) or 0.1
+                f_fat = food.get("fat_g", 0) or 0.1
+
+                scale_cal = rem_cal / f_cal
+                scale_pro = rem_pro / f_pro
+                scale_carb = rem_carb / f_carb
+                scale_fat = rem_fat / f_fat
+
+                exact_multiplier = min(scale_cal, scale_pro, scale_carb, scale_fat)
+                multiplier = max(0.5, min(exact_multiplier, 2.5))
 
                 scaled_food = scale_food(food, multiplier)
                 

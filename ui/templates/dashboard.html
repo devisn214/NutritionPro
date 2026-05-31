@@ -233,15 +233,13 @@
 
     
 
-        <a href="/download-report/{{ user.user_id }}">
+        <button
+    type="button"
+    onclick="downloadReport('{{ user.user_id }}')">
 
-            <button type="button">
+    Download Latest Report
 
-                Download Latest Report
-
-            </button>
-
-        </a>
+        </button>
 
         <a href="/logout">
 
@@ -311,6 +309,58 @@ document.getElementById("mealForm").addEventListener("submit",
     }, 300);
 
 });
+
+
+function downloadReport(userId){
+
+    fetch("/download-report/" + userId, {
+        method: "GET"
+    })
+
+    .then(response => {
+
+        if(!response.ok){
+
+            return response.text().then(msg => {
+                throw new Error(msg);
+            });
+        }
+
+        return response.blob();
+    })
+
+    .then(blob => {
+
+        const url =
+            window.URL.createObjectURL(blob);
+
+        const a =
+            document.createElement("a");
+
+        a.href = url;
+
+        a.download =
+            "nutrition_report.pdf";
+
+        document.body.appendChild(a);
+
+        a.click();
+
+        a.remove();
+
+        window.URL.revokeObjectURL(url);
+
+    })
+
+    .catch(err => {
+
+        alert(err.message);
+
+    });
+
+}
+
+
 
 </script>
 </body>
