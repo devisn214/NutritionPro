@@ -717,6 +717,8 @@ def generate_meal(user_id):
             grouped_evidence[trigger] = {
                 "trigger": trigger,
                 "source": ev.get("source"),
+                "status": ev.get("status", ""),
+                "action": ev.get("action", ""),
                 "nutrients": [],
                 "logic_paths": []
             }
@@ -725,22 +727,83 @@ def generate_meal(user_id):
         if nutrient and nutrient not in grouped_evidence[trigger]["nutrients"]:
             grouped_evidence[trigger]["nutrients"].append(nutrient)
 
-        logic = ev.get("logic_path", "")
-        if logic and logic not in grouped_evidence[trigger]["logic_paths"]:
-            grouped_evidence[trigger]["logic_paths"].append(logic)
+    # ==========================================
+    # 2. PROCESS GENES (Table & Evidence Injection)
+    # ==========================================
+    gene_analysis = []
+    seen_genes = set()
 
+    for gene in plan.get("gene_recommendations", []):
+        # A. Build the Data for the Genomic Table
+        key = (gene.get("gene"), gene.get("rsid"), gene.get("genotype"))
+        if key not in seen_genes:
+            seen_genes.add(key)
+            nutrients = []
+            for g in plan.get("gene_recommendations", []):
+                if (g.get("gene") == gene.get("gene") and
+                    g.get("rsid") == gene.get("rsid") and
+                    g.get("genotype") == gene.get("genotype")):
+                    nutrients.append(g.get("nutrient_name"))
+
+            gene_analysis.append({
+                "gene": gene.get("gene"),
+                "variant": f"{gene.get('rsid')} ({gene.get('genotype')})",
+                "nutrient": ", ".join(sorted(set(nutrients))),
+                "action": gene.get("action", "Maintain standard intake")
+            })
+
+        # B. Inject EVERY Gene into AI Reasoning (Even Normal Ones)
+        # RAG trigger format: "GeneName (rsid - genotype)"
+        gene_trigger = f"{gene.get('gene')} ({gene.get('rsid')} - {gene.get('genotype')})"
+        
+        if gene_trigger not in grouped_evidence:
+            nutrient_name = gene.get("nutrient_name", "related nutrients")
+            grouped_evidence[gene_trigger] = {
+                "trigger": gene_trigger,
+                "source": "gene",
+                "status": "normal",
+                "action": "maintain",
+                "nutrients": [nutrient_name],
+                "logic_paths": []
+            }
+        else:
+            if gene.get("nutrient_name") not in grouped_evidence[gene_trigger]["nutrients"]:
+                grouped_evidence[gene_trigger]["nutrients"].append(gene.get("nutrient_name"))
+
+    plan["gene_analysis"] = gene_analysis
+
+    # ==========================================
+    # 3. BUILD ONE UNIFIED REASONING STRING
+    # ==========================================
+    # This prevents the "3x logic path" duplication by combining nutrients
     for trigger, data in grouped_evidence.items():
         nutrient_text = ", ".join(data["nutrients"])
+        action_text = data.get("action", "adjust").lower()
+        
         if data["source"] == "biomarker":
-            data["logic_summary"] = (
-                f"{trigger.title()} is outside the healthy reference range. "
-                f"Foods supporting {nutrient_text} were prioritised."
+            unified_reason = (
+                f"{trigger.title()} is outside the reference range ({data.get('status', 'abnormal')}). "
+                f"Nutritional science indicates that {nutrient_text} impacts this biomarker. "
+                f"To compensate, the AI recommendation engine prioritized foods to {action_text} these nutrients."
             )
-        else:
-            data["logic_summary"] = (
-                f"The genetic variant {trigger} affects {nutrient_text}. Foods "
-                f"supporting these nutrients were prioritised in the meal plan."
-            )
+            data["logic_paths"] = [unified_reason]
+            data["logic_summary"] = unified_reason
+
+        else: # Gene
+            if data.get("status") == "normal" or action_text == "maintain":
+                unified_reason = (
+                    f"The genetic variant {trigger} was analyzed for its impact on {nutrient_text}. "
+                    f"Because your genotype does not pose an elevated metabolic risk, standard healthy baseline "
+                    f"recommendations are maintained without applying aggressive dietary compensations."
+                )
+            else:
+                unified_reason = (
+                    f"The genetic variant {trigger} alters your nutritional requirements for {nutrient_text}. "
+                    f"To proactively align the meal plan with your genomic profile, the AI prioritized foods "
+                    f"to {action_text} these nutrients."
+                )
+            data["logic_paths"] = [unified_reason]
+            data["logic_summary"] = unified_reason
 
     plan["evidence"] = list(grouped_evidence.values())
 

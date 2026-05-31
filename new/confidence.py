@@ -56,23 +56,24 @@ def diversity_score(matched_nutrients):
 
 def gene_support_score(
     matched_nutrients,
-    increase_ids
+    increase_ids,decrease_ids
 ):
+    target_nutrients = set(
+        increase_ids + decrease_ids
+    )
 
-    if not increase_ids:
-        return 0.5
+    if not target_nutrients:
+        return 0
 
     overlap = len(
 
         set(matched_nutrients).intersection(
-            set(increase_ids)
+            target_nutrients
         )
 
     )
 
-    return overlap / len(
-        set(increase_ids)
-    )
+    return overlap / len(target_nutrients)
 
 
 def calculate_confidence(
@@ -103,7 +104,8 @@ def calculate_confidence(
 
     gene_component = gene_support_score(
         matched_nutrients,
-        increase_ids
+        increase_ids,
+        decrease_ids
     )
 
     final_score = (
@@ -112,9 +114,7 @@ def calculate_confidence(
 
         semantic_component * 0.25 +
 
-        gene_component * 0.20 +
-
-        diversity_component * 0.10 +
+        gene_component * 0.30 +
 
         adaptive_component * 0.10
 

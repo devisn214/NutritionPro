@@ -155,7 +155,7 @@ class AdaptiveEngine:
 
         else:
 
-            current_score += 0.2
+            current_score += 0
 
         current_score = max(
             -20,

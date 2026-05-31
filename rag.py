@@ -126,7 +126,7 @@ class NutritionRAG:
                         )
                     )
 
-                elif direction == "maintain":
+                elif direction in ["maintain", "monitor"]:
                     increase_ids.add(nid)
                     increase_weights[nid] = max(increase_weights.get(nid, 0), 3)
                     increase_names.append(nutrient_name)
